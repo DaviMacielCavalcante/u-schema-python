@@ -217,7 +217,8 @@ def _simplify_value(simple_doc: Any) -> Any:
     ------
     TypeError
         Se o valor não for de nenhum tipo suportado — equivalente ao
-        ``RuntimeException("Unsupported type: ...")`` do Java (``:56``).
+        ``UnsupportedOperationException("Document field type not supported: " + input.getClass())``
+        do Java (``Helpers.java:53-54``).
     """
     if isinstance(simple_doc, str | datetime):
         return _SIMPLE_DEFAULT_STRING
@@ -242,8 +243,9 @@ def _simplify_value(simple_doc: Any) -> Any:
             new_dict[keys] = _simplify_value(values)
         return new_dict
     elif isinstance(simple_doc, list):
-        # Lista: cada item passa pela mesma recursão, sem deduplicar
-        # (Helpers.java tampouco deduplica nesse caminho).
+        # Recursivo sem colapsar (Helpers.java:46-52) — o Spark mantém todos
+        # os elementos do array; colapsar pra um só é comportamento do
+        # extrator map-reduce (map.js), não deste.
         new_list = []
         for item in simple_doc:
             new_list.append(_simplify_value(item))
@@ -262,7 +264,7 @@ def generate_document_pair(
     Porte de ``Helpers.generateDocumentPair`` (``Helpers.java:64-70``), com a
     correção do bug **#6** (``bugs_originais.md``): o Java assume, sem
     checagem, que ``_id`` é sempre um ``ObjectId``
-    (``doc.getObjectId("_id").getTimestamp()``) — o que lança
+    (``doc.getObjectId("_id").getTimestamp()``, ``Helpers.java:66``) — o que lança
     ``ClassCastException`` quando a coleção vem de uma fonte relacional (ex.:
     Northwind), onde ``_id`` pode ser um inteiro comum. Aqui, o timestamp só é
     extraído quando ``_id`` de fato é um ``ObjectId``; caso contrário, usa-se
@@ -321,7 +323,9 @@ def build_triples(
     list of dict of str to Any
         Uma linha por esqueleto distinto encontrado na coleção, no formato
         ``{"schema", "count", "firstTimestamp", "lastTimestamp"}`` — pronta
-        para ``extractors.triple.triples_from_rows``.
+        para ``extractors.triple.triples_from_rows``. Equivalente ao ``dict``
+        que ``Helpers.documentPairToJSONNode`` monta (``Helpers.java:101-115``),
+        só que sem o passo de texto JSON (``ObjectMapper``) do Java.
     """
     # Chave: esqueleto canônico (str). Valor: par (esqueleto, dados) acumulado.
     new_dict: dict[str, tuple[dict[str, Any], tuple[int, int, int]]] = {}
@@ -361,14 +365,19 @@ def extract_database_triples(
     Porte da parte de ``MongoDB2USchema.process`` (``MongoDB2USchema.java:48-58``)
     que percorre a lista de coleções — sem a parte de inferência/construção do
     modelo (``si.infer``, ``builder.build``, escrita do ``.xmi``), que não é
-    responsabilidade da camada de extração.
+    responsabilidade da camada de extração. O Java abre um
+    ``JavaSparkContext`` novo a cada coleção do laço (``:63-71``) e fecha
+    (``:84``) antes de seguir pra próxima; aqui isso não existe — o `find()`
+    do PyMongo já é suficiente, sem Spark.
 
     Parameters
     ----------
     database : pymongo.database.Database
         Conexão já aberta com o banco.
     collections : Iterable of str
-        Nomes das coleções a extrair.
+        Nomes das coleções a extrair, na mesma ordem em que
+        ``MongoDB2USchemaMain.java:57`` monta a lista — o ``.split(",")`` da
+        propriedade ``mongodb.collections``.
 
     Returns
     -------
@@ -389,7 +398,7 @@ def extract_triples(
 ) -> list[dict[str, Any]]:
     """Abrir a conexão com o MongoDB e extrair as triplas do banco indicado.
 
-    Porte de ``MongoDB2USchemaMain.run`` (``MongoDB2USchemaMain.java:45-58``,
+    Porte de ``MongoDB2USchemaMain.run`` (``MongoDB2USchemaMain.java:45-59``,
     a parte de conexão) — URI, nome do banco e coleções entram como
     parâmetros em vez de virem de um arquivo de propriedades (``config.properties``),
     já que este porte não usa o framework de injeção de dependência (Guice)

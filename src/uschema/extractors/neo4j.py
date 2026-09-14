@@ -191,7 +191,7 @@ class _RelationshipLike(_EntityLike, Protocol):
 def obtain_type(value: Any) -> Any:
     """Apagar um valor de propriedade Neo4j, trocando-o pela sentinela do seu tipo.
 
-    Porte de ``TypeUtils.obtainType`` (``TypeUtils.java``). Só reconhece os tipos
+    Porte de ``TypeUtils.obtainType`` (``TypeUtils.java:34-48``). Só reconhece os tipos
     do ``TYPE_SYSTEM`` (lista/booleano/string/float/inteiro) — qualquer outro cai
     em ``_SENTINEL_OTHER``, equivalente ao ``return NULL`` final do Java (ver o
     cabeçalho do módulo, "Tipos Neo4j sem sentinela dedicada").
@@ -206,7 +206,9 @@ def obtain_type(value: Any) -> Any:
     Any
         A sentinela do tipo — não o valor em si (ver o cabeçalho do módulo,
         "bool/int"). ``bool`` é testado **antes** de ``int`` porque ``bool`` é
-        subclasse de ``int`` em Python.
+        subclasse de ``int`` em Python. Pra qualquer tipo Cypher fora do
+        ``TYPE_SYSTEM``, devolve ``_SENTINEL_OTHER`` sem lançar — mesmo
+        comportamento observável do ``return NULL`` final (``TypeUtils.java:47``).
     """
     if isinstance(value, list):
         new_list = [_list_sentinel(value)]
@@ -226,7 +228,8 @@ def obtain_type(value: Any) -> Any:
 def _list_sentinel(values: list[Any]) -> Any:
     """Derivar a sentinela de uma lista de propriedade, ou ``_ANY_MARKER`` se heterogênea.
 
-    Parte de ``TypeUtils.obtainType`` pro ramo ``Iterable`` — ver o cabeçalho
+    Parte de ``TypeUtils.obtainType(Iterable<Value>)`` (``TypeUtils.java:51-59``)
+    pro ramo ``Iterable`` — ver o cabeçalho
     do módulo, "Uma armadilha de tradução" (o ``type()`` entra na chave de
     deduplicação porque ``False == 0`` em Python confundiria ``[True, 5]``
     com uma lista homogênea de inteiros).
@@ -281,7 +284,8 @@ def _hashable(sentinel: Any) -> Any:
 def _simple_type_name(sentinel: Any) -> str:
     """Nomear o tipo de uma sentinela escalar (nunca lista).
 
-    Porte de ``TypeUtils.geetSimpleType`` (nome com o typo do original) — o
+    Porte de ``TypeUtils.geetSimpleType`` (``TypeUtils.java:75-90``; nome com
+    o typo do original) — o
     despacho escalar usado tanto direto por :func:`get_type_name` quanto,
     recursivamente, pro primeiro elemento de uma lista não-vazia. ``bool``
     antes de ``int`` pela mesma razão de sempre (subclasse em Python).
@@ -313,11 +317,11 @@ def _simple_type_name(sentinel: Any) -> str:
 def get_type_name(sentinel: Any) -> str:
     """Nomear o tipo de uma sentinela, como o oráculo faz **depois** do round-trip JSON.
 
-    Porte de ``TypeUtils.getTypeName``/``geetSimpleType``. Só é chamado sobre
-    valores já relidos de texto — ver o cabeçalho do módulo, "Por que sem o
-    round-trip de texto JSON", itens 1 e 2, para as duas consequências que este
-    despacho por tipo replica de graça (``Long`` sempre "integer", lista
-    heterogênea/vazia sempre "string[]").
+    Porte de ``TypeUtils.getTypeName``/``geetSimpleType`` (``TypeUtils.java:62-90``).
+    Só é chamado sobre valores já relidos de texto — ver o cabeçalho do módulo,
+    "Por que sem o round-trip de texto JSON", itens 1 e 2, para as duas
+    consequências que este despacho por tipo replica de graça (``Long`` sempre
+    "integer", lista heterogênea/vazia sempre "string[]").
 
     Parameters
     ----------
@@ -330,7 +334,10 @@ def get_type_name(sentinel: Any) -> str:
     str
         Nome do tipo (``"string"``, ``"integer"``, ``"double"``, ``"boolean"``)
         ou, pra lista não-vazia, o nome do tipo do primeiro elemento com
-        sufixo ``"[]"``.
+        sufixo ``"[]"``. O ``else`` final devolve ``_ANY_MARKER`` no ``else``
+        do Java (``TypeUtils.java:89``) — inalcançável a partir de
+        :func:`obtain_type` (que nunca devolve lista vazia), mantido por
+        fidelidade ao ramo Java.
     """
     if isinstance(sentinel, list):
         if len(sentinel) > 0:
@@ -347,7 +354,8 @@ def get_type_name(sentinel: Any) -> str:
 def _entity_properties(entity: _RelationshipLike | _NodeLike) -> dict[str, Any]:
     """Apagar todas as propriedades de um nó/relacionamento, trocando cada uma pela sua sentinela.
 
-    Porte de ``IdArchetypeMapping.addProperties``. Usa ``.keys()`` em vez de
+    Porte de ``IdArchetypeMapping.addProperties`` (``IdArchetypeMapping.java:70-82``).
+    Usa ``.keys()`` em vez de
     iterar ``entity`` direto porque ``_EntityLike`` só declara ``.keys()``,
     não ``__iter__`` (ver o comentário na chamada, `# noqa: SIM118`).
 
@@ -370,7 +378,8 @@ def _relationship_archetype(
 ) -> dict[str, Any]:
     """Montar o arquétipo de um relacionamento de saída.
 
-    Porte de ``IdArchetypeMapping.addRelationships``. Ao contrário de
+    Porte de ``IdArchetypeMapping.addRelationships``
+    (``IdArchetypeMapping.java:96-109``). Ao contrário de
     :func:`node_archetype`, **não** ordena ``target_labels`` — ver o
     cabeçalho do módulo, "Uma assimetria do oráculo a preservar" (é uma
     decisão de fidelidade ao bug ``N1`` do oráculo, não um descuido).
@@ -432,8 +441,11 @@ def node_archetype(
 ) -> dict[str, Any]:
     """Montar o arquétipo de uma linha (nó + no máximo uma referência de saída).
 
-    Porte de ``IdArchetypeMapping.nodeToJSONObject``/``addProperties``/
-    ``addRelationships``. Uma linha do cypher (ver o cabeçalho do módulo) traz
+    Porte de ``IdArchetypeMapping.nodeToJSONObject`` (``IdArchetypeMapping.java:57-68``)/
+    ``addProperties``/``addRelationships``. Os labels **próprios** do nó são
+    ordenados (``:60-62``) — diferente do ``refsTo`` de uma referência, que
+    não é (ver "Uma assimetria do oráculo a preservar" no cabeçalho do
+    módulo). Uma linha do cypher (ver o cabeçalho do módulo) traz
     um nó e, opcionalmente, um relacionamento de saída com seu nó-alvo; esta
     função monta o ``dict`` que representa essa combinação.
 
@@ -446,7 +458,8 @@ def node_archetype(
         ``None``).
     target_labels : list of str or None
         Labels do nó-alvo do relacionamento, ou ``None`` junto com
-        ``relationship=None``.
+        ``relationship=None`` (mesma linha do Java, ``:42`` — os dois nulos
+        juntos, nunca só um).
 
     Returns
     -------
@@ -474,7 +487,8 @@ def reduce_archetypes_by_node(
 ) -> dict[str, dict[str, Any]]:
     """Fundir as linhas de um mesmo nó num único arquétipo, unindo referências distintas.
 
-    Porte de ``ReduceByIdArchetype``. Cada linha de :func:`node_archetype` traz
+    Porte de ``ReduceByIdArchetype.call`` (``ReduceByIdArchetype.java:16-23``).
+    Cada linha de :func:`node_archetype` traz
     no máximo uma referência de saída; nós com várias arestas de saída viram
     várias linhas com o mesmo ``node_id``. Esta função funde essas linhas,
     mantendo os campos do nó (do primeiro arquétipo visto) e acumulando
@@ -533,7 +547,8 @@ def _tally(
 def build_archetype_counts(merged: Mapping[str, Mapping[str, Any]]) -> list[dict[str, Any]]:
     """Explodir cada nó fundido em si mesmo + suas referências, e contar ocorrências exatas.
 
-    Porte de ``SplitMapping.flatMap`` + ``.countByValue()``. Cada arquétipo de
+    Porte de ``SplitMapping.call`` (``SplitMapping.java:30-41``) seguido de
+    ``.countByValue()`` (``SparkProcess.java:99``). Cada arquétipo de
     nó fundido (de :func:`reduce_archetypes_by_node`) gera uma contagem para
     si próprio (com ``references`` completo) e uma contagem separada para
     cada referência distinta que ele carrega — replicando o
@@ -597,8 +612,11 @@ def extract_archetype_counts(
 def _distinct_label_combinations(driver: Driver, database: str | None) -> list[list[str]]:
     """Rodar a 1ª cypher do oráculo: listar as combinações de labels existentes no banco.
 
-    Porte de ``MATCH (n) RETURN DISTINCT labels(n)`` (``SparkProcess.java:102-105``)
-    — ver o cabeçalho do módulo, "Mecanismo do oráculo".
+    Porte de ``generateLabelsMinMaxCountQuery``/``executeSimpleQuery``
+    (chamadas em ``SparkProcess.java:60``; definições em ``:102-105``, a
+    *query* ``MATCH (n) RETURN DISTINCT labels(n)``, e ``:116-121``, a
+    execução via ``.collect()``, sem *map*/*reduce*) — ver o cabeçalho do
+    módulo, "Mecanismo do oráculo".
 
     Parameters
     ----------
@@ -624,6 +642,8 @@ def _read_label_combination(
     """Rodar a 2ª cypher do oráculo: ler as linhas de uma combinação de labels.
 
     Cada linha traz um nó e, opcionalmente, uma aresta de saída. Porte de
+    ``generateLabels``/``generateQuery``/``executeQuery``
+    (``SparkProcess.java:83-90``/``:107-114``/``:92-100``):
     ``MATCH (n:Labels) WHERE size(labels(n))=N WITH n OPTIONAL MATCH
     (n)-[r]->(m) RETURN n, r, labels(m)`` (``SparkProcess.java:107-114``) —
     ver o cabeçalho do módulo, "Mecanismo do oráculo". O ``OPTIONAL MATCH``
@@ -692,7 +712,7 @@ def extract_database_archetype_counts(
 ) -> list[dict[str, Any]]:
     """Ponto de entrada com I/O: rodar as duas cypher do oráculo e extrair as contagens.
 
-    Porte de ``SparkProcess.process`` (``:50-121``). Descobre as combinações de
+    Porte de ``SparkProcess.process`` (``SparkProcess.java:50-75``). Descobre as combinações de
     labels existentes (:func:`_distinct_label_combinations`), lê as linhas de
     cada combinação (:func:`_read_label_combination`) e alimenta
     :func:`extract_archetype_counts`.
@@ -706,7 +726,11 @@ def extract_database_archetype_counts(
     sampling_rate : float
         Fração de relacionamentos de saída amostrados (``rand() < taxa`` no
         ``WHERE``); ``1.0`` (default) desliga a amostragem — ver o cabeçalho
-        de :func:`_read_label_combination`.
+        de :func:`_read_label_combination`. Porte de ``SparkProcess``'s
+        ``samplingRate`` (``:41-48``, ``IllegalArgumentException`` se fora de
+        ``(0, 1]`` — aqui ``ValueError``). O oráculo que gerou os XMIs de
+        referência sempre rodou com ``1.0`` (``Neo4j2USchemaMain.java:18``,
+        ``SAMPLING_RATIO``).
 
     Returns
     -------
@@ -716,8 +740,8 @@ def extract_database_archetype_counts(
     Raises
     ------
     ValueError
-        Se ``sampling_rate`` estiver fora de ``(0, 1]`` — mesma validação de
-        ``SparkProcess.java``.
+        Se ``sampling_rate`` for ``<= 0`` ou ``> 1`` — porte de
+        ``SparkProcess.java:43``.
     """
     if sampling_rate <= 0 or sampling_rate > 1:
         raise ValueError(f"Sampling rate <= 0 or > 1, Value: {sampling_rate}")
