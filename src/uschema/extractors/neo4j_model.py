@@ -156,27 +156,29 @@ class _USchemaBuilder:
     """
 
     def __init__(self, pkg: EPackage, repository: _ModelRepository) -> None:
-        self._pkg = pkg
-        self._repository = repository
+        self._pkg: EPackage = pkg
+        self._repository: _ModelRepository = repository
 
     def _create(self, class_name: str) -> EObject:
-        eclass: EObject = self._pkg.getEClassifier(class_name)
-        instance: EObject = eclass()
+        eclass = self._pkg.getEClassifier(class_name)
+        instance = eclass()
         return instance
 
     def create_uschema(self, name: str) -> None:
         """Porte de ``createUSchema`` (``USchemaBuilder.java:29-35``)."""
-        schema = self._create("USchema")
-        schema.name = name
-        self._repository.schema = schema
+        created_schema = self._create("USchema")
+        created_schema.name = name
+        self._repository.schema = created_schema
 
     def get_or_create_entity_type(self, name: str) -> EObject:
         """Porte de ``getOrCreateEntityType`` (``:37-47``)."""
-        entity = self._repository.get_entity_class(name)
-        if entity is None:
-            entity = self.create_entity_type(name)
-            self._repository.save_entity_class(entity)
-        return entity
+        entity_type = self._repository.get_entity_class(name)
+        if entity_type is None:
+            entity_type = self.create_entity_type(name)
+            self._repository.save_entity_class(entity_type)
+            return entity_type
+        else:
+            return entity_type
 
     def create_entity_type(self, name: str) -> EObject:
         """Porte de ``createEntityType`` (``:49-56``).
@@ -187,10 +189,10 @@ class _USchemaBuilder:
         construção deste módulo (nós são sempre entidades de primeira
         classe).
         """
-        entity = self._create("EntityType")
-        entity.name = name
-        entity.root = True
-        return entity
+        entity_type = self._create("EntityType")
+        entity_type.name = name
+        entity_type.root = True
+        return entity_type
 
     def create_attribute(self, name: str, type_name: str) -> EObject:
         """Porte de ``createAttribute`` (``:58-65``)."""
@@ -205,16 +207,17 @@ class _USchemaBuilder:
         ``type_name`` vem de ``TypeUtils.get_type_name`` — sufixo ``"[]"``
         indica array. ``PrimitiveType`` senão.
         """
-        if type_name.endswith(_ARRAY_SUFFIX):
-            element = self._create("PrimitiveType")
-            element.name = type_name[: -len(_ARRAY_SUFFIX)]
-            plist = self._create("PList")
-            plist.elementType = element
-            return plist
+        primitive_type = self._create("PrimitiveType")
 
-        primitive = self._create("PrimitiveType")
-        primitive.name = type_name
-        return primitive
+        if type_name.endswith(_ARRAY_SUFFIX):
+            primitive_type_name = type_name[: -len(_ARRAY_SUFFIX)]
+            primitive_type.name = primitive_type_name
+            plist = self._create("PList")
+            plist.elementType = primitive_type
+            return plist
+        else:
+            primitive_type.name = type_name
+            return primitive_type
 
     def create_variation(self, variation_id: int, count: int) -> EObject:
         """Porte de ``createVariation`` (``:87-94``).
@@ -251,6 +254,7 @@ class _USchemaBuilder:
             relationship_type = self._create("RelationshipType")
             relationship_type.name = name
             self._repository.save_reference_class(relationship_type)
+
         return relationship_type
 
 
@@ -302,11 +306,10 @@ class _StructuralVariationBuilder:
 
     def _create_parent_entities(self, entity_type: EObject, labels: str) -> None:
         """Porte de ``createParentsEntities`` (``:70-80``) — herança múltipla por label."""
-        labels_split = labels.split(_LABELS_JOINER)
-        if len(labels_split) > 1:
-            for label in labels_split:
-                parent = self._builder.get_or_create_entity_type(label)
-                entity_type.parents.append(parent)
+        separated_string: list[str] = labels.split(_LABELS_JOINER)
+        if len(separated_string) > 1:
+            for label in separated_string:
+                entity_type.parents.append(self._builder.get_or_create_entity_type(label))
 
     def _process_properties(self, properties: dict[str, Any], variation: EObject) -> None:
         """Porte de ``processProperties`` (``:82-90``).
@@ -369,8 +372,9 @@ class _StructuralVariationBuilder:
 
         if variation.count > 0:
             variation.count = variation.count + count
-        elif count != 0:
-            variation.count = count
+        else:
+            if count != 0:
+                variation.count = count
 
         return variation
 
@@ -458,16 +462,26 @@ def _count_feature(entity: EObject, feature: EObject, counts: dict[str, int]) ->
 
 def _attribute_as_string(attribute: EObject) -> str:
     """Porte de ``attributeAsString`` (``:100-104``)."""
-    return f"{attribute.name}:{_string_type_for_optionality(attribute.type)}".lower()
+    name: str = attribute.name
+    string = name + ":" + _string_type_for_optionality(attribute.type)
+    return string.lower()
 
 
 def _reference_as_string(entity: EObject, reference: EObject) -> str:
     """Porte de ``referenceAsString`` (``:106-110``)."""
-    first_variation_id = reference.isFeaturedBy[0].variationId
-    representation = (
-        f"{entity.name}-[{reference.name}:{first_variation_id}]->{reference.refsTo.name}"
+    entity_name: str = entity.name
+    reference_name: str = reference.name
+    refs_to_name: str = reference.refsTo.name
+    string = (
+        entity_name
+        + "-["
+        + reference_name
+        + ":"
+        + str(reference.isFeaturedBy[0].variationId)
+        + "]->"
+        + refs_to_name
     )
-    return representation.lower()
+    return string.lower()
 
 
 def _string_type_for_optionality(data_type: EObject) -> str:
@@ -478,20 +492,22 @@ def _string_type_for_optionality(data_type: EObject) -> str:
     docstring do módulo) cai no ``EMPTY`` final. Não estender pra ``PList``:
     seria consertar o oráculo, não portá-lo.
     """
-    class_name = data_type.eClass.name
-    if class_name == "PrimitiveType":
-        name: str = data_type.name
-        return name
-    if class_name == "PTuple":
+    name = data_type.eClass.name
+    if name == "PrimitiveType":
+        type_name: str = data_type.name
+        return type_name
+    elif name == "PTuple":
         return _string_array_type(data_type)
-    return ""
+    else:
+        return ""
 
 
 def _string_array_type(ptuple: EObject) -> str:
     """Porte de ``getStringArrayType`` (``:126-136``)."""
     if len(ptuple.elements) > 0:
         return _ARRAY_SUFFIX + _string_type_for_optionality(ptuple.elements[0])
-    return _ARRAY_SUFFIX
+    else:
+        return _ARRAY_SUFFIX
 
 
 def _join_variations_ignoring_bounds(schema: EObject) -> None:
@@ -557,21 +573,23 @@ def _similar_variations_map(entity: EObject) -> dict[str, list[EObject]]:
 
 def _put_property_key(properties: list[str], feature: EObject) -> None:
     """Porte de ``putPropertyKeyOnList`` (``:167-181``)."""
-    class_name = feature.eClass.name
-    if class_name == "Attribute":
-        properties.append(f"{feature.name}:{_attribute_representation(feature)}")
-    elif class_name == "Reference":
-        properties.append(f"{feature.name}:{_reference_representation(feature)}")
+    if feature.eClass.name == "Attribute":
+        properties.append(feature.name + ":" + _attribute_representation(feature))
+    elif feature.eClass.name == "Reference":
+        properties.append(feature.name + ":" + _reference_representation(feature))
 
 
 def _attribute_representation(attribute: EObject) -> str:
     """Porte de ``getAttributeRepresentation`` (``:183-186``)."""
-    return f"{attribute.name}{_type_representation(attribute.type)}"
+    name: str = attribute.name
+    return name + _type_representation(attribute.type)
 
 
 def _reference_representation(reference: EObject) -> str:
     """Porte de ``getReferenceRepresentation`` (``:188-191``)."""
-    return f"{reference.name}->{reference.refsTo.name}"
+    name: str = reference.name
+    refs_to_name: str = reference.refsTo.name
+    return name + "->" + refs_to_name
 
 
 def _type_representation(data_type: EObject) -> str:
@@ -581,22 +599,26 @@ def _type_representation(data_type: EObject) -> str:
     ``PList``/``PSet``/``PTuple``/``PMap`` recursivamente. Ver "Duas
     divergências propositais" no docstring do módulo.
     """
-    class_name = data_type.eClass.name
-    if class_name == "PrimitiveType":
+    if data_type.eClass.name == "PrimitiveType":
         name: str = data_type.name
         return name
-    if class_name == "PList":
+    elif data_type.eClass.name == "PList":
         return _type_representation(data_type.elementType) + "[]"
-    if class_name == "PSet":
+    elif data_type.eClass.name == "PSet":
         return _type_representation(data_type.elementType) + "{}"
-    if class_name == "PTuple":
-        inner = ",".join(_type_representation(element) for element in data_type.elements)
-        return f"[{inner}]"
-    if class_name == "PMap":
-        key_repr = _type_representation(data_type.keyType)
-        value_repr = _type_representation(data_type.valueType)
-        return f"{{{key_repr}:{value_repr}}}"
-    return ""
+    elif data_type.eClass.name == "PTuple":
+        string = ",".join(_type_representation(element) for element in data_type.elements)
+        return "[" + string + "]"
+    elif data_type.eClass.name == "PMap":
+        return (
+            "{"
+            + _type_representation(data_type.keyType)
+            + ":"
+            + _type_representation(data_type.valueType)
+            + "}"
+        )
+    else:
+        return ""
 
 
 def _compare_variations(variation1: EObject, variation2: EObject) -> None:
@@ -647,7 +669,8 @@ def _copy_features_in_both_references(r1: EObject, r2: EObject) -> None:
         O efeito é só a mutação de ``r1``/``r2``.
     """
     merged: list[EObject] = []
-    for feature in (*r1.isFeaturedBy, *r2.isFeaturedBy):
+    combined = (*r1.isFeaturedBy, *r2.isFeaturedBy)
+    for feature in combined:
         if feature not in merged:
             merged.append(feature)
 

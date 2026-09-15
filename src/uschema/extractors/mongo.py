@@ -135,312 +135,291 @@ SIMPLE_DEFAULT_OBJECTID: dict[str, str] = {"$oid": "000000000000000000000000"}
 SIMPLE_DEFAULT_LONG: dict[str, str] = {"$numberLong": "0"}
 
 
-def simplify(document: Mapping[str, Any]) -> dict[str, Any]:
-    """Apagar os valores de um documento, preservando só o esqueleto de tipos.
+def reduce_pairs(first: tuple[int, int, int], second: tuple[int, int, int]) -> tuple[int, int, int]:
+    """Combinar duas triplas (firstTimestamp, lastTimestamp, count) em uma só.
 
-    Porte de ``Helpers.simplify(Document)`` (``Helpers.java:18-27``). Percorre
-    as chaves do documento e substitui cada valor pela sentinela do seu tipo
-    via :func:`_simplify_value` — recursivo em objetos aninhados e listas.
+    Porte fiel de ``Helpers.reducePairs`` (``Helpers.java:79-85``): é a função
+    de combinação do ``reduceByKey`` — chamada toda vez que dois documentos
+    caem no mesmo grupo (mesmo esqueleto), pra fundir seus dados de janela
+    temporal e contagem.
 
     Parameters
     ----------
-    document : Mapping of str to Any
-        Documento cru, como devolvido por ``pymongo`` (``dict`` por padrão).
+    first, second : tuple of (int, int, int)
+        Duas triplas ``(firstTimestamp, lastTimestamp, count)`` do mesmo grupo.
+
+    Returns
+    -------
+    tuple of (int, int, int)
+        A tripla combinada: menor ``firstTimestamp``, maior ``lastTimestamp``,
+        soma dos ``count``.
+    """
+    min_tuple = min(first[0], second[0])
+    max_tuple = max(first[1], second[1])
+    result = first[2] + second[2]
+
+    return (min_tuple, max_tuple, result)
+
+
+def simplify(document: Mapping[str, Any]) -> dict[str, Any]:
+    """Apagar os valores de um documento, trocando cada folha por uma sentinela de tipo.
+
+    Ponto de entrada público — porte de ``Helpers.simplify(Document)``
+    (``Helpers.java:18-27``). Documentos sempre entram aqui como ``dict``
+    (nunca uma folha solta), então o tipo de retorno é concreto
+    (``dict[str, Any]``), diferente do despacho recursivo interno
+    (:func:`_private_simplify`), que aceita qualquer coisa.
+
+    Parameters
+    ----------
+    document : dict of str to Any
+        Um documento cru do MongoDB (já como ``dict`` Python, vindo do
+        ``pymongo``).
 
     Returns
     -------
     dict of str to Any
-        O mesmo documento com cada folha trocada pela sentinela do seu tipo.
-
-    Raises
-    ------
-    TypeError
-        Se algum valor não for de um tipo suportado — porte de
-        ``UnsupportedOperationException`` (``Helpers.java:53-54``). O oráculo
-        lança para binário, ``Decimal128`` e qualquer tipo BSON fora de
-        ``String``/``Date``/``Boolean``/``Integer``/``Double``/``Long``/
-        ``ObjectId``/``Document``/``ArrayList``; este porte replica o mesmo
-        comportamento observável, só com o tipo de exceção idiomático do
-        Python (mesma escolha que ``extractors.triple.classify`` já faz para
-        um caso análogo).
+        O mesmo documento, com cada valor de folha trocado pela sentinela do
+        seu tipo.
     """
-    return {key: _simplify_value(value) for key, value in document.items()}
+    private = _simplify_value(document)
+    assert isinstance(private, dict)
+    return private
 
 
-def _simplify_value(value: Any) -> Any:
-    """Traduzir um valor de folha (ou nó) para a sentinela do seu tipo.
+def _simplify_value(simple_doc: Any) -> Any:
+    """Despachar um valor qualquer (folha, dict aninhado ou lista) pra sua sentinela.
 
-    Porte de ``Helpers.simplify(Object)`` (``Helpers.java:29-57``). A ordem de
-    despacho **diverge** da ordem textual do Java — ver a seção "A armadilha
-    de tradução" no docstring do módulo: ``Int64`` e ``bool`` têm de ser
-    testados antes de qualquer ``isinstance(v, int)`` genérico, porque os dois
-    são subclasses de ``int`` em Python (não são no Java, onde ``Boolean``,
-    ``Integer`` e ``Long`` são classes disjuntas).
+    Porte de ``Helpers.simplify(Object)`` (``Helpers.java:29-57``), o ramo
+    recursivo que trata qualquer valor — não só documentos. Tipado como
+    ``Any -> Any`` de propósito: ao contrário de :func:`simplify`, essa função
+    é chamada recursivamente pra folhas, listas e dicts aninhados, então não
+    tem como ter uma assinatura mais específica sem perder generalidade.
+
+    A ordem dos ``isinstance`` **não é arbitrária** — ver a nota da docstring
+    do módulo ("A armadilha de tradução"): ``bool`` e ``Int64`` precisam vir
+    antes de ``int`` genérico, porque os dois são subclasses de ``int`` em
+    Python (diferente do Java, onde ``Boolean``/``Integer``/``Long`` são
+    classes disjuntas e a ordem não importa).
 
     Parameters
     ----------
-    value : Any
-        Um valor de folha do documento, ou um nó (``dict``/``list``) a
-        percorrer recursivamente.
+    simple_doc : Any
+        Um valor de folha, um ``dict`` aninhado, ou uma ``list``.
 
     Returns
     -------
     Any
-        A sentinela correspondente, ou a estrutura recursivamente simplificada
-        para ``dict``/``list``, ou ``None`` se o valor já era ``None`` (o Java
-        também deixa ``null`` passar — nenhum ramo do ``if``/``else if`` o
-        alcança, e o ``throw`` final é guardado por ``input != null``).
+        A sentinela correspondente ao tipo (escalar), ou uma cópia recursiva
+        (para ``dict``/``list``), ou ``None``.
 
     Raises
     ------
     TypeError
-        Ver :func:`simplify`.
+        Se o valor não for de nenhum tipo suportado — equivalente ao
+        ``UnsupportedOperationException("Document field type not supported: " + input.getClass())``
+        do Java (``Helpers.java:53-54``).
     """
-    # `Int64` antes de `bool` antes de `int`: os dois primeiros são subclasses
-    # de `int` em Python. Trocar a ordem faz `long`/`bool` virarem `0` em
-    # silêncio — sem erro, sem teste falhando, só um dado errado.
-    if isinstance(value, Int64):
-        return dict(SIMPLE_DEFAULT_LONG)
-    if isinstance(value, bool):
-        return _SIMPLE_DEFAULT_BOOLEAN
-    if isinstance(value, str | datetime):
+    if isinstance(simple_doc, str | datetime):
         return _SIMPLE_DEFAULT_STRING
-    if isinstance(value, int):
+    elif isinstance(simple_doc, bool):
+        # bool antes de int: bool é subclasse de int em Python.
+        return _SIMPLE_DEFAULT_BOOLEAN
+    elif isinstance(simple_doc, Int64):
+        # Int64 antes de int, mesmo motivo — ver docstring do módulo.
+        return SIMPLE_DEFAULT_LONG.copy()
+    elif isinstance(simple_doc, int):
         return _SIMPLE_DEFAULT_INTEGER
-    if isinstance(value, float):
+    elif isinstance(simple_doc, float):
         return _SIMPLE_DEFAULT_DOUBLE
-    if isinstance(value, ObjectId):
-        return dict(SIMPLE_DEFAULT_OBJECTID)
-    if isinstance(value, Mapping):
-        return simplify(value)
-    if isinstance(value, list):
-        # Recursivo **sem colapsar** (`Helpers.java:46-52`) — o Spark mantém
-        # todos os elementos do array; colapsar pra um só é comportamento do
-        # extrator map-reduce (`map.js`), não deste.
-        return [_simplify_value(element) for element in value]
-    if value is None:
+    elif isinstance(simple_doc, ObjectId):
+        return SIMPLE_DEFAULT_OBJECTID.copy()
+    elif isinstance(simple_doc, Mapping):
+        # Documento aninhado: chave mantida como está, só o valor é
+        # simplificado recursivamente — igual a
+        # `simplified.put(key, simplify(doc.get(key)))` (Helpers.java:23-24).
+        new_dict: dict[str, Any] = {}
+        for keys, values in simple_doc.items():
+            new_dict[keys] = _simplify_value(values)
+        return new_dict
+    elif isinstance(simple_doc, list):
+        # Recursivo sem colapsar (Helpers.java:46-52) — o Spark mantém todos
+        # os elementos do array; colapsar pra um só é comportamento do
+        # extrator map-reduce (map.js), não deste.
+        new_list = []
+        for item in simple_doc:
+            new_list.append(_simplify_value(item))
+        return new_list
+    elif simple_doc is None:
         return None
-
-    raise TypeError(f"Document field type not supported: {type(value).__name__}")
+    else:
+        raise TypeError(f"Document field type not supported: {type(simple_doc)}")
 
 
 def generate_document_pair(
     document: Mapping[str, Any],
 ) -> tuple[dict[str, Any], tuple[int, int, int]]:
-    """Produzir o par (esqueleto simplificado, metadados) de um documento.
+    """Gerar o par (esqueleto simplificado, dados de janela) de um documento.
 
-    Porte de ``Helpers.generateDocumentPair`` (``Helpers.java:64-70``), **com
-    o bug #6 corrigido por construção** (``bugs_originais.md`` #6,
-    ``Helpers.java:66``): o Java faz ``doc.getObjectId("_id").getTimestamp()``,
-    que lança ``ClassCastException`` quando ``_id`` não é um ``ObjectId`` —
-    derrubando a extração inteira em qualquer coleção de origem relacional
-    (é o caso do Northwind, cujo ``_id`` é inteiro). Aqui o timestamp só é
-    extraído quando ``_id`` é de fato um ``ObjectId``; caso contrário, ``0``
-    — sentinela válida, não valor (mesmo tratamento que
-    ``extractors.triple.SchemaTriple.first_timestamp``/``last_timestamp``).
-
-    Parameters
-    ----------
-    document : Mapping of str to Any
-        Documento cru, como devolvido por ``pymongo``.
-
-    Returns
-    -------
-    tuple of (dict of str to Any, tuple of (int, int, int))
-        ``(simplify(document), (timestamp, timestamp, 1))`` — o par que o
-        ``reduceByKey`` do Java (``Tuple2<Document, Tuple3<Long, Long, Integer>>``)
-        agruparia por esqueleto. O primeiro elemento da tupla de metadados é
-        ``firstTimestamp``, o segundo ``lastTimestamp``, o terceiro ``count``.
-    """
-    document_id = document.get("_id")
-    if isinstance(document_id, ObjectId):
-        timestamp = int(document_id.generation_time.timestamp())
-    else:
-        timestamp = 0
-
-    return simplify(document), (timestamp, timestamp, 1)
-
-
-def reduce_pairs(first: tuple[int, int, int], second: tuple[int, int, int]) -> tuple[int, int, int]:
-    """Combinar dois metadados (firstTimestamp, lastTimestamp, count) de mesmo esqueleto.
-
-    Porte fiel de ``Helpers.reducePairs`` (``Helpers.java:79-85``).
+    Porte de ``Helpers.generateDocumentPair`` (``Helpers.java:64-70``), com a
+    correção do bug **#6** (``bugs_originais.md``): o Java assume, sem
+    checagem, que ``_id`` é sempre um ``ObjectId``
+    (``doc.getObjectId("_id").getTimestamp()``, ``Helpers.java:66``) — o que lança
+    ``ClassCastException`` quando a coleção vem de uma fonte relacional (ex.:
+    Northwind), onde ``_id`` pode ser um inteiro comum. Aqui, o timestamp só é
+    extraído quando ``_id`` de fato é um ``ObjectId``; caso contrário, usa-se
+    ``0`` como sentinela (não um valor real).
 
     Parameters
     ----------
-    first, second : tuple of (int, int, int)
-        Metadados no formato ``(firstTimestamp, lastTimestamp, count)`` —
-        ver :func:`generate_document_pair`.
+    document : dict of str to Any
+        Um documento cru da coleção.
 
     Returns
     -------
-    tuple of (int, int, int)
-        ``(min(firstTimestamp), max(lastTimestamp), soma dos counts)``.
+    tuple of (dict[str, Any], tuple[int, int, int])
+        O par ``(esqueleto_simplificado, (firstTimestamp, lastTimestamp, count))``,
+        com ``firstTimestamp == lastTimestamp`` e ``count == 1`` (um documento
+        isolado ainda não foi combinado com nenhum outro).
     """
-    first_ts_a, last_ts_a, count_a = first
-    first_ts_b, last_ts_b, count_b = second
-
-    return (min(first_ts_a, first_ts_b), max(last_ts_a, last_ts_b), count_a + count_b)
-
-
-def _canonical_schema_key(schema: Mapping[str, Any]) -> str:
-    """Chave de agrupamento estrutural, order-independent pra objeto, order-dependent pra lista.
-
-    Ver "Como o agrupamento por assinatura funciona" no docstring do módulo —
-    reproduz o ``equals``/``hashCode`` de ``org.bson.Document`` (mapa,
-    independente de ordem) sem reproduzir o de ``ArrayList`` (dependente de
-    ordem), porque ``json.dumps(sort_keys=True)`` só reordena chaves de
-    ``dict``, nunca elementos de ``list``.
-
-    Parameters
-    ----------
-    schema : Mapping of str to Any
-        Um esqueleto já simplificado (saída de :func:`simplify`) — só contém
-        os tipos que ``json.dumps`` serializa nativamente.
-
-    Returns
-    -------
-    str
-        Representação canônica, estável para o mesmo esqueleto estrutural.
-    """
-    return json.dumps(schema, sort_keys=True, separators=(",", ":"))
+    doc_id = document.get("_id")
+    # Bug #6: `_id` não é ObjectId (ex.: dado de origem relacional).
+    # 0 é sentinela, não um timestamp real.
+    time = int(doc_id.generation_time.timestamp()) if isinstance(doc_id, ObjectId) else 0
+    data = (time, time, 1)
+    return (simplify(document), data)
 
 
 def build_triples(
     documents: Iterable[Mapping[str, Any]], collection_name: str
 ) -> list[dict[str, Any]]:
-    """Agrupar documentos pelo esqueleto e montar as triplas de uma coleção.
+    """Agrupar os documentos de uma coleção em triplas por esqueleto de tipos.
 
-    Porte do restante de ``processEntity`` (``MongoDB2USchema.java:73-83``):
-    o `map`/`reduceByKey` (via :func:`generate_document_pair`/
-    :func:`reduce_pairs`), seguido da anexação do `_type` **depois** da
-    agregação (``:82``, ``pair._1.put(typeField, collectionName)``) — mesma
-    ordem aqui. A materialização de ``documentPairToJSONNode`` (``:101-115``)
-    é só empacotar em ``dict`` no formato camelCase que
-    ``extractors.triple.triples_from_rows`` espera; sem a etapa de
-    string/``ObjectMapper`` do Java, porque o porte nunca serializa pra texto
-    entre a extração e a inferência (ver "Como os tipos viajam" no docstring
-    do módulo).
+    Porte de ``MongoDB2USchema.processEntity`` (``MongoDB2USchema.java:60-86``),
+    substituindo o ``mapToPair``/``reduceByKey`` do Spark por um agrupamento
+    manual com chave canônica.
+
+    A chave de agrupamento é ``json.dumps(esqueleto, sort_keys=True, separators=(",", ":"))``
+    — **não** o par inteiro, e **não** o documento original. ``sort_keys=True``
+    ordena as chaves de objeto (reproduzindo a igualdade estrutural e
+    independente de ordem do ``Document``/``LinkedHashMap`` do Java), mas
+    preserva a ordem de listas aninhadas (reproduzindo a igualdade
+    dependente-de-ordem do ``ArrayList``). Ver a docstring do módulo,
+    "Como o agrupamento por assinatura funciona".
+
+    O campo de tipo (``TYPE_FIELD``) é injetado **depois** do agrupamento,
+    igual ao Java (``MongoDB2USchema.java:82``).
 
     Parameters
     ----------
-    documents : iterable of Mapping of str to Any
-        Documentos crus de uma coleção — tipicamente o cursor de
-        ``pymongo_collection.find()``, mas qualquer iterável serve (é assim
-        que os testes exercitam esta função sem banco).
+    documents : Iterable of Mapping[str, Any]
+        Os documentos da coleção (tipicamente um cursor do ``pymongo``, por
+        isso ``Iterable`` e não ``list`` — não exige materializar tudo antes).
     collection_name : str
-        Nome cru da coleção — vira o valor de ``_type``, **sem capitalizar**
-        (quem capitaliza é ``infer``, Fase 1.2).
+        Nome da coleção; vira o valor do campo ``_type`` de cada esqueleto.
 
     Returns
     -------
     list of dict of str to Any
-        Uma linha por esqueleto distinto, no formato
+        Uma linha por esqueleto distinto encontrado na coleção, no formato
         ``{"schema", "count", "firstTimestamp", "lastTimestamp"}`` — pronta
-        para ``extractors.triple.triples_from_rows``.
+        para ``extractors.triple.triples_from_rows``. Equivalente ao ``dict``
+        que ``Helpers.documentPairToJSONNode`` monta (``Helpers.java:101-115``),
+        só que sem o passo de texto JSON (``ObjectMapper``) do Java.
     """
-    grouped: dict[str, tuple[dict[str, Any], tuple[int, int, int]]] = {}
-
-    for document in documents:
-        schema, meta = generate_document_pair(document)
-        key = _canonical_schema_key(schema)
-        if key in grouped:
-            existing_schema, existing_meta = grouped[key]
-            grouped[key] = (existing_schema, reduce_pairs(existing_meta, meta))
+    # Chave: esqueleto canônico (str). Valor: par (esqueleto, dados) acumulado.
+    new_dict: dict[str, tuple[dict[str, Any], tuple[int, int, int]]] = {}
+    for doc in documents:
+        new = generate_document_pair(doc)
+        # Só o esqueleto (new[0]) entra na chave — os dados (new[1]) mudam a
+        # cada documento e não podem influenciar o agrupamento.
+        dump = json.dumps(new[0], sort_keys=True, separators=(",", ":"))
+        if dump in new_dict:
+            triple = reduce_pairs(new[1], new_dict[dump][1])
+            new_dict[dump] = (new[0], triple)
         else:
-            grouped[key] = (schema, meta)
+            new_dict[dump] = new
 
-    rows: list[dict[str, Any]] = []
-    for schema, (first_timestamp, last_timestamp, count) in grouped.values():
-        schema[TYPE_FIELD] = collection_name
-        rows.append(
-            {
-                "schema": schema,
-                "count": count,
-                "firstTimestamp": first_timestamp,
-                "lastTimestamp": last_timestamp,
-            }
-        )
-
-    return rows
+    new_list = []
+    for value in new_dict.values():
+        value[0][TYPE_FIELD] = collection_name
+        # Atenção: a ordem dos campos aqui (schema, count, firstTimestamp,
+        # lastTimestamp) não é a mesma ordem da tripla de dados acumulada em
+        # value[1] (firstTimestamp, lastTimestamp, count) — por isso o
+        # acesso a cada campo é feito por índice explícito, não por posição.
+        triple_value = {
+            "schema": value[0],
+            "count": value[1][2],
+            "firstTimestamp": value[1][0],
+            "lastTimestamp": value[1][1],
+        }
+        new_list.append(triple_value)
+    return new_list
 
 
 def extract_database_triples(
     database: Database[Mapping[str, Any]], collections: Iterable[str]
 ) -> list[dict[str, Any]]:
-    """Ler cada coleção via ``pymongo`` e montar as triplas de todas juntas.
+    """Extrair as triplas de várias coleções de um mesmo banco.
 
-    Porte de ``MongoDB2USchema.process``/``processEntity``
-    (``Helpers.java`` não; ``MongoDB2USchema.java:48-58`` e ``:60-86``), com
-    duas simplificações deliberadas que não mudam o resultado:
-
-    - o Java abre um ``JavaSparkContext`` **novo por coleção** (``:63-71``,
-      ``jsc.close()`` em ``:84``) só porque cada ``MongoSpark.load(jsc)``
-      precisa da coleção-alvo na ``SparkConf``; aqui uma única conexão
-      ``pymongo`` já resolvida (o parâmetro ``database``) serve pra todas —
-      reabrir por coleção não teria efeito observável;
-    - o Java empacota tudo num ``ArrayNode`` do Jackson antes de entregar pra
-      inferência; aqui é só uma ``list[dict]`` — mesmo formato de linha que
-      :func:`build_triples` já produz, sem a camada de texto/``ObjectMapper``
-      (ver "Como os tipos viajam" no docstring do módulo).
+    Porte da parte de ``MongoDB2USchema.process`` (``MongoDB2USchema.java:48-58``)
+    que percorre a lista de coleções — sem a parte de inferência/construção do
+    modelo (``si.infer``, ``builder.build``, escrita do ``.xmi``), que não é
+    responsabilidade da camada de extração. O Java abre um
+    ``JavaSparkContext`` novo a cada coleção do laço (``:63-71``) e fecha
+    (``:84``) antes de seguir pra próxima; aqui isso não existe — o `find()`
+    do PyMongo já é suficiente, sem Spark.
 
     Parameters
     ----------
     database : pymongo.database.Database
-        Banco já resolvido a partir de um ``MongoClient`` conectado
-        (``client[database_name]``) — quem abre/fecha o cliente é o
-        chamador (ou :func:`extract_triples`, que faz as duas coisas).
-    collections : iterable of str
-        Nomes crus das coleções a ler, na ordem em que
-        ``MongoDB2USchemaMain`` as concatena (``:57``, propriedade
-        ``mongodb.collections`` separada por vírgula).
+        Conexão já aberta com o banco.
+    collections : Iterable of str
+        Nomes das coleções a extrair, na mesma ordem em que
+        ``MongoDB2USchemaMain.java:57`` monta a lista — o ``.split(",")`` da
+        propriedade ``mongodb.collections``.
 
     Returns
     -------
     list of dict of str to Any
-        As linhas de **todas** as coleções concatenadas, uma por esqueleto
-        distinto por coleção — pronto para
-        ``extractors.triple.triples_from_rows``.
+        As triplas de todas as coleções, combinadas numa lista só (uma
+        coleção não influencia o agrupamento de outra — ``build_triples`` é
+        chamada uma vez por coleção). Cada item tem as chaves ``"schema"``,
+        ``"count"``, ``"firstTimestamp"`` e ``"lastTimestamp"``.
     """
-    rows: list[dict[str, Any]] = []
-    for collection_name in collections:
-        cursor = database[collection_name].find()
-        rows.extend(build_triples(cursor, collection_name))
-
-    return rows
+    new_list = []
+    for name in collections:
+        new_list.extend(build_triples(database[name].find(), name))
+    return new_list
 
 
 def extract_triples(
     database_uri: str, database_name: str, collections: Iterable[str]
 ) -> list[dict[str, Any]]:
-    """Conectar via ``pymongo`` e montar as triplas — ponta a ponta.
+    """Abrir a conexão com o MongoDB e extrair as triplas do banco indicado.
 
-    Porte de ``MongoDB2USchemaMain.run`` (``:45-59``) + ``MongoDB2USchema.process``
-    (``:48-58``), sem a etapa final de gravar o XMI (``:57`` — isso é
-    responsabilidade de ``inference.build_uschema.BuildUSchema``, não do
-    extrator). Driver nativo, não o conector Spark — ver "Por que driver
-    nativo, não conector Spark" no docstring do módulo e
-    ``fase2_decisao_leitura_mongo_neo4j.md``.
+    Porte de ``MongoDB2USchemaMain.run`` (``MongoDB2USchemaMain.java:45-59``,
+    a parte de conexão) — URI, nome do banco e coleções entram como
+    parâmetros em vez de virem de um arquivo de propriedades (``config.properties``),
+    já que este porte não usa o framework de injeção de dependência (Guice)
+    do original.
 
-    Abre e fecha o ``MongoClient`` só para esta chamada (``with``); para ler
-    várias vezes com a mesma conexão, use :func:`extract_database_triples`
-    diretamente com um cliente já aberto.
+    O ``with`` garante que a conexão feche mesmo se a extração falhar no meio.
 
     Parameters
     ----------
     database_uri : str
-        URI de conexão (``Constants.CONFIG_MONGODB_CONNECTION_KEY``,
-        ``mongodb.connection`` no ``config.properties`` original).
+        URI de conexão do MongoDB.
     database_name : str
-        Nome do banco (``mongodb.database``).
-    collections : iterable of str
-        Nomes das coleções a ler (``mongodb.collections``, separadas por
-        vírgula no original).
+        Nome do banco de dados.
+    collections : Iterable of str
+        Nomes das coleções a extrair.
 
     Returns
     -------
     list of dict of str to Any
-        Ver :func:`extract_database_triples`.
+        As triplas de todas as coleções indicadas, cada uma com as chaves
+        ``"schema"``, ``"count"``, ``"firstTimestamp"`` e ``"lastTimestamp"``.
     """
     with MongoClient[Mapping[str, Any]](database_uri) as client:
         return extract_database_triples(client[database_name], collections)
