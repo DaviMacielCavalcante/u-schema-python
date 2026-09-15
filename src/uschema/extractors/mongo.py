@@ -237,7 +237,7 @@ def _simplify_value(simple_doc: Any) -> Any:
     elif isinstance(simple_doc, Mapping):
         # Documento aninhado: chave mantida como está, só o valor é
         # simplificado recursivamente — igual a
-        # `simplified.put(key, simplify(doc.get(key)))` (Helpers.java:52).
+        # `simplified.put(key, simplify(doc.get(key)))` (Helpers.java:23-24).
         new_dict: dict[str, Any] = {}
         for keys, values in simple_doc.items():
             new_dict[keys] = _simplify_value(values)

@@ -334,8 +334,11 @@ def get_type_name(sentinel: Any) -> str:
     str
         Nome do tipo (``"string"``, ``"integer"``, ``"double"``, ``"boolean"``)
         ou, pra lista não-vazia, o nome do tipo do primeiro elemento com
-        sufixo ``"[]"``. O ``else`` final devolve ``_ANY_MARKER`` no ``else``
-        do Java (``TypeUtils.java:89``) — inalcançável a partir de
+        sufixo ``"[]"``. Pra lista vazia, esta função repassa a lista pra
+        :func:`_simple_type_name`, que cai no seu próprio fallback e devolve
+        ``_ANY_MARKER`` — equivalente ao ``else`` final de ``geetSimpleType``
+        (``TypeUtils.java:89``); ``getTypeName`` em si não tem fallback
+        próprio, só delega (``:71``). Inalcançável a partir de
         :func:`obtain_type` (que nunca devolve lista vazia), mantido por
         fidelidade ao ramo Java.
     """
@@ -379,7 +382,7 @@ def _relationship_archetype(
     """Montar o arquétipo de um relacionamento de saída.
 
     Porte de ``IdArchetypeMapping.addRelationships``
-    (``IdArchetypeMapping.java:96-109``). Ao contrário de
+    (``IdArchetypeMapping.java:94-111``). Ao contrário de
     :func:`node_archetype`, **não** ordena ``target_labels`` — ver o
     cabeçalho do módulo, "Uma assimetria do oráculo a preservar" (é uma
     decisão de fidelidade ao bug ``N1`` do oráculo, não um descuido).
@@ -458,7 +461,7 @@ def node_archetype(
         ``None``).
     target_labels : list of str or None
         Labels do nó-alvo do relacionamento, ou ``None`` junto com
-        ``relationship=None`` (mesma linha do Java, ``:42`` — os dois nulos
+        ``relationship=None`` (mesmo teste do Java, ``:43`` — os dois nulos
         juntos, nunca só um).
 
     Returns
@@ -643,10 +646,10 @@ def _read_label_combination(
 
     Cada linha traz um nó e, opcionalmente, uma aresta de saída. Porte de
     ``generateLabels``/``generateQuery``/``executeQuery``
-    (``SparkProcess.java:83-90``/``:107-114``/``:92-100``):
-    ``MATCH (n:Labels) WHERE size(labels(n))=N WITH n OPTIONAL MATCH
-    (n)-[r]->(m) RETURN n, r, labels(m)`` (``SparkProcess.java:107-114``) —
-    ver o cabeçalho do módulo, "Mecanismo do oráculo". O ``OPTIONAL MATCH``
+    (``SparkProcess.java:83-90``/``:107-114``/``:92-100``), a segunda das
+    quais monta o texto ``MATCH (n:Labels) WHERE size(labels(n))=N WITH n
+    OPTIONAL MATCH (n)-[r]->(m) RETURN n, r, labels(m)`` — ver o cabeçalho do
+    módulo, "Mecanismo do oráculo". O ``OPTIONAL MATCH``
     garante uma linha (com ``r``/``m`` nulos) mesmo pra nó sem saída;
     ``sampling_rate`` entra como ``rand() < taxa`` no ``WHERE``, só quando
     diferente de ``1.0``.
