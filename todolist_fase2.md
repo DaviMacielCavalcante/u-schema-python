@@ -74,11 +74,11 @@ extractors/triple.py ─────┼─→ 2.0 (infra de leitura: pymongo/neo
 
 - [x] Cliente `pymongo.MongoClient` de teste — rodado contra MongoDB Atlas real (`scripts/check_extraction_mongo.py`), fumaça, caso `Int64` e Northwind (17 coleções, mesmo resultado da 2.3) confirmados corretos.
 - [x] Cliente `neo4j.GraphDatabase.driver` de teste — exercitado contra Neo4j Aura Free (`scripts/check_extraction_neo4j.py`).
-- [x] **Decidido: pura-Python agora, Spark opcional depois, sem retrabalho.** `reduce_pairs`/`build_triples` combina por `(min, max, soma)` — comutativo e associativo, então particionar não muda o resultado (provado empiricamente). `mapPartitions` cabe depois sem reescrever nada.
+- [x] **Decidido: Python agora, Spark opcional depois, sem retrabalho.** `reduce_pairs`/`build_triples` combina por `(min, max, soma)` — comutativo e associativo, então particionar não muda o resultado (provado empiricamente). `mapPartitions` cabe depois sem reescrever nada.
 - [ ] Se Spark **entrar** como paralelizador, marcar os testes com `@pytest.mark.spark` (pre-push/CI, não pre-commit).
 - [x] Conferir que `pymongo`/`neo4j` já resolvidos no `uv.lock` — estão (`4.17.0`/`6.2.0`).
 
-**Saída:** clientes de teste reproduzíveis para Mongo e Neo4j via driver nativo. Papel do Spark: pura-Python fechado para a 2.1/2.2; paralelização é extensão futura opcional.
+**Saída:** clientes de teste reproduzíveis para Mongo e Neo4j via driver nativo. Papel do Spark: Python fechado para a 2.1/2.2; paralelização é extensão futura opcional.
 
 ---
 
@@ -93,7 +93,7 @@ extractors/triple.py ─────┼─→ 2.0 (infra de leitura: pymongo/neo
 - [x] `_type` = nome cru da coleção, anexado depois da agregação — `build_triples` em `mongo.py`.
 - [x] **Bug #6 por construção**: `_id` lido genericamente (timestamp só se `ObjectId`) — pré-requisito do Northwind, cujo `_id` é inteiro.
 - [x] **Bug #7 por construção**: array vazio não indexa elemento inexistente — confirmado contra dado real do Northwind (`orders.details: []`).
-- [x] Conectar via `pymongo.MongoClient` — `extract_database_triples`/`extract_triples` em `mongo.py`, pura-Python.
+- [x] Conectar via `pymongo.MongoClient` — `extract_database_triples`/`extract_triples` em `mongo.py`, em Python.
 - [x] Testes de `extract_database_triples` (puros, sem banco) + validação manual com `mongomock`.
 - [x] Testes das funções de assinatura contra as fixtures-oráculo — reforçado pela 2.3 (Northwind real). `extract_triples` (abre `MongoClient` real) segue sem execução real até o script da 2.0 rodar.
 
@@ -120,7 +120,7 @@ Duas *cypher*: `MATCH (n) RETURN DISTINCT labels(n)` lista combinações de labe
 **Tarefas:**
 - [x] Portar a camada de extração como funções puras — `node_archetype`/`reduce_archetypes_by_node`/`build_archetype_counts`/`extract_archetype_counts` em `extractors/neo4j.py`, 37 testes.
 - [x] Portar `TypeUtils.obtainType`/`get_type_name`, incluindo os dois achados verificados contra o `org.json` real (sentinela de `Long` sempre vira `"integer"`; lista heterogênea/vazia sempre vira `"string[]"`).
-- [x] Conectar via `neo4j.GraphDatabase.driver(...).execute_query(...)` — pura-Python, testado com driver falso.
+- [x] Conectar via `neo4j.GraphDatabase.driver(...).execute_query(...)` — em Python, testado com driver falso.
 - [x] **Achado catalogado:** assimetria "labels próprios ordenados vs. `refsTo` não ordenado" gera dois `EntityType` pro mesmo nó multi-label. **Confirmado com dado real** (Neo4j Aura) — `N1` em `bugs_originais.md`.
 - [x] Portar `USchemaBuilder`+`StructuralVariationBuilder` — `extractors/neo4j_model.py`, núcleo próprio, sem tocar a Fase 1. `addReferenceToCount`/`getReferenceCount` não portados (código morto).
 - [x] Portar `AttributeOptionalsChecker`/`IgnoreSimilarReferenceBoundsProcessor` como pós-processamento. Achado: as duas classes que "stringificam tipo" no oráculo **não são a mesma função** — uma não reconhece `PList`; portado fielmente como duas funções separadas.

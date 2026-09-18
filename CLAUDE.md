@@ -44,11 +44,13 @@ Northwind em `datasets/`), `oracle/` (Dockerfile + `patches/`), `scripts/`
 tabelas), `results/` (os CSVs medidos, fora do git), `out/` (XMIs gerados, fora
 do git), `tests/` (`unit/`, `regression/`, `datasets/`).
 
-**Estado real do pacote** (mantenha esta lista honesta ao avançar): **Fases 0, 1
-e 2 fechadas** — todos os subpacotes acima estão implementados e cobertos por
-teste; **não** há stubs com `NotImplementedError`. Na **Fase 3**, os blocos
-3.0–3.3 fecharam (infra, equivalência, tamanho, bugs) e resta a **3.4** (análise e
-redação): ver `todolist_fase3.md` e `scripts/README.md`.
+**Estado real do pacote** (mantenha esta lista honesta ao avançar): **Fases 0 a 3
+fechadas** — todos os subpacotes acima estão implementados e cobertos por
+teste; **não** há stubs com `NotImplementedError`. A **3.4** (análise e redação)
+concluiu em 17/09/2026, com a prévia do TC qualificada: ver `todolist_fase3.md` e
+`scripts/README.md`. Em aberto está a **Fase 4** — backend Spark opcional para os
+extratores, para separar o que na diferença de crescimento contra o oráculo é
+arquitetura e o que é algoritmo (`fase4_spark.md`, `todolist_fase4.md`).
 
 Uma ausência real, para não ser confundida com lacuna de porte:
 
@@ -160,7 +162,7 @@ uv run pre-commit install --hook-type pre-commit --hook-type pre-push
 **Markers do pytest** (registrados no `pyproject.toml`, `--strict-markers`
 ativo): marque cada teste como `unit`, `spark` ou `integration`. Só os `unit`
 (rápidos, puros) rodam no pre-commit; `spark`/`integration` ficam para pre-push
-e CI. Hoje **toda a suíte é `unit`** — os extratores da Fase 2 são pura-Python
+e CI. Hoje **toda a suíte é `unit`** — os extratores da Fase 2 são Python
 (driver nativo), então nenhum teste é `spark`. Se o Spark entrar como
 paralelizador, os testes dele levam `@pytest.mark.spark`.
 

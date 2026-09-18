@@ -26,6 +26,9 @@ Duas bordas, confirmadas com o orientador:
                             {schema, count}   (núcleo 1.2)  ├─→ PyEcore ─→ XMI
 [Neo4j]  ─ driver nativo ─ arquétipos ──→ neo4j_model ──────┘
                                           (núcleo próprio)
+
+   o map-reduce da extração roda em Python (padrão) ou em Spark (Fase 4, opcional);
+   a leitura é sempre por driver nativo — Spark nunca é camada de tipagem
 ```
 
 **Dois núcleos de construção, não um.** O plano original desta seção era um núcleo
@@ -88,10 +91,39 @@ portado.
 - Portar a função de assinatura (`Helpers`/`IdArchetypeMapping`) como funções Python puras — `extractors/mongo.py`, `extractors/neo4j.py` (+ núcleo de construção próprio do Neo4j, `extractors/neo4j_model.py`).
 - **Gate atingido:** contagens == Java; XMI ≡ oráculo nos dois paradigmas (Northwind e os 4 XMIs Neo4j), extração Neo4j também confirmada contra banco real.
 
-### Fase 3 — Ponta a ponta + volume
+### Fase 3 — Ponta a ponta + volume · concluída
 - Equivalência: Northwind (Sakila descartado em 02/08/2026).
 - Volume: User Profiles (quatro tamanhos), reproduzindo a tendência da Tabela 4 do artigo.
 - Bugs **#6/#7 corrigidos por construção** (tratar `_id` inteiro e array vazio desde o início, em vez de patch) — material direto para o capítulo de reprodutibilidade.
+
+### Fase 4 — Spark como paralelizador da extração
+> Guia detalhado: `fase4_spark.md`. Fecha o que a **2.0** deixou em aberto
+> ("Spark, se entrar, é só paralelizador futuro") e responde a uma pergunta que
+> a **3.2** levantou sem separar.
+
+A 3.2 mediu que **a razão porte/oráculo cresce com o tamanho** (grafo: 26,3× de
+crescimento no porte contra 5,25× do oráculo para 8× de dado), o que já
+descarta constante de linguagem como explicação. Restaram duas causas
+candidatas, e a Fase 3 não as separou: **algorítmica** (o número de esquemas
+distintos cresce 13 → 421 no documento) e **arquitetural** (o oráculo distribui
+o map-reduce em executores; o porte roda single-thread). A Fase 4 separa as
+duas rodando o **mesmo** código de assinatura sob um paralelizador.
+
+- **Backend Spark opcional** (`mapPartitions` + `reduceByKey`), com o Python como
+  padrão. Começa pelo **MongoDB**; o **Neo4j fica condicional** ao Mongo mostrar
+  ganho — sem ele, o grafo não se justifica (leitura client-bound e nove
+  arquétipos em todos os tamanhos). A `reduce_pairs` já é comutativa e
+  associativa — provado na 2.0 —, então a redução entra sem reescrever a lógica.
+- **A leitura continua por driver nativo.** O Spark paraleliza o map-reduce,
+  nunca a tipagem: passar pelo DataFrame destruiria `ObjectId`/`Int64` e mudaria
+  a assinatura. A partição é por coleção / combinação de labels, subparticionada
+  por faixa de `_id` (sem isso, o User Profiles dá duas partições úteis).
+- **Determinismo sob partição é o ponto delicado:** o `count` é invariante à
+  ordem, mas o **#8 não é** — mudar de backend move a subcontagem de lugar sem
+  quebrar a equivalência, como já acontece entre ler o Northwind por arquivo e
+  por cursor.
+- **Nenhum ganho também fecha o gate**: joga a diferença de curva inteira para o
+  lado algorítmico, e é a resposta mais forte das duas.
 
 ---
 
@@ -111,6 +143,7 @@ O risco é **tempo**, não impossibilidade. Com a metacamada fora do caminho cr�
 | 0 | PyEcore + round-trip + harness de equivalência + oráculo Java em Docker | round-trip do Northwind fecha | concluída |
 | 1 | núcleo `doc2uschema` em Python (inferência completa) | cada módulo ≡ XMI-oráculo (estrutural) | concluída |
 | 2 | extratores MongoDB + Neo4j (driver nativo, não PySpark) | contagens == Java; XMI ≡ oráculo | concluída |
-| 3 | ponta a ponta, equivalência + volume, bugs corrigidos | Northwind ok; tendência Tabela 4 reproduzida | pendente |
+| 3 | ponta a ponta, equivalência + volume, bugs corrigidos | Northwind ok; tendência Tabela 4 reproduzida | concluída |
+| 4 | backend Spark opcional (Mongo; Neo4j condicional) + bateria comparativa | triplas idênticas entre backends; `equivalent=True`; curva medida nos dois (inclusive "sem ganho") | em aberto |
 
-**Sequência:** 0 → 1 → 2 → 3. Metacamada: trabalho futuro. Sirius/UI: fora de escopo (reconstruível em outra stack se desejado).
+**Sequência:** 0 → 1 → 2 → 3 → 4. Metacamada: trabalho futuro. Sirius/UI: fora de escopo (reconstruível em outra stack se desejado).
