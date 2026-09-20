@@ -57,22 +57,44 @@ Fase 3 (linha de base) ─→ 4.0 (fatias + infra Spark) ─→ 4.1 (Mongo) ─�
 
 ## 4.0 — Fatias e infraestrutura Spark
 
-- [ ] `SparkSession` local mínima (`local[*]`), criada e fechada pelo backend, sem
-      configuração global escondida.
-- [ ] **Desenhar a fatia do Mongo**: faixas de `_id` sobre a coleção, cobrindo
-      `ObjectId` (Rota A) **e** inteiro (Rota B) — as duas existem no User Profiles
-      e a #6 é justamente isso.
-- [ ] Resolver o **desbalanceamento**: o User Profiles tem duas coleções, e uma
-      domina. Particionar por coleção dá duas fatias úteis — a subdivisão por
-      faixa é o que faz a fase medir paralelismo, e não duas tarefas tortas.
-- [ ] Decidir e registrar o **número de fatias** (função do número de núcleos, não
-      número mágico) e onde ele entra nos CSVs.
+- [x] `SparkSession` local mínima (`local[*]`), criada e fechada pelo backend, sem
+      configuração global escondida — `extractors/spark.py::local_session`,
+      *context manager* que fecha no `finally`.
+- [x] **Desenhar a fatia do Mongo**: faixas de `_id` sobre a coleção, cobrindo
+      `ObjectId` (Rota A) **e** inteiro (Rota B) — `extractors/partition.py`.
+      `skip`/`limit` foi **descartado**: o `skip` percorre e descarta, então a
+      soma das fatias varre ~2,8M de posições para ler 800 mil documentos, e o
+      custo cresce com o número de fatias. O filtro `{"_id": {"$gte", "$lt"}}` é
+      servido pelo índice.
+- [x] Resolver o **desbalanceamento**: a subdivisão é por faixa de `_id`, não por
+      coleção — os cortes saem de uma leitura ordenada só dos `_id` (*covered
+      query*), a cada `total // fatias` posições. Fatias iguais por construção;
+      a sobra da divisão fica na última.
+- [x] Decidir e registrar o **número de fatias**: uma por **núcleo lógico**
+      (`spark.py::default_slices`, `os.cpu_count() or 1`). Como as fatias já são
+      equilibradas, não há motivo para super-particionar — só somaria custo fixo
+      por tarefa. Falta a coluna nos CSVs (fica na 4.4).
 - [ ] Garantir que **o BSON não cruza a rede**: o `simplify` roda dentro do
       executor e o que volta é o dict de sentinelas (`str`/`int`/`float`/`bool`/
       `dict`/`list`). Se `ObjectId`/`Int64` aparecer na fronteira, o desenho vazou
-      e a tipagem virou risco.
+      e a tipagem virou risco. **Só verificável na 4.1**, quando o `mapPartitions`
+      existir.
 
-**Saída:** esquema de partição escrito e testado, com o caso da coleção dominante resolvido.
+**Premissa registrada (decisão do Davi, 20/09/2026):** o banco está **parado**
+durante a extração — nada é inserido ou removido entre o cálculo dos cortes e a
+leitura das fatias. É o cenário da ferramenta (inferir o esquema de uma base
+para migrá-la) e o mesmo da bateria da Fase 3. Sem isso, faixas e contagem
+poderiam divergir.
+
+**Requisito de ambiente descoberto aqui:** o PySpark 4.1 exige **Java 17 ou 21**;
+nesta máquina o `java` padrão é o **8** e `JAVA_HOME` vem vazio, então a sessão
+não sobe. `local_session` converte a falha numa mensagem que diz isso, em vez do
+`UnsupportedClassVersionError` cru. Para o pre-push passar, `JAVA_HOME` tem de
+estar exportado no ambiente (há JDK 17 e 21 instalados em `/usr/lib/jvm/`); no CI,
+é o `setup-java`.
+
+**Saída:** esquema de partição escrito e testado (33 testes), sessão Spark subindo
+e fechando (6 testes `spark`, os primeiros do repositório).
 
 ---
 

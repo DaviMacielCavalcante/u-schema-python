@@ -43,6 +43,7 @@ they are catalogued, with line-level evidence, in `bugs_originais.md`.
 | MongoDB | 8.0.31 | version used in the canonical run; `localhost:27017`, no authentication |
 | Neo4j | 2026.07.1 Community | version used in the canonical run; `bolt://localhost:7687`, no authentication |
 | Docker | any recent engine | **only** needed to build and run the Java oracle; the base image is digest-pinned in `oracle/Dockerfile` |
+| JDK | **17 or 21** | needed by the `spark`-marked tests (Phase 4); `JAVA_HOME` must point at it — see below |
 
 <!-- TODO: the minimum supported MongoDB and Neo4j versions have never been
      determined. The versions above are the ones the canonical battery was
@@ -71,6 +72,28 @@ uv run pytest
 uv run ruff check .
 uv run mypy .
 ```
+
+### `JAVA_HOME` for the Spark-backed tests
+
+`uv run pytest` runs the whole suite, which since Phase 4 includes tests marked
+`spark`. Those boot a real JVM, and **PySpark 4.x requires Java 17 or 21** — it
+does not run on Java 8, and newer JDKs are not supported yet. If your default
+`java` is an older one (check with `java -version`), point `JAVA_HOME` at a
+compatible JDK before running them:
+
+```bash
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64   # adjust to your install
+```
+
+Without it the `spark` tests fail with a message naming this requirement. To run
+everything else in the meantime:
+
+```bash
+uv run pytest -m "not spark"
+```
+
+The pre-commit hook already excludes them; the pre-push hook and CI do not, so
+the variable has to be set in the environment those run in.
 
 Quality gates are enforced by pre-commit hooks and by CI. Install the hooks once:
 
