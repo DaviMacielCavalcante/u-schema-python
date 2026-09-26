@@ -74,11 +74,15 @@ Fase 3 (linha de base) ─→ 4.0 (fatias + infra Spark) ─→ 4.1 (Mongo) ─�
       (`spark.py::default_slices`, `os.cpu_count() or 1`). Como as fatias já são
       equilibradas, não há motivo para super-particionar — só somaria custo fixo
       por tarefa. Falta a coluna nos CSVs (fica na 4.4).
-- [ ] Garantir que **o BSON não cruza a rede**: o `simplify` roda dentro do
+- [x] Garantir que **o BSON não cruza a rede**: o `simplify` roda dentro do
       executor e o que volta é o dict de sentinelas (`str`/`int`/`float`/`bool`/
       `dict`/`list`). Se `ObjectId`/`Int64` aparecer na fronteira, o desenho vazou
       e a tipagem virou risco. **Só verificável na 4.1**, quando o `mapPartitions`
-      existir.
+      existir. *Garantido por construção desde a 4.1:* o `_read_partition` só
+      emite `str` (a chave canônica) e `int` (os dados); o dict nem viaja.
+      **Confirmado em execução em 25/09/2026:** nos quatro bancos da comparação
+      avulsa (Northwind, `testdb`, `up_a_small`, `up_b_small`), o único formato
+      que sai do executor é `((str, str), (int, int, int))`.
 
 **Premissa registrada (decisão do Davi, 20/09/2026):** o banco está **parado**
 durante a extração — nada é inserido ou removido entre o cálculo dos cortes e a
@@ -100,15 +104,91 @@ e fechando (6 testes `spark`, os primeiros do repositório).
 
 ## 4.1 — Backend Spark do extrator MongoDB
 
-- [ ] Parâmetro de backend em `extract_database_triples` (`python` é o padrão);
-      nenhum chamador existente muda.
-- [ ] `mapPartitions` sobre as fatias da 4.0; cada partição abre o próprio
-      `MongoClient`, lê, e devolve pares já simplificados.
-- [ ] `reduceByKey` com o `reduce_pairs` **como está** — `(min, max, soma)` é
-      comutativa e associativa, provado na 2.0.
-- [ ] `build_triples` no driver, sobre o resultado coletado.
-- [ ] Testes `@pytest.mark.spark` contra as mesmas fixtures-oráculo da 2.1.
-- [ ] **Medir o ganho** nos quatro tamanhos e decidir a 4.2 com esse número.
+> **Estado em 26/09/2026: Gate 4.1 fechado.** O backend (`extractors/mongo.py`)
+> dá triplas idênticas às do Python, como conjunto, nos 5 testes do gate na suíte
+> e, fora dela, nos 9 bancos da comparação avulsa (Northwind + os 8 `up_*`, 3
+> corridas cada). Suíte completa: 665 testes verdes.
+
+- [x] Backend escolhido em `extract_triples` pela `SparkSession` que ela recebe
+      (`*, spark=None, slices=None`); `spark=None` é o caminho Python de hoje, e
+      nenhum chamador existente muda. **Não** em `extract_database_triples`: ela
+      recebe uma conexão já aberta, que não vai para o executor — cada partição
+      precisa da URI para abrir a sua. A sessão vem pronta de fora para a 4.4
+      medir o boot separado do trabalho. `slices` conta **por coleção**, a mesma
+      unidade do `id_boundaries`.
+- [x] `mapPartitions` sobre as fatias da 4.0; cada partição abre o próprio
+      `MongoClient`, lê, e devolve pares já simplificados —
+      `_read_partition`. As fatias `(coleção, inferior, superior)` de todas as
+      coleções vão num RDD só, uma por partição (`parallelize(fatias,
+      len(fatias))`). Lista de coleções vazia devolve `[]` antes do Spark: o
+      `parallelize` com zero partições divide por zero.
+- [x] `reduceByKey` com o `reduce_pairs` **como está** — `(min, max, soma)` é
+      comutativa e associativa, provado na 2.0. Cabe sem *wrapper* porque a
+      chave é `(coleção, _group_key(schema))` e o valor é só a tripla de dados.
+      **A coleção entra na chave** porque o RDD é compartilhado: sem ela, duas
+      coleções com o mesmo schema virariam uma tripla só.
+- [x] No driver, sobre o resultado coletado, só o **final** do `build_triples`:
+      anexar o `_type` e montar as linhas. O `build_triples` inteiro não serve
+      ali — ele recebe documentos crus e faz o map e o reduce; depois do
+      `reduceByKey`, o que chega são pares já agrupados. Esse final virou
+      `_triple_row`, e a chave canônica virou `_group_key` — os dois
+      compartilhados pelos backends, para que não divirjam em formato. O schema
+      volta por `json.loads` da chave, com as chaves ordenadas em vez da ordem do
+      documento; não muda nada a jusante, porque a inferência ordena os campos
+      (`TreeSet`, `SchemaInference.java:190-194`).
+- [x] Testes `@pytest.mark.spark` contra as mesmas fixtures-oráculo da 2.1 —
+      5 testes, verdes em 26/09/2026. **Checados por mutação:** tirar a coleção
+      da chave derruba 4 dos 5 (inclusive o que existe para isso); trocar o
+      `reduce_pairs` por um *reduce* que descarta derruba 3. Cada teste também
+      afirma que o resultado não é vazio — dois `[]` seriam "iguais" e o gate
+      passaria em falso.
+      **Comparar como conjunto**, não como lista: a ordem do `collect()` sai do
+      hash do `reduceByKey`, não da primeira aparição — igualar a ordem é a 4.3.
+      Exigem `mongod` no ar (ver o requisito de ambiente abaixo). Desenho, em
+      `tests/unit/test_extractors_mongo_spark.py`:
+      - **Banco de verdade, não coleção falsa.** Os workers do Spark são processos
+        separados; um *fake* injetado no processo do teste não chega a eles.
+      - **Banco temporário por teste**, com nome aleatório, apagado no fim. O
+        teste não depende dos `up_*` que as baterias geram.
+      - Marcados `spark` **e** `integration`, e **pulados** (com o motivo) se o
+        `mongod` não responder — o CI de hoje não tem `mongod` (ver Infra).
+      - Casos: o Northwind real (`_id` inteiro, coleções menores que as fatias);
+        `ObjectId` espalhado por várias fatias (timestamps combinados entre
+        partições); duas coleções com o mesmo schema (a coleção na chave); os
+        tipos BSON (`Int64`, `bool`, `None`, aninhado, lista, lista vazia, ordem
+        de chave); coleção vazia e lista de coleções vazia.
+- [x] **Medir o ganho** nos quatro tamanhos e decidir a 4.2 com esse número.
+      Medição **avulsa** de 25/09/2026 (mediana de 3, boot fora), não a bateria
+      da 4.4. O ganho cresce com o tamanho: empate no `small`, **4,5×** no
+      `larger`, nas duas rotas (Rota A 33,8s → 7,4s; Rota B 14,9s → 3,3s). Contra
+      os jobs do oráculo no log canônico (sem boot), o porte Spark empata na Rota
+      B (3,3s × 3,3s) e fica 2× acima na A. **Pela decisão 2, a 4.2 fica
+      liberada.** Dados, scripts e gráfico em `~/Documents/uschema_fase4_medicoes/`
+      (fora do repo; o `README.md` de lá traz as ressalvas).
+
+**Requisito de ambiente descoberto aqui (25/09/2026):** o `mongod` continua não
+subindo no kernel padrão, mas por outro motivo. O `7.0.0-34-generic` já é upstream
+**7.0.14** (`/proc/version_signature`), a versão que corrige a incompatibilidade de
+`rseq`, e o `mongod` **8.0.32** já libera 7.0.14+ (`SERVER-125742`) — só que lê a
+versão do `uname`, onde o Ubuntu mostra `7.0.0`, e recusa. A correção para o
+Ubuntu é o `SERVER-131779`, na **8.0.35**, ainda não lançada. Até lá:
+
+- **Teste de igualdade (gate 4.1):** serve o `mongod` sem o
+  `GLIBC_TUNABLES=glibc.pthread.rseq=0` do unit do pacote — testado, sobe neste
+  kernel. O tcmalloc cai para cache por thread, mais lento, o que não afeta uma
+  comparação de conjuntos.
+- **Medição de tempo (4.1 e 4.4):** **não** nesse modo. A linha de base da Fase 3
+  foi medida no `6.17.0-40` com o cache por CPU; medir o porte em outro regime do
+  `mongod` mistura o efeito do backend com o do alocador. Bootar o 6.17 ou
+  esperar a 8.0.35.
+
+Para bootar o 6.17 uma vez só (o próximo boot volta ao padrão):
+
+```bash
+sudo grub-reboot "gnulinux-advanced-b7d6e68a-369f-4f7a-a480-73115485012b>gnulinux-6.17.0-40-generic-advanced-b7d6e68a-369f-4f7a-a480-73115485012b"
+sudo reboot
+# depois: `uname -r` deve dar 6.17.0-40-generic; então `sudo systemctl start mongod`
+```
 
 **Gate 4.1:** para o mesmo banco, o conjunto de `SchemaTriple` do backend Spark é
 **idêntico** ao do backend Python — mesmos esquemas, mesmos `count`, mesmos
@@ -185,13 +265,22 @@ dimensão.
 ## Infra e qualidade (decisão 4)
 
 - [ ] JVM no CI (`setup-java`) para o job que roda os testes `spark`.
+- [ ] `mongod` no CI (*service container* `mongo:8.0`) para o teste do gate da
+      4.1 — sem ele, o teste é pulado no CI e o gate só roda local. **Conferir o
+      kernel do *runner*** antes: a guarda de `rseq` do `mongod` recusa de 6.19 a
+      7.0.13 (ver o requisito de ambiente da 4.1), e o container usa o kernel do
+      host.
 - [ ] Testes novos marcados `@pytest.mark.spark` — pre-push e CI, **não**
       pre-commit (o marker já existe no `pyproject.toml` desde a Fase 2 e nunca
       foi usado; esta fase é a primeira a usá-lo).
-- [ ] `uv run mypy` limpo com `pyspark` (o `pyproject.toml` já libera
-      `pyspark.*` do *strict*, por falta de stubs).
+- [x] `uv run mypy` limpo com `pyspark` (o `pyproject.toml` já libera
+      `pyspark.*` do *strict*, por falta de stubs) — 66 arquivos, 25/09/2026,
+      com o backend Mongo dentro. O `SparkSession` do `mongo.py` é importado só
+      sob `TYPE_CHECKING`, para o caminho Python não carregar o `pyspark`.
 - [ ] Atualizar o **CLAUDE.md**: `pyspark` deixa de ser "declarada, hoje não
-      usada em runtime", e a suíte deixa de ser toda `unit`.
+      usada em runtime", e a suíte deixa de ser toda `unit`. Corrigir também o
+      "`mapPartitions` entra depois sem reescrever nada": vale para o
+      `reduce_pairs`, não para o `build_triples` (ver 4.1).
 
 ---
 

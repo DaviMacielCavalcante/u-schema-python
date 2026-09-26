@@ -84,14 +84,19 @@ roda dentro do executor, e o que volta é o dict de sentinelas — `str`/`int`/
 
 ## 4.1 — Backend Spark do extrator MongoDB
 
-`extract_database_triples` ganha um parâmetro de backend; **o padrão continua
-Python** e nenhum caminho existente muda de assinatura. O `reduce_pairs`
-vai direto para `reduceByKey` — é o mesmo `(min, max, soma)`.
+O backend entra em `extract_triples`, escolhido pela `SparkSession` que ela
+recebe; **o padrão continua Python** (`spark=None`) e nenhum caminho existente
+muda de assinatura. Não entra em `extract_database_triples` porque ela recebe
+uma conexão já aberta, e conexão aberta não vai para o executor: cada partição
+precisa da URI para abrir a sua. A sessão vem pronta de fora, e não aberta ali
+dentro, para que a 4.4 consiga medir o boot separado do trabalho. O
+`reduce_pairs` vai direto para `reduceByKey` — é o mesmo `(min, max, soma)`.
 
 Nada de `simplify`, `generate_document_pair` ou `reduce_pairs` muda — se algum
 precisar mudar para caber no Spark, a fidelidade da Fase 2 está em risco e o
-trabalho para até a causa estar entendida. O `build_triples` continua no driver,
-sobre o resultado coletado.
+trabalho para até a causa estar entendida. Do `build_triples`, só o final roda
+no driver, sobre o resultado coletado: anexar o `_type` e montar as linhas. O
+resto dele — o map e o reduce sobre documentos crus — é o que o Spark substitui.
 
 **Gate 4.1:** para o mesmo banco, o conjunto de `SchemaTriple` do backend Spark
 é **idêntico** ao do Python — mesmos esquemas, mesmos `count`, mesmos

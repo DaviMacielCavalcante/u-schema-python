@@ -21,7 +21,9 @@ ou o cursor do ``pymongo``), não abrem conexão.
 A conexão em si — porte de ``MongoDB2USchema.process``/``processEntity``
 (``:48-58``/``:60-86``) e de ``MongoDB2USchemaMain.run`` (``:45-59``) — é
 ``extract_database_triples``/``extract_triples``, no fim do módulo: driver
-nativo (``pymongo``), não o conector Spark; ver a seção seguinte.
+nativo (``pymongo``), não o conector Spark; ver a seção seguinte. O
+``extract_triples`` tem ainda um backend Spark opcional (Fase 4.1), descrito na
+última seção.
 
 Por que driver nativo, não conector Spark
 ------------------------------------------
@@ -58,7 +60,7 @@ mesmos pares chave/valor, em ordem diferente, são a mesma chave de grupo. Uma
 ``[2, 1]`` não são o mesmo array.
 
 ``build_triples`` reproduz isso agrupando por uma chave canônica —
-``json.dumps(schema, sort_keys=True)`` — que ordena chaves de objeto (como o
+``json.dumps(schema, sort_keys=True)``, em ``_group_key`` — que ordena chaves de objeto (como o
 ``equals`` de mapa faz) mas preserva a ordem de listas (como o ``equals`` de
 ``ArrayList`` faz). O `_type` (``MongoDB2USchema.java:82``, atributo
 `typeField`) é anexado **depois** do agrupamento, igual ao Java — incluí-lo
@@ -76,19 +78,52 @@ BSON ``int64`` em vez de ``int32``), e ``bool`` também é subclasse de ``int``
 ``{"$numberLong": "0"}``, e ``0`` onde produz ``false`` — sem nenhum erro.
 ``_simplify_value`` testa **``Int64`` → ``bool`` → ``int`` genérico**, nessa
 ordem, por isso.
+
+Backend Spark (Fase 4.1)
+------------------------
+Com uma ``SparkSession`` (``spark=None`` é o caminho Python de sempre), o
+``extract_triples`` usa o Spark para paralelizar o map-reduce, nunca para ler
+ou tipar. Cada partição recebe uma fatia ``(coleção, inferior, superior)`` de
+:mod:`uschema.extractors.partition`, abre o próprio ``MongoClient`` e roda o
+``generate_document_pair`` ali dentro (``_read_partition``). O que volta ao
+Spark é só ``str`` e ``int``: o BSON não sai do executor.
+
+O ``reduceByKey`` recebe o ``reduce_pairs`` sem *wrapper*, porque a chave é
+``(coleção, _group_key(schema))`` e o valor é só a tripla de dados. Duas
+consequências, as duas deliberadas:
+
+- **A coleção entra na chave.** As fatias de todas as coleções dividem o mesmo
+  RDD; sem ela, duas coleções com o mesmo schema virariam uma tripla só. No
+  caminho Python isso não aparece, porque o ``build_triples`` roda por coleção.
+- **O schema volta por ``json.loads`` da chave**, com as chaves de objeto
+  ordenadas em vez da ordem do documento. Nada muda a jusante: a inferência
+  ordena os campos antes de usar (o ``TreeSet`` de
+  ``SchemaInference.java:190-194``).
+
+A ordem das triplas **não** é a do caminho Python: ela sai do hash do
+``reduceByKey``. Os dois backends são iguais como conjunto; igualar a ordem é a
+Fase 4.3 (``todolist_fase4.md``).
 """
 
 from __future__ import annotations
 
 import json
-from collections.abc import Iterable, Mapping
+from collections.abc import Iterable, Iterator, Mapping
 from datetime import datetime
-from typing import Any
+from functools import partial
+from typing import TYPE_CHECKING, Any
 
 from bson import ObjectId
 from bson.int64 import Int64
 from pymongo import MongoClient
 from pymongo.database import Database
+
+from uschema.extractors.partition import id_boundaries, ranges_from_boundaries, slice_filter
+
+if TYPE_CHECKING:
+    # Só para anotação: um import real faria o caminho Python carregar
+    # pyspark/py4j a cada import do módulo, sem usar nada deles.
+    from pyspark.sql import SparkSession
 
 __all__ = [
     "SIMPLE_DEFAULT_LONG",
@@ -133,6 +168,14 @@ SIMPLE_DEFAULT_OBJECTID: dict[str, str] = {"$oid": "000000000000000000000000"}
 #: conector 2.4.1 usa por padrão. Sem fixture de golden-master ainda (nenhum
 #: XMI de referência tem campo ``long``); cobrir com teste dedicado.
 SIMPLE_DEFAULT_LONG: dict[str, str] = {"$numberLong": "0"}
+
+#: Uma fatia do backend Spark: ``(coleção, inferior, superior)``, com os limites
+#: de :func:`~uschema.extractors.partition.ranges_from_boundaries`.
+_Slice = tuple[str, Any, Any]
+
+#: Chave do ``reduceByKey``: ``(coleção, esqueleto canônico)``. A coleção entra
+#: porque as fatias de todas as coleções dividem o mesmo RDD.
+_GroupKey = tuple[str, str]
 
 
 def reduce_pairs(first: tuple[int, int, int], second: tuple[int, int, int]) -> tuple[int, int, int]:
@@ -290,6 +333,59 @@ def generate_document_pair(
     return (simplify(document), data)
 
 
+def _group_key(schema: dict[str, Any]) -> str:
+    """Chave canônica de agrupamento de um esqueleto.
+
+    Compartilhada pelos dois backends, para que agrupem pelo mesmo critério. Ver
+    "Como o agrupamento por assinatura funciona" na docstring do módulo.
+
+    Parameters
+    ----------
+    schema : dict of str to Any
+        Esqueleto simplificado (saída de :func:`simplify`).
+
+    Returns
+    -------
+    str
+        O esqueleto serializado com as chaves de objeto ordenadas e a ordem das
+        listas preservada.
+    """
+    dump = json.dumps(schema, sort_keys=True, separators=(",", ":"))
+    return dump
+
+
+def _triple_row(
+    schema: dict[str, Any], data: tuple[int, int, int], collection_name: str
+) -> dict[str, Any]:
+    """Anexar o ``_type`` ao esqueleto e montar a linha da tripla.
+
+    É o passo final do ``processEntity`` (``MongoDB2USchema.java:78-83``), o único
+    que o backend Spark executa no driver.
+
+    Parameters
+    ----------
+    schema : dict of str to Any
+        Esqueleto já agrupado. **É mutado**: recebe o ``TYPE_FIELD``.
+    data : tuple of (int, int, int)
+        ``(firstTimestamp, lastTimestamp, count)`` acumulado pelo :func:`reduce_pairs`.
+    collection_name : str
+        Vira o valor de ``TYPE_FIELD``.
+
+    Returns
+    -------
+    dict of str to Any
+        ``{"schema", "count", "firstTimestamp", "lastTimestamp"}``.
+    """
+    schema[TYPE_FIELD] = collection_name
+    triple_value = {
+        "schema": schema,
+        "count": data[2],
+        "firstTimestamp": data[0],
+        "lastTimestamp": data[1],
+    }
+    return triple_value
+
+
 def build_triples(
     documents: Iterable[Mapping[str, Any]], collection_name: str
 ) -> list[dict[str, Any]]:
@@ -333,7 +429,7 @@ def build_triples(
         new = generate_document_pair(doc)
         # Só o esqueleto (new[0]) entra na chave — os dados (new[1]) mudam a
         # cada documento e não podem influenciar o agrupamento.
-        dump = json.dumps(new[0], sort_keys=True, separators=(",", ":"))
+        dump = _group_key(new[0])
         if dump in new_dict:
             triple = reduce_pairs(new[1], new_dict[dump][1])
             new_dict[dump] = (new[0], triple)
@@ -342,18 +438,7 @@ def build_triples(
 
     new_list = []
     for value in new_dict.values():
-        value[0][TYPE_FIELD] = collection_name
-        # Atenção: a ordem dos campos aqui (schema, count, firstTimestamp,
-        # lastTimestamp) não é a mesma ordem da tripla de dados acumulada em
-        # value[1] (firstTimestamp, lastTimestamp, count) — por isso o
-        # acesso a cada campo é feito por índice explícito, não por posição.
-        triple_value = {
-            "schema": value[0],
-            "count": value[1][2],
-            "firstTimestamp": value[1][0],
-            "lastTimestamp": value[1][1],
-        }
-        new_list.append(triple_value)
+        new_list.append(_triple_row(value[0], value[1], collection_name))
     return new_list
 
 
@@ -393,8 +478,127 @@ def extract_database_triples(
     return new_list
 
 
+def _read_partition(
+    database_uri: str,
+    database_name: str,
+    partition: Iterable[_Slice],
+) -> Iterator[tuple[_GroupKey, tuple[int, int, int]]]:
+    """Ler as fatias de uma partição e emitir os pares já simplificados.
+
+    Roda **no executor** (Fase 4.1). A conexão abre aqui dentro, e não no driver,
+    porque conexão aberta não atravessa o *pickle*: o que viaja é a URI.
+
+    A fronteira de tipagem fica aqui. O ``simplify`` roda antes de qualquer coisa
+    voltar ao Spark, e o que sai é só ``str`` (a chave) e ``int`` (os dados). O
+    BSON nunca sai do executor (item de fronteira da 4.0).
+
+    Parameters
+    ----------
+    database_uri : str
+        URI do MongoDB. Presa por ``functools.partial`` no driver.
+    database_name : str
+        Nome do banco. Presa do mesmo jeito.
+    partition : Iterable of _Slice
+        As fatias desta partição. Com ``parallelize(fatias, len(fatias))``, é uma
+        só, mas a função não depende disso.
+
+    Yields
+    ------
+    tuple of (_GroupKey, tuple of (int, int, int))
+        ``((coleção, esqueleto canônico), (first, last, count))`` por documento.
+        O ``reduceByKey`` combina esses pares depois.
+    """
+    with MongoClient[Mapping[str, Any]](database_uri) as mc:
+        db = mc[database_name]
+
+        for name, inferior, superior in partition:
+            cursor = db[name].find(slice_filter(inferior, superior))
+
+            for doc in cursor:
+                schema, data = generate_document_pair(doc)
+
+                key = (name, _group_key(schema))
+
+                yield key, data
+
+
+def _extract_triples_spark(
+    spark: SparkSession,
+    database_uri: str,
+    database_name: str,
+    collections: Iterable[str],
+    slices: int | None,
+) -> list[dict[str, Any]]:
+    """Backend Spark de :func:`extract_triples` (Fase 4.1).
+
+    Parameters
+    ----------
+    spark : pyspark.sql.SparkSession
+        Sessão já aberta; ver :func:`uschema.extractors.spark.local_session`.
+    database_uri : str
+        URI do MongoDB.
+    database_name : str
+        Nome do banco.
+    collections : Iterable of str
+        Coleções a extrair.
+    slices : int or None
+        Fatias **por coleção**. ``None`` = :func:`~uschema.extractors.spark.default_slices`.
+
+    Returns
+    -------
+    list of dict of str to Any
+        As mesmas linhas do backend Python, **como conjunto**: a ordem sai do
+        hash do ``reduceByKey``, não da primeira aparição (tratado na 4.3).
+    """
+    # Import local de propósito: o topo do módulo não pode puxar o pyspark, que é
+    # o que spark.py faz ao ser importado. Ver o bloco de imports.
+    from uschema.extractors.spark import default_slices
+
+    if slices is None:
+        slices = default_slices()
+
+    slices_list = []
+
+    with MongoClient[Mapping[str, Any]](database_uri) as mc:
+        for name in collections:
+            ids_boundaries_list = id_boundaries(mc[database_name][name], slices)
+
+            limits = ranges_from_boundaries(ids_boundaries_list)
+
+            for inferior_limit, superior_limit in limits:
+                slices_list.append((name, inferior_limit, superior_limit))
+
+    if not slices_list:
+        return []
+
+    rdd = spark.sparkContext.parallelize(slices_list, len(slices_list))
+
+    rdd_partitioned = rdd.mapPartitions(partial(_read_partition, database_uri, database_name))
+
+    rdd_reduced = rdd_partitioned.reduceByKey(reduce_pairs)
+
+    pairs_list = rdd_reduced.collect()
+
+    rows = []
+
+    for key, data in pairs_list:
+        name = key[0]
+        schema = json.loads(key[1])
+
+        row = _triple_row(schema, data, name)
+
+        rows.append(row)
+
+    return rows
+
+
 def extract_triples(
-    database_uri: str, database_name: str, collections: Iterable[str]
+    database_uri: str,
+    database_name: str,
+    collections: Iterable[str],
+    *,
+    spark: SparkSession | None = None,
+    slices: int | None = None,
 ) -> list[dict[str, Any]]:
     """Abrir a conexão com o MongoDB e extrair as triplas do banco indicado.
 
@@ -414,6 +618,12 @@ def extract_triples(
         Nome do banco de dados.
     collections : Iterable of str
         Nomes das coleções a extrair.
+    spark : pyspark.sql.SparkSession or None, optional
+        Backend. ``None`` (padrão) é o caminho Python de sempre. Uma sessão liga o
+        backend Spark (Fase 4.1). A sessão vem aberta de fora para que a bateria
+        meça o boot da JVM separado do trabalho (4.4).
+    slices : int or None, optional
+        Fatias por coleção no backend Spark; ignorado sem ``spark``.
 
     Returns
     -------
@@ -421,5 +631,8 @@ def extract_triples(
         As triplas de todas as coleções indicadas, cada uma com as chaves
         ``"schema"``, ``"count"``, ``"firstTimestamp"`` e ``"lastTimestamp"``.
     """
-    with MongoClient[Mapping[str, Any]](database_uri) as client:
-        return extract_database_triples(client[database_name], collections)
+    if spark is None:
+        with MongoClient[Mapping[str, Any]](database_uri) as client:
+            return extract_database_triples(client[database_name], collections)
+
+    return _extract_triples_spark(spark, database_uri, database_name, collections, slices)
