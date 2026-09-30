@@ -202,16 +202,95 @@ timestamps. Sem isso, nada do resto vale.
 > justifica: a leitura é client-bound (~30k linhas/s, medido no `E1`) e o
 > map-reduce é minúsculo (9 arquétipos em todos os tamanhos). Não executar este
 > bloco é uma conclusão da fase, não uma pendência.
+>
+> **Liberada em 26/09/2026** pelo ganho da 4.1 (4,5× no `larger`). Testes do
+> gate em `tests/unit/test_extractors_neo4j_spark.py`, validados contra uma
+> implementação de referência fora do repo (passam todos).
+>
+> **Estado em 30/09/2026: Gate 4.2 fechado.** As cinco funções do backend
+> (`extractors/neo4j.py`) estão prontas, sem nenhum `TODO(4.2)`. Os 10 testes
+> do gate passam com o driver falso. Fora da suíte, os dois backends deram
+> contagens idênticas como conjunto no `up_larger` do Neo4j local: 9
+> arquétipos, 1,2 milhão de nós contados nos dois lados. Suíte completa: 670
+> testes verdes e 5 pulados (os do gate da 4.1, sem `mongod` no ar).
+>
+> Pendência de acabamento, sem bloquear o gate: os dois ramos do
+> `_read_label_combination` repetem a *query* inteira. A sugestão é calcular
+> antes a condição extra e os parâmetros, e manter uma *query* só, para as duas
+> cópias não divergirem.
+>
+> **O desenho muda o plano abaixo em dois pontos** (riscados nos itens), pelo
+> que se mediu no Neo4j local (2026.09 Community, `up_larger` carregado):
+>
+> 1. **Fatia por `id(n) % slices`, não por `skip`/`limit` nem por faixa.** O
+>    `skip` percorre e descarta (o mesmo motivo do Mongo, 4.0). Faixa de id
+>    desbalanceia: os ids dos labels são **intercalados** (`Movie` de 0 a
+>    1.217.297, `User` de 9.670 a 1.219.984 — as baterias apagam e recriam, e o
+>    Neo4j reaproveita ids). O resto da divisão é equilibrado por construção e
+>    dispensa consulta de cortes. O plano do servidor é `NodeByLabelScan →
+>    Filter → OptionalExpand`: o filtro roda **antes** de expandir as arestas.
+>    **Risco:** `id()` é *deprecated* (o servidor devolve aviso); se sair, a
+>    troca é para `elementId`.
+> 2. **O pipeline puro inteiro roda dentro da partição**, e o Spark só soma as
+>    contagens. Como o filtro é sobre `n`, **cada nó cai inteiro numa partição**
+>    — todas as arestas dele vêm na mesma *query*. Então `node_archetype` +
+>    `reduce_archetypes_by_node` + `build_archetype_counts` (o
+>    `extract_archetype_counts`, sem mudar uma linha) rodam no executor, e o
+>    `reduceByKey` só soma `(arquétipo, contagem)`. O plano previa `reduceByKey`
+>    por nó e o `build_archetype_counts` no driver: traria ~1,2 milhão de
+>    arquétipos de nó para o driver e obrigaria a reescrever a fusão por nó
+>    como função par-a-par — risco de fidelidade na parte mais delicada.
+>
+> Mais três decisões: o **arquétipo viaja no valor**, junto com a contagem (não
+> reconstruído por `json.loads` como no Mongo — aqui o `neo4j_model` não ordena
+> as propriedades, e a ordem delas vira a ordem dos atributos); o driver entra
+> como **fábrica** (`partial(GraphDatabase.driver, uri, auth=auth)` em
+> produção, driver falso nos testes); e uma **porta de entrada por URI**,
+> `extract_archetype_counts_from_uri`, que o grafo não tinha.
 
-- [ ] Fatia do grafo: `skip`/`limit` sobre a *cypher* ordenada, por combinação de
-      labels.
-- [ ] `mapPartitions` sobre `node_archetype`; dedup por `element_id` vira
-      `reduceByKey` pela chave do nó, **não** pelo arquétipo.
-- [ ] Leitura **lazy** por partição — o `E1` foi a leitura *eager* enchendo o
-      buffer; repetir isso dentro de um executor esconde o problema.
-- [ ] `build_archetype_counts` e todo o `neo4j_model.py` continuam no driver (o
-      grafo não passa pelo núcleo da Fase 1).
-- [ ] Testes `@pytest.mark.spark` com driver falso particionado.
+- [x] ~~Fatia do grafo: `skip`/`limit` sobre a *cypher* ordenada~~ → fatia por
+      combinação de labels × `id(n) % slices`, com o filtro no
+      `_read_label_combination` (parâmetros opcionais; sem eles, a *query* é a
+      de sempre). A lista de fatias é montada no
+      `_extract_archetype_counts_spark`, uma por partição
+      (`parallelize(fatias, len(fatias))`). Banco sem nó devolve `[]` antes do
+      Spark, como no Mongo.
+- [x] ~~`mapPartitions` sobre `node_archetype`; dedup por `element_id` vira
+      `reduceByKey` pela chave do nó~~ → `mapPartitions` com o
+      `extract_archetype_counts` inteiro por fatia (`_count_partition`); a
+      dedup por nó fica dentro da partição, porque o nó está inteiro nela.
+- [x] Leitura **lazy** por partição — o `E1` foi a leitura *eager* enchendo o
+      buffer; repetir isso dentro de um executor esconde o problema. (O
+      `_read_label_combination` já lê em *streaming*; a fatia só acrescenta o
+      filtro.)
+- [x] ~~`build_archetype_counts` [...] continuam no driver~~ →
+      `build_archetype_counts` roda por partição; no driver fica só a soma
+      (`_merge_counts`) e todo o `neo4j_model.py` (o grafo não passa pelo núcleo
+      da Fase 1).
+- [x] Testes `@pytest.mark.spark` com driver falso particionado — 10: a *query*
+      com e sem fatia, o `_merge_counts`, o `sampling_rate` nos dois backends, a
+      igualdade como conjunto, o `count` de relacionamento por fontes
+      distintas, o banco vazio e a porta de entrada por URI com `spark`. O
+      driver falso chega aos workers por `cloudpickle.register_pickle_by_value`
+      — por referência, o worker não consegue importar o módulo de teste. **Sem
+      Neo4j de verdade**: o Community tem um banco só, e o teste não pode sujar
+      o das baterias.
+      O teste da porta por URI entrou em 30/09 para cobrir um buraco: o de
+      `sampling_rate` termina no `raise` e nunca chega à chamada do backend Spark.
+      Uma chamada errada ali (o caminho Python recebendo a fábrica) passou pelos
+      outros 9, e só o `mypy` pegou. **Checado por mutação:** com esse erro de
+      volta, o teste novo falha com `AttributeError`.
+- [x] **Comparar os dois backends no Neo4j real.** Medição **avulsa** de
+      30/09/2026 (uma corrida, boot fora), no `up_larger`: 1,2 milhão de nós e
+      10,2 milhões de arestas, com 32 fatias por combinação de labels (64
+      partições). Contagens idênticas como conjunto. Python 446s, Spark 41s,
+      cerca de **11×**. É indicativo e não substitui a bateria da 4.4. O número
+      é compatível com a caracterização do `E1`: a leitura é limitada pelo
+      cliente, a ~30k linhas/s, e as ~11 milhões de linhas dariam ~370s. Com 64
+      clientes lendo em paralelo, esse gargalo se divide. O servidor devolveu o
+      aviso de `id()` *deprecated* uma vez por partição (64); é o risco já
+      registrado no desenho. Script e saída em `~/Documents/uschema_fase4_medicoes/`
+      (`compare_backends_neo4j.py`/`.out`).
 
 **Gate 4.2:** contagens idênticas às do backend Python, incluindo o `count` de
 `RelationshipType` (fontes distintas, não arestas brutas) — é o que a partição
@@ -270,17 +349,22 @@ dimensão.
       kernel do *runner*** antes: a guarda de `rseq` do `mongod` recusa de 6.19 a
       7.0.13 (ver o requisito de ambiente da 4.1), e o container usa o kernel do
       host.
-- [ ] Testes novos marcados `@pytest.mark.spark` — pre-push e CI, **não**
+- [x] Testes novos marcados `@pytest.mark.spark` — pre-push e CI, **não**
       pre-commit (o marker já existe no `pyproject.toml` desde a Fase 2 e nunca
-      foi usado; esta fase é a primeira a usá-lo).
+      foi usado; esta fase é a primeira a usá-lo). Os do gate da 4.1 levam
+      também `integration` (precisam do `mongod`); os da 4.2 que só olham a
+      *query* e o `_merge_counts` são `unit` e rodam no pre-commit.
 - [x] `uv run mypy` limpo com `pyspark` (o `pyproject.toml` já libera
       `pyspark.*` do *strict*, por falta de stubs) — 66 arquivos, 25/09/2026,
       com o backend Mongo dentro. O `SparkSession` do `mongo.py` é importado só
       sob `TYPE_CHECKING`, para o caminho Python não carregar o `pyspark`.
-- [ ] Atualizar o **CLAUDE.md**: `pyspark` deixa de ser "declarada, hoje não
+- [x] Atualizar o **CLAUDE.md**: `pyspark` deixa de ser "declarada, hoje não
       usada em runtime", e a suíte deixa de ser toda `unit`. Corrigir também o
       "`mapPartitions` entra depois sem reescrever nada": vale para o
-      `reduce_pairs`, não para o `build_triples` (ver 4.1).
+      `reduce_pairs`, não para o `build_triples` (ver 4.1). Feito em
+      26/09/2026, junto com o estado da fase (4.0/4.1 fechadas, 4.2 com
+      esqueleto). Revisado em 30/09/2026, com a 4.2 fechada: o pacote não tem
+      mais stubs.
 
 ---
 

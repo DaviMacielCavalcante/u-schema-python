@@ -124,14 +124,21 @@ que o respectivo oráculo faz.
 from __future__ import annotations
 
 import json
-from collections.abc import Iterable, Iterator, Mapping
-from typing import Any, Protocol
+from collections.abc import Callable, Iterable, Iterator, Mapping
+from functools import partial
+from typing import TYPE_CHECKING, Any, Protocol
 
-from neo4j import READ_ACCESS, Driver, RoutingControl
+from neo4j import READ_ACCESS, Driver, GraphDatabase, RoutingControl
+
+if TYPE_CHECKING:
+    # Só para anotação: um import real faria o caminho Python carregar
+    # pyspark/py4j a cada import do módulo, sem usar nada deles.
+    from pyspark.sql import SparkSession
 
 __all__ = [
     "build_archetype_counts",
     "extract_archetype_counts",
+    "extract_archetype_counts_from_uri",
     "extract_database_archetype_counts",
     "get_type_name",
     "node_archetype",
@@ -640,7 +647,13 @@ def _distinct_label_combinations(driver: Driver, database: str | None) -> list[l
 
 
 def _read_label_combination(
-    driver: Driver, database: str | None, labels: list[str], sampling_rate: float
+    driver: Driver,
+    database: str | None,
+    labels: list[str],
+    sampling_rate: float,
+    *,
+    slice_index: int | None = None,
+    slices: int | None = None,
 ) -> Iterator[tuple[_NodeLike, _RelationshipLike | None, list[str] | None]]:
     """Rodar a 2ª cypher do oráculo: ler as linhas de uma combinação de labels.
 
@@ -689,6 +702,12 @@ def _read_label_combination(
     sampling_rate : float
         Fração de relacionamentos de saída amostrados; ``1.0`` desliga a
         amostragem (sem cláusula extra no ``WHERE``).
+    slice_index, slices : int or None, optional
+        Fatia do backend Spark (Fase 4.2): só os nós com
+        ``id(n) % slices == slice_index``. ``None`` nos dois (padrão) é a
+        *query* de sempre, sem filtro — o caminho Python não muda. O filtro é
+        sobre ``n``, antes do ``OPTIONAL MATCH``, então todas as arestas de um
+        nó caem na mesma fatia.
 
     Yields
     ------
@@ -697,17 +716,33 @@ def _read_label_combination(
         linha do cypher; os dois últimos são ``None`` juntos quando o nó não
         tem saída.
     """
-    label_pattern = "".join(f":`{label}`" for label in labels)
-    query = (
-        f"MATCH (n{label_pattern}) WHERE size(labels(n)) = $n_labels "
-        + "WITH n OPTIONAL MATCH (n)-[r]->(m) "
-        + (f"WHERE rand() < {sampling_rate} " if sampling_rate != 1.0 else "")
-        + "RETURN n, r, labels(m)"
-    )
+    if slices is not None and slice_index is not None:
+        label_pattern = "".join(f":`{label}`" for label in labels)
+        query = (
+            f"MATCH (n{label_pattern}) "
+            + "WHERE size(labels(n)) = $n_labels AND id(n) % $slices = $slice_index "
+            + "WITH n OPTIONAL MATCH (n)-[r]->(m) "
+            + (f"WHERE rand() < {sampling_rate} " if sampling_rate != 1.0 else "")
+            + "RETURN n, r, labels(m)"
+        )
 
-    with driver.session(database=database, default_access_mode=READ_ACCESS) as session:
-        for record in session.run(query, n_labels=len(labels)):
-            yield (record[0], record[1], list(record[2]) if record[2] is not None else None)
+        with driver.session(database=database, default_access_mode=READ_ACCESS) as session:
+            for record in session.run(
+                query, n_labels=len(labels), slices=slices, slice_index=slice_index
+            ):
+                yield (record[0], record[1], list(record[2]) if record[2] is not None else None)
+    else:
+        label_pattern = "".join(f":`{label}`" for label in labels)
+        query = (
+            f"MATCH (n{label_pattern}) WHERE size(labels(n)) = $n_labels "
+            + "WITH n OPTIONAL MATCH (n)-[r]->(m) "
+            + (f"WHERE rand() < {sampling_rate} " if sampling_rate != 1.0 else "")
+            + "RETURN n, r, labels(m)"
+        )
+
+        with driver.session(database=database, default_access_mode=READ_ACCESS) as session:
+            for record in session.run(query, n_labels=len(labels)):
+                yield (record[0], record[1], list(record[2]) if record[2] is not None else None)
 
 
 def extract_database_archetype_counts(
@@ -754,3 +789,204 @@ def extract_database_archetype_counts(
             yield from _read_label_combination(driver, database, label, sampling_rate)
 
     return extract_archetype_counts(_rows())
+
+
+#: Fábrica de driver: chamada sem argumentos, devolve um driver usável com
+#: ``with``. O backend Spark recebe a fábrica, e não o driver, porque driver
+#: aberto não atravessa o *pickle*; cada partição chama a fábrica e abre o seu.
+#: Em produção é ``partial(GraphDatabase.driver, uri, auth=auth)``; nos testes,
+#: um driver falso.
+_DriverFactory = Callable[[], Driver]
+
+#: O que uma partição emite: ``(chave canônica do arquétipo, (arquétipo, contagem))``.
+_CountPair = tuple[str, tuple[dict[str, Any], int]]
+
+
+def _merge_counts(
+    first: tuple[dict[str, Any], int], second: tuple[dict[str, Any], int]
+) -> tuple[dict[str, Any], int]:
+    """Combinar as contagens de um mesmo arquétipo vindas de partições diferentes.
+
+    É a função do ``reduceByKey``. Os dois arquétipos têm a mesma chave
+    canônica, então são o mesmo arquétipo; fica o primeiro, e as contagens
+    somam — o equivalente do ``countByValue`` do oráculo, feito em duas etapas
+    (uma por partição, dentro de :func:`extract_archetype_counts`, e esta).
+
+    Parameters
+    ----------
+    first, second : tuple of (dict of str to Any, int)
+        ``(arquétipo, contagem)`` de duas partições.
+
+    Returns
+    -------
+    tuple of (dict of str to Any, int)
+        O arquétipo de ``first`` e a soma das contagens.
+    """
+    return (first[0], first[1] + second[1])
+
+
+def _count_partition(
+    driver_factory: _DriverFactory,
+    database: str | None,
+    sampling_rate: float,
+    slices: int,
+    partition: Iterable[tuple[list[str], int]],
+) -> Iterator[_CountPair]:
+    """Ler as fatias de uma partição e emitir as contagens por arquétipo.
+
+    Roda **no executor** (Fase 4.2). Cada fatia é ``(labels, índice)``: os nós
+    daquela combinação de labels com ``id(n) % slices == índice``. Como a fatia
+    é um conjunto de **nós inteiros** (o filtro é sobre ``n``, antes do
+    ``OPTIONAL MATCH``), o pipeline puro inteiro —
+    :func:`extract_archetype_counts`, sem mudar nada — roda aqui dentro: a
+    fusão por nó nunca precisa de linhas de outra partição.
+
+    O que sai daqui é o arquétipo (sentinelas: ``str``/``int``/``float``/
+    ``bool``/``list``/``dict``) e um ``int``. Os ``Node``/``Relationship`` do
+    driver nunca saem do executor.
+
+    Parameters
+    ----------
+    driver_factory : _DriverFactory
+        Presa por ``functools.partial`` no driver do Spark.
+    database : str or None
+        Nome do banco, ou ``None`` para o default. Presa do mesmo jeito.
+    sampling_rate : float
+        Repassada ao :func:`_read_label_combination`. Presa do mesmo jeito.
+    slices : int
+        Número de fatias por combinação de labels. Presa do mesmo jeito.
+    partition : Iterable of (list of str, int)
+        As fatias desta partição; com ``parallelize(fatias, len(fatias))``, uma.
+
+    Yields
+    ------
+    _CountPair
+        Um par por arquétipo distinto da fatia, com a contagem dela.
+    """
+    with driver_factory() as driver:
+        for labels, index in partition:
+            rows = _read_label_combination(
+                driver=driver,
+                database=database,
+                labels=labels,
+                sampling_rate=sampling_rate,
+                slices=slices,
+                slice_index=index,
+            )
+
+            archetypes_list = extract_archetype_counts(rows=rows)
+
+            for item in archetypes_list:
+                yield (_canonical_key(item["archetype"]), (item["archetype"], item["count"]))
+
+
+def _extract_archetype_counts_spark(
+    spark: SparkSession,
+    driver_factory: _DriverFactory,
+    database: str | None,
+    sampling_rate: float,
+    slices: int | None,
+) -> list[dict[str, Any]]:
+    """Backend Spark da extração do grafo (Fase 4.2).
+
+    Parameters
+    ----------
+    spark : pyspark.sql.SparkSession
+        Sessão já aberta; ver :func:`uschema.extractors.spark.local_session`.
+    driver_factory : _DriverFactory
+        Chamada uma vez aqui (para listar as combinações de labels) e uma vez
+        por partição.
+    database : str or None
+        Nome do banco, ou ``None`` para o default.
+    sampling_rate : float
+        Mesmo significado de :func:`extract_database_archetype_counts`.
+    slices : int or None
+        Fatias **por combinação de labels**. ``None`` =
+        :func:`~uschema.extractors.spark.default_slices`.
+
+    Returns
+    -------
+    list of dict of str to Any
+        As mesmas contagens do backend Python (formato de
+        :func:`build_archetype_counts`), **como conjunto**: a ordem sai do
+        hash do ``reduceByKey`` (tratado na 4.3).
+    """
+    # Import local de propósito: o topo do módulo não pode puxar o pyspark.
+    from uschema.extractors.spark import default_slices
+
+    if slices is None:
+        slices = default_slices()
+
+    with driver_factory() as driver:
+        labels_combinations = _distinct_label_combinations(driver, database)
+
+    slices_list = [(comb, index) for comb in labels_combinations for index in range(0, slices)]
+
+    if not slices_list:
+        return []
+
+    rdd = spark.sparkContext.parallelize(slices_list, len(slices_list))
+
+    rdd_partitioned = rdd.mapPartitions(
+        partial(_count_partition, driver_factory, database, sampling_rate, slices)
+    )
+
+    rdd_reduced = rdd_partitioned.reduceByKey(_merge_counts).collect()
+
+    list_of_dicts = [{"archetype": arch, "count": count} for _, (arch, count) in rdd_reduced]
+
+    return list_of_dicts
+
+
+def extract_archetype_counts_from_uri(
+    uri: str,
+    *,
+    auth: tuple[str, str] | None = None,
+    database: str | None = None,
+    sampling_rate: float = 1.0,
+    spark: SparkSession | None = None,
+    slices: int | None = None,
+) -> list[dict[str, Any]]:
+    """Abrir a conexão com o Neo4j e extrair as contagens, num dos dois backends.
+
+    Porta de entrada por URI — o par, no grafo, do ``extract_triples`` do Mongo.
+    O caminho Python é o :func:`extract_database_archetype_counts` de sempre, só
+    que com o driver aberto aqui. O backend Spark (Fase 4.2) precisa da URI, e
+    não de um driver aberto, porque cada partição abre o seu.
+
+    Parameters
+    ----------
+    uri : str
+        URI do Neo4j (``bolt://...``/``neo4j://...``).
+    auth : tuple of (str, str) or None, optional
+        ``(usuário, senha)``; ``None`` para servidor sem autenticação.
+    database : str or None, optional
+        Nome do banco, ou ``None`` para o default.
+    sampling_rate : float, optional
+        Ver :func:`extract_database_archetype_counts`.
+    spark : pyspark.sql.SparkSession or None, optional
+        Backend. ``None`` (padrão) é o caminho Python. A sessão vem aberta de
+        fora para que a bateria meça o boot da JVM separado do trabalho (4.4).
+    slices : int or None, optional
+        Fatias por combinação de labels no backend Spark; ignorado sem ``spark``.
+
+    Returns
+    -------
+    list of dict of str to Any
+        As contagens, no formato de :func:`build_archetype_counts`.
+
+    Raises
+    ------
+    ValueError
+        Se ``sampling_rate`` for ``<= 0`` ou ``> 1``, nos dois backends.
+    """
+    if spark is None:
+        with GraphDatabase.driver(uri, auth=auth) as driver:
+            return extract_database_archetype_counts(driver, database, sampling_rate)
+
+    if sampling_rate <= 0 or sampling_rate > 1:
+        raise ValueError(f"Sampling rate <= 0 or > 1, Value: {sampling_rate}")
+
+    return _extract_archetype_counts_spark(
+        spark, partial(GraphDatabase.driver, uri, auth=auth), database, sampling_rate, slices
+    )

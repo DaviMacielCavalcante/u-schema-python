@@ -69,9 +69,10 @@ Dois desenhos possíveis, e a escolha não é neutra:
 combinação de labels (Neo4j) — mas ela **não basta**: o User Profiles tem duas
 coleções e nove arquétipos, então particionar por unidade natural dá duas
 partições úteis num caso e nove no outro, com uma dominante. É preciso
-**subparticionar por faixa de `_id`** (Mongo) e por `skip`/`limit` sobre a
-*cypher* ordenada (Neo4j). Sem isso a fase mede o paralelismo de duas tarefas
-desbalanceadas e conclui errado.
+**subparticionar por faixa de `_id`** (Mongo) e pelo resto de `id(n)` (Neo4j —
+o `skip`/`limit` do plano original caiu na 4.2, pelo mesmo motivo que caiu no
+Mongo: o `skip` percorre e descarta). Sem isso a fase mede o paralelismo de duas
+tarefas desbalanceadas e conclui errado.
 
 A fronteira de tipagem fica **antes** do Spark: o `simplify`/`node_archetype`
 roda dentro do executor, e o que volta é o dict de sentinelas — `str`/`int`/
@@ -111,12 +112,30 @@ documento, o grafo não se justifica: a leitura é client-bound (~30k linhas/s,
 medido no `E1`) e o map-reduce é minúsculo — nove arquétipos em todos os
 tamanhos. **Não executar este bloco é uma conclusão da fase, não uma pendência.**
 
-O grafo **não passa pelo núcleo da Fase 1** (achado da 2.2): o que paraleliza
-aqui é `node_archetype` + `reduce_archetypes_by_node`; `build_archetype_counts`
-e todo o `neo4j_model.py` continuam no driver. A dedup por `element_id` vira
-`reduceByKey` pela chave do nó, não pelo arquétipo, e a leitura de cada partição
-tem de ser **lazy** — o `E1` foi exatamente a leitura *eager* enchendo o buffer,
-e repeti-la dentro de um executor esconde o problema em vez de mostrá-lo.
+**Liberada em 26/09/2026** — a 4.1 mostrou ganho de 4,5× no `larger`.
+
+O grafo **não passa pelo núcleo da Fase 1** (achado da 2.2), e todo o
+`neo4j_model.py` continua no driver. **Desenho decidido na 4.2** (detalhe e
+medições no todolist), que substitui o plano original de `reduceByKey` por nó
+com o `build_archetype_counts` no driver:
+
+- **Fatia = combinação de labels × `id(n) % slices`.** Os ids dos labels são
+  intercalados no banco (as baterias apagam e recriam), então faixa de id
+  desbalanceia; o resto da divisão é equilibrado por construção. O filtro é
+  sobre `n`, antes do `OPTIONAL MATCH`, e o servidor o aplica antes de expandir
+  as arestas.
+- **Cada nó cai inteiro numa partição**, com todas as suas arestas. Por isso o
+  pipeline puro inteiro — `node_archetype`, `reduce_archetypes_by_node` e
+  `build_archetype_counts`, sem mudar uma linha — roda **dentro** da partição,
+  e o `reduceByKey` só soma `(arquétipo, contagem)`. O plano original traria
+  ~1,2 milhão de arquétipos de nó ao driver e obrigaria a reescrever a fusão por
+  nó como função par-a-par.
+- O arquétipo viaja **no valor**, não reconstruído do texto: o `neo4j_model` não
+  ordena as propriedades, e a ordem delas vira a ordem dos atributos.
+
+A leitura de cada partição continua **lazy** (*streaming*) — o `E1` foi
+exatamente a leitura *eager* enchendo o buffer, e repeti-la dentro de um
+executor esconderia o problema em vez de mostrá-lo.
 
 **Gate 4.2:** contagens idênticas às do backend Python, incluindo a
 semântica de `count` em `RelationshipType` (fontes distintas, não arestas

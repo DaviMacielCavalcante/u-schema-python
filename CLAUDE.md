@@ -36,7 +36,7 @@ Layout `src/` (pacote `uschema`). Cada subpacote mapeia uma fase do roadmap:
 - `src/uschema/validation/` — **Fase 0.3**: harness de equivalência estrutural, espelhando `USchemaCompareMain`.
 - `src/uschema/intermediate/` — **Fase 1.1**: modelo `raw` (Composite) + `metadata`, como `dataclasses`. O pacote `firsto` do Java **não** foi portado: é código morto (nenhuma referência fora do próprio pacote).
 - `src/uschema/inference/` — **Fase 1.2–1.7**: núcleo `doc2uschema` (`schema_inference`, `strategies`, `builder`), o `m2m/USchemaToDocumentDb` (1.4b) e a fachada `build_uschema` (1.7).
-- `src/uschema/extractors/` — **Fase 2**: extratores por **driver nativo** (`mongo` via `pymongo`, `neo4j` via `neo4j`; PySpark ficou como paralelizador futuro, ver 2.0) + `triple` (o contrato de costura, **Fase 1.0**) + `neo4j_model` (núcleo de construção **próprio do Neo4j**, ver a nota abaixo).
+- `src/uschema/extractors/` — **Fase 2**: extratores por **driver nativo** (`mongo` via `pymongo`, `neo4j` via `neo4j`; o PySpark entrou na Fase 4 como backend opcional que paraleliza o map-reduce — `spark` (sessão) e `partition` (fatias por faixa de `_id`)) + `triple` (o contrato de costura, **Fase 1.0**) + `neo4j_model` (núcleo de construção **próprio do Neo4j**, ver a nota abaixo).
 
 Fora do pacote: `resources/` (`.ecore` + XMIs de referência + o dataset
 Northwind em `datasets/`), `oracle/` (Dockerfile + `patches/`), `scripts/`
@@ -50,7 +50,12 @@ teste; **não** há stubs com `NotImplementedError`. A **3.4** (análise e reda�
 concluiu em 17/09/2026, com a prévia do TC qualificada: ver `todolist_fase3.md` e
 `scripts/README.md`. Em aberto está a **Fase 4** — backend Spark opcional para os
 extratores, para separar o que na diferença de crescimento contra o oráculo é
-arquitetura e o que é algoritmo (`fase4_spark.md`, `todolist_fase4.md`).
+arquitetura e o que é algoritmo (`fase4_spark.md`, `todolist_fase4.md`). **4.0 e
+4.1 fechadas** (26/09/2026): o backend Spark do Mongo dá triplas idênticas às do
+Python, e ganha 4,5× no maior tamanho. **4.2 (Neo4j) fechada** (30/09/2026): o
+backend Spark do grafo dá contagens idênticas às do Python, nos testes (driver
+falso) e no `up_larger` real, com ganho indicativo de ~11× (uma corrida). Em
+aberto: **4.3** (determinismo sob partição) e **4.4** (bateria comparativa).
 
 Uma ausência real, para não ser confundida com lacuna de porte:
 
@@ -80,7 +85,7 @@ Comandos comuns:
 ## Key dependencies
 
 - **pyecore** — metamodelo/serialização: carrega `uschema.ecore` e lê/grava XMI (substitui Factory/Package/Switch do EMF via API reflexiva). **Não distribui `py.typed`** — ver o aviso sobre `mypy` em *Coding conventions*.
-- **pyspark** — dependência declarada, **hoje não usada em runtime**. A Fase 2.0 decidiu ler por driver nativo: nenhum conector oficial (Mongo/Neo4j) expõe mais a API RDD que o oráculo usa — viraram DataFrame-only. O `reduce_pairs`/`build_triples` combina por `(min, max, soma)`, comutativo e associativo, então `mapPartitions` entra depois sem reescrever nada. **Fixa o teto de Python em 3.12.**
+- **pyspark** — backend **opcional** dos extratores desde a Fase 4 (`spark=None` continua o padrão, e o caminho Python não importa o `pyspark`). Paraleliza o map-reduce, **nunca** a leitura nem a tipagem: a Fase 2.0 decidiu ler por driver nativo (nenhum conector oficial expõe mais a API RDD que o oráculo usa — viraram DataFrame-only), e cada executor abre o próprio cliente e lê a sua fatia. O `reduce_pairs` entrou no `reduceByKey` sem mudar; do `build_triples`, só o final roda no driver (`_triple_row`) — ele não coube inteiro, porque faz map e reduce sobre documento cru. Exige **Java 17/21** em `JAVA_HOME`. **Fixa o teto de Python em 3.12.**
 - **pymongo** — leitura de `dict`/`bson` do MongoDB (o `_id` é lido genericamente — bug #6).
 - **neo4j** — driver do paradigma grafo (`GraphDatabase.driver(...).execute_query(...)`; o conector Spark não é usado — ver acima).
 - **pydantic** — validação/esquemas de configuração.
@@ -162,9 +167,11 @@ uv run pre-commit install --hook-type pre-commit --hook-type pre-push
 **Markers do pytest** (registrados no `pyproject.toml`, `--strict-markers`
 ativo): marque cada teste como `unit`, `spark` ou `integration`. Só os `unit`
 (rápidos, puros) rodam no pre-commit; `spark`/`integration` ficam para pre-push
-e CI. Hoje **toda a suíte é `unit`** — os extratores da Fase 2 são Python
-(driver nativo), então nenhum teste é `spark`. Se o Spark entrar como
-paralelizador, os testes dele levam `@pytest.mark.spark`.
+e CI. Desde a Fase 4 há testes `spark` (sobem a JVM; exigem Java 17/21 em
+`JAVA_HOME`, ver o README) e `integration` (o gate da 4.1 usa o `mongod` local,
+num banco temporário apagado no fim, e é **pulado** se não houver `mongod`). Os
+testes Spark do Neo4j usam driver falso — o Community tem um banco só, e teste
+não pode sujar o das baterias.
 
 Não relaxe essas checagens para "passar o commit" — corrija o código. A
 tolerância ao "nenhum teste coletado" (exit 5) que existia enquanto a suíte
