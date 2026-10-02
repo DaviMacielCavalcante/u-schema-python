@@ -28,7 +28,7 @@
 | 1 | **Começa agora** — a Fase 3 fechou | a linha de base é a do `results/` já analisado; não se remede para comparar |
 | 2 | **Mongo primeiro; Neo4j só se o Mongo mostrar ganho** | 4.2 é **condicional** e pode não existir; se o Mongo não ganhar, o grafo não se justifica |
 | 3 | **Cada processo lê sua fatia** (`mapPartitions`, cliente por executor) | paraleliza também a leitura, que é o gargalo; exige desenhar as fatias (4.0) |
-| 4 | **Código mantido, não experimento** | backend escolhível na API, testes `@pytest.mark.spark`, JVM no CI |
+| 4 | **Código mantido, não experimento** | engine escolhível na API, testes `@pytest.mark.spark`, JVM no CI |
 
 **O que continua valendo da 2.0, e não se reabre:** a leitura é por **driver
 nativo**. Passar pelo DataFrame do conector destruiria a tipagem BSON
@@ -48,8 +48,8 @@ Fase 3 (linha de base) ─→ 4.0 (fatias + infra Spark) ─→ 4.1 (Mongo) ─�
 | Etapa | Depende de | Libera | Decide |
 |---|---|---|---|
 | **4.0** fatias + `SparkSession` | Fase 3 | 4.1 | como particionar `_id` cobrindo Rota A (`ObjectId`) e B (inteiro) |
-| **4.1** backend Mongo | 4.0 | 4.2, 4.3 | **se existe ganho** — é o portão da 4.2 |
-| **4.2** backend Neo4j | 4.1 **com ganho** | 4.3 | pode não acontecer, e isso é resultado |
+| **4.1** engine Spark (Mongo) | 4.0 | 4.2, 4.3 | **se existe ganho** — é o portão da 4.2 |
+| **4.2** engine Spark (Neo4j) | 4.1 **com ganho** | 4.3 | pode não acontecer, e isso é resultado |
 | **4.3** determinismo sob partição | 4.1 | 4.4 | ordem forçada ou faixa reportada |
 | **4.4** bateria comparativa | 4.3 | fim da fase | a resposta da fase |
 
@@ -57,7 +57,7 @@ Fase 3 (linha de base) ─→ 4.0 (fatias + infra Spark) ─→ 4.1 (Mongo) ─�
 
 ## 4.0 — Fatias e infraestrutura Spark
 
-- [x] `SparkSession` local mínima (`local[*]`), criada e fechada pelo backend, sem
+- [x] `SparkSession` local mínima (`local[*]`), criada e fechada pela engine, sem
       configuração global escondida — `extractors/spark.py::local_session`,
       *context manager* que fecha no `finally`.
 - [x] **Desenhar a fatia do Mongo**: faixas de `_id` sobre a coleção, cobrindo
@@ -102,14 +102,14 @@ e fechando (6 testes `spark`, os primeiros do repositório).
 
 ---
 
-## 4.1 — Backend Spark do extrator MongoDB
+## 4.1 — Engine Spark do extrator MongoDB
 
-> **Estado em 26/09/2026: Gate 4.1 fechado.** O backend (`extractors/mongo.py`)
+> **Estado em 26/09/2026: Gate 4.1 fechado.** A engine (`extractors/mongo.py`)
 > dá triplas idênticas às do Python, como conjunto, nos 5 testes do gate na suíte
 > e, fora dela, nos 9 bancos da comparação avulsa (Northwind + os 8 `up_*`, 3
 > corridas cada). Suíte completa: 665 testes verdes.
 
-- [x] Backend escolhido em `extract_triples` pela `SparkSession` que ela recebe
+- [x] Engine escolhida em `extract_triples` pela `SparkSession` que ela recebe
       (`*, spark=None, slices=None`); `spark=None` é o caminho Python de hoje, e
       nenhum chamador existente muda. **Não** em `extract_database_triples`: ela
       recebe uma conexão já aberta, que não vai para o executor — cada partição
@@ -132,7 +132,7 @@ e fechando (6 testes `spark`, os primeiros do repositório).
       ali — ele recebe documentos crus e faz o map e o reduce; depois do
       `reduceByKey`, o que chega são pares já agrupados. Esse final virou
       `_triple_row`, e a chave canônica virou `_group_key` — os dois
-      compartilhados pelos backends, para que não divirjam em formato. O schema
+      compartilhados pelas engines, para que não divirjam em formato. O schema
       volta por `json.loads` da chave, com as chaves ordenadas em vez da ordem do
       documento; não muda nada a jusante, porque a inferência ordena os campos
       (`TreeSet`, `SchemaInference.java:190-194`).
@@ -179,7 +179,7 @@ Ubuntu é o `SERVER-131779`, na **8.0.35**, ainda não lançada. Até lá:
   comparação de conjuntos.
 - **Medição de tempo (4.1 e 4.4):** **não** nesse modo. A linha de base da Fase 3
   foi medida no `6.17.0-40` com o cache por CPU; medir o porte em outro regime do
-  `mongod` mistura o efeito do backend com o do alocador. Bootar o 6.17 ou
+  `mongod` mistura o efeito da engine com o do alocador. Bootar o 6.17 ou
   esperar a 8.0.35.
 
 Para bootar o 6.17 uma vez só (o próximo boot volta ao padrão):
@@ -190,13 +190,13 @@ sudo reboot
 # depois: `uname -r` deve dar 6.17.0-40-generic; então `sudo systemctl start mongod`
 ```
 
-**Gate 4.1:** para o mesmo banco, o conjunto de `SchemaTriple` do backend Spark é
-**idêntico** ao do backend Python — mesmos esquemas, mesmos `count`, mesmos
+**Gate 4.1:** para o mesmo banco, o conjunto de `SchemaTriple` da engine Spark é
+**idêntico** ao da engine Python — mesmos esquemas, mesmos `count`, mesmos
 timestamps. Sem isso, nada do resto vale.
 
 ---
 
-## 4.2 — Backend Spark do extrator Neo4j — **condicional**
+## 4.2 — Engine Spark do extrator Neo4j — **condicional**
 
 > **Só começa se a 4.1 mostrar ganho.** Sem ganho no documento, o grafo não se
 > justifica: a leitura é client-bound (~30k linhas/s, medido no `E1`) e o
@@ -207,9 +207,9 @@ timestamps. Sem isso, nada do resto vale.
 > gate em `tests/unit/test_extractors_neo4j_spark.py`, validados contra uma
 > implementação de referência fora do repo (passam todos).
 >
-> **Estado em 30/09/2026: Gate 4.2 fechado.** As cinco funções do backend
+> **Estado em 30/09/2026: Gate 4.2 fechado.** As cinco funções da engine
 > (`extractors/neo4j.py`) estão prontas, sem nenhum `TODO(4.2)`. Os 10 testes
-> do gate passam com o driver falso. Fora da suíte, os dois backends deram
+> do gate passam com o driver falso. Fora da suíte, as duas engines deram
 > contagens idênticas como conjunto no `up_larger` do Neo4j local: 9
 > arquétipos, 1,2 milhão de nós contados nos dois lados. Suíte completa: 670
 > testes verdes e 5 pulados (os do gate da 4.1, sem `mongod` no ar).
@@ -268,7 +268,7 @@ timestamps. Sem isso, nada do resto vale.
       (`_merge_counts`) e todo o `neo4j_model.py` (o grafo não passa pelo núcleo
       da Fase 1).
 - [x] Testes `@pytest.mark.spark` com driver falso particionado — 10: a *query*
-      com e sem fatia, o `_merge_counts`, o `sampling_rate` nos dois backends, a
+      com e sem fatia, o `_merge_counts`, o `sampling_rate` nas duas engines, a
       igualdade como conjunto, o `count` de relacionamento por fontes
       distintas, o banco vazio e a porta de entrada por URI com `spark`. O
       driver falso chega aos workers por `cloudpickle.register_pickle_by_value`
@@ -276,11 +276,11 @@ timestamps. Sem isso, nada do resto vale.
       Neo4j de verdade**: o Community tem um banco só, e o teste não pode sujar
       o das baterias.
       O teste da porta por URI entrou em 30/09 para cobrir um buraco: o de
-      `sampling_rate` termina no `raise` e nunca chega à chamada do backend Spark.
+      `sampling_rate` termina no `raise` e nunca chega à chamada da engine Spark.
       Uma chamada errada ali (o caminho Python recebendo a fábrica) passou pelos
       outros 9, e só o `mypy` pegou. **Checado por mutação:** com esse erro de
       volta, o teste novo falha com `AttributeError`.
-- [x] **Comparar os dois backends no Neo4j real.** Medição **avulsa** de
+- [x] **Comparar as duas engines no Neo4j real.** Medição **avulsa** de
       30/09/2026 (uma corrida, boot fora), no `up_larger`: 1,2 milhão de nós e
       10,2 milhões de arestas, com 32 fatias por combinação de labels (64
       partições). Contagens idênticas como conjunto. Python 446s, Spark 41s,
@@ -292,7 +292,7 @@ timestamps. Sem isso, nada do resto vale.
       registrado no desenho. Script e saída em `~/Documents/uschema_fase4_medicoes/`
       (`compare_backends_neo4j.py`/`.out`).
 
-**Gate 4.2:** contagens idênticas às do backend Python, incluindo o `count` de
+**Gate 4.2:** contagens idênticas às da engine Python, incluindo o `count` de
 `RelationshipType` (fontes distintas, não arestas brutas) — é o que a partição
 quebra mais fácil.
 
@@ -307,10 +307,49 @@ já medida no Northwind entre ler por arquivo (15 divergências) e por cursor (1
 
 **Escrever isto antes de rodar a bateria**, ou a primeira corrida vira alarme falso.
 
+> **Desenho decidido em 01/10/2026: a opção 2 (ordem igual por construção).**
+> Testes do gate validados antes contra uma implementação de referência fora do
+> repo. **Implementado em 02/10/2026** (`extractors/mongo.py`): suíte completa
+> com 681 testes verdes e nenhum pulado (com `mongod` no ar). Falta o gate
+> contra o oráculo: os `run_oracle_*` têm esqueleto da opção `--engine`
+> (`TODO(4.3)`), ainda sem corpo.
+>
+> - **A ordem comum é a de primeira aparição, com cada coleção lida em ordem de
+>   `_id`.** No Python, o `find()` ganha `sort("_id", 1)`. No Spark, cada fatia
+>   leva o seu número, a partição lê ordenada por `_id` e emite a posição
+>   (fatia, documento) junto com os dados, o `reduceByKey` fica com a menor
+>   posição (`_reduce_with_position`, que chama o `reduce_pairs` sem mudá-lo) e
+>   o driver ordena por ela.
+> - **"Concatenar as partições por índice" não basta sozinho:** o
+>   `reduceByKey` embaralha a ordem de novo. A posição da primeira aparição
+>   tem de viajar no valor.
+> - **O `sort` dentro da partição é necessário** mesmo com o filtro de faixa: a
+>   coleção menor que o número de fatias vira uma fatia sem limites, com filtro
+>   `{}`, que vem na ordem física.
+> - **O `sort` não muda a linha de base da bateria.** Medido em 01/10/2026: os
+>   oito `up_*` regerados com a semente 23 têm a ordem física igual à de `_id`
+>   (o gerador grava em ordem), e as listas de triplas com e sem `sort` são
+>   idênticas nos oito (13/31/111/421 linhas na Rota A, 21/43/133/463 na B, as
+>   mesmas da Fase 3). Ressalva da Rota A: o contador do `ObjectId` começa
+>   num valor sorteado e dá a volta em 2²⁴; se der a volta durante a geração
+>   (chance de ~1% no `small` a ~7% no `larger`), os documentos daquele segundo
+>   saem fora de ordem. **Muda** o Northwind lido do banco, carregado fora de
+>   ordem: previsão de 12 → 15 divergências (o arquivo está em ordem de
+>   `_id`), a medir.
+> - **O grafo não precisa de nada.** O `neo4j_model` soma os `count` ao fundir
+>   variações repetidas, então não tem o #8. As 40.320 ordens possíveis dos 8
+>   arquétipos do golden-master dão `equivalent=True` com zero divergências nos
+>   quatro XMIs do oráculo. No grafo, o gate é só rodar o `compare()`.
+> - **Testes:** o gate da 4.1 passa a comparar **como lista**; os dados são
+>   gravados fora da ordem de `_id`, para o teste não passar por sorte.
+>   **Checados por mutação:** tirar o `sort` do Python, o `sort` da partição ou
+>   a ordenação no driver, trocar o menor pelo maior, tirar a fatia da posição
+>   ou descartar os dados no *reduce* — cada uma derruba ao menos um teste.
+
 - [ ] Tentar a ordem igual por construção: fatias de `_id` ordenadas, concatenadas
       por índice, reproduzindo a ordem de um cursor ordenado por `_id` — com a
-      linha de base Python rodando o mesmo `sort`. Se fechar, os dois backends
-      ficam **idênticos tripla a tripla** e a dúvida some.
+      linha de base Python rodando o mesmo `sort`. Se fechar, as duas engines
+      ficam **idênticas tripla a tripla** e a dúvida some.
 - [ ] Se não fechar, reportar a **faixa** de divergências não-fatais, nunca um
       número solto.
 - [ ] Registrar o achado em `bugs_originais.md` §#8 — mais uma evidência de
@@ -318,7 +357,7 @@ já medida no Northwind entre ler por arquivo (15 divergências) e por cursor (1
 
 **Gate 4.3:** `compare()` dá `equivalent=True` em todos os tamanhos, com as
 divergências restantes **todas de `count`** e todas na assinatura do #8.
-Divergência estrutural aqui é defeito do backend, não é o #8.
+Divergência estrutural aqui é defeito da engine, não é o #8.
 
 ---
 
@@ -327,17 +366,17 @@ Divergência estrutural aqui é defeito do backend, não é o #8.
 Reaproveita a infra da 3.0; a fase não constrói medição nova, só acrescenta uma
 dimensão.
 
-- [ ] Coluna `backend` (`python`/`spark`) nas tabelas de `results/`, com o
+- [ ] Coluna `engine` (`python`/`spark`) nas tabelas de `results/`, com o
       significado escrito em `dicionario_de_dados.md` **antes** de medir.
-- [ ] Rodar os quatro tamanhos nos dois backends, com a regra da mediana da 3.2.
+- [ ] Rodar os quatro tamanhos nas duas engines, com a regra da mediana da 3.2.
 - [ ] **Separar o boot do trabalho.** O oráculo já mostrou que o boot da JVM
-      domina os tamanhos pequenos (9,21s para 150k nós); o backend Spark paga o
+      domina os tamanhos pequenos (9,21s para 150k nós); a engine Spark paga o
       mesmo pedágio, e sem separá-lo os tamanhos menores não dizem nada.
 - [ ] Reportar as curvas: porte Python, porte Spark e oráculo, com a coluna
       `normalized` (a máquina do artigo é outra).
 - [ ] Responder a pergunta da fase por escrito, nos dois sentidos possíveis.
 
-**Saída:** tabelas de volume com a dimensão `backend` e a resposta da fase.
+**Saída:** tabelas de volume com a dimensão `engine` e a resposta da fase.
 
 ---
 
@@ -356,7 +395,7 @@ dimensão.
       *query* e o `_merge_counts` são `unit` e rodam no pre-commit.
 - [x] `uv run mypy` limpo com `pyspark` (o `pyproject.toml` já libera
       `pyspark.*` do *strict*, por falta de stubs) — 66 arquivos, 25/09/2026,
-      com o backend Mongo dentro. O `SparkSession` do `mongo.py` é importado só
+      com a engine Spark do Mongo dentro. O `SparkSession` do `mongo.py` é importado só
       sob `TYPE_CHECKING`, para o caminho Python não carregar o `pyspark`.
 - [x] Atualizar o **CLAUDE.md**: `pyspark` deixa de ser "declarada, hoje não
       usada em runtime", e a suíte deixa de ser toda `unit`. Corrigir também o
@@ -370,11 +409,11 @@ dimensão.
 
 ## Gate de aceite da Fase 4
 
-- Backend Spark no Mongo (e no Neo4j, se a 4.1 justificar), **opcional**, com o
+- Engine Spark no Mongo (e no Neo4j, se a 4.1 justificar), **opcional**, com o
   Python como padrão e sem mudança no caminho existente.
-- Triplas/arquétipos idênticos entre backends (4.1/4.2) e `equivalent=True`
+- Triplas/arquétipos idênticos entre engines (4.1/4.2) e `equivalent=True`
   contra o oráculo nos quatro tamanhos (4.3).
-- Curva medida nos dois backends, boot separado do trabalho, conclusão escrita
+- Curva medida nas duas engines, boot separado do trabalho, conclusão escrita
   — inclusive se for "sem ganho".
 - Suíte `spark` verde no pre-push e no CI.
 

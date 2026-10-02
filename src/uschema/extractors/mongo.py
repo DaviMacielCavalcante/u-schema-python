@@ -22,7 +22,7 @@ A conexão em si — porte de ``MongoDB2USchema.process``/``processEntity``
 (``:48-58``/``:60-86``) e de ``MongoDB2USchemaMain.run`` (``:45-59``) — é
 ``extract_database_triples``/``extract_triples``, no fim do módulo: driver
 nativo (``pymongo``), não o conector Spark; ver a seção seguinte. O
-``extract_triples`` tem ainda um backend Spark opcional (Fase 4.1), descrito na
+``extract_triples`` tem ainda uma engine Spark opcional (Fase 4.1), descrita na
 última seção.
 
 Por que driver nativo, não conector Spark
@@ -79,8 +79,8 @@ BSON ``int64`` em vez de ``int32``), e ``bool`` também é subclasse de ``int``
 ``_simplify_value`` testa **``Int64`` → ``bool`` → ``int`` genérico**, nessa
 ordem, por isso.
 
-Backend Spark (Fase 4.1)
-------------------------
+Engine Spark (Fase 4.1)
+-----------------------
 Com uma ``SparkSession`` (``spark=None`` é o caminho Python de sempre), o
 ``extract_triples`` usa o Spark para paralelizar o map-reduce, nunca para ler
 ou tipar. Cada partição recebe uma fatia ``(coleção, inferior, superior)`` de
@@ -88,8 +88,7 @@ ou tipar. Cada partição recebe uma fatia ``(coleção, inferior, superior)`` d
 ``generate_document_pair`` ali dentro (``_read_partition``). O que volta ao
 Spark é só ``str`` e ``int``: o BSON não sai do executor.
 
-O ``reduceByKey`` recebe o ``reduce_pairs`` sem *wrapper*, porque a chave é
-``(coleção, _group_key(schema))`` e o valor é só a tripla de dados. Duas
+A chave do ``reduceByKey`` é ``(coleção, _group_key(schema))``. Duas
 consequências, as duas deliberadas:
 
 - **A coleção entra na chave.** As fatias de todas as coleções dividem o mesmo
@@ -100,9 +99,30 @@ consequências, as duas deliberadas:
   ordena os campos antes de usar (o ``TreeSet`` de
   ``SchemaInference.java:190-194``).
 
-A ordem das triplas **não** é a do caminho Python: ela sai do hash do
-``reduceByKey``. Os dois backends são iguais como conjunto; igualar a ordem é a
-Fase 4.3 (``todolist_fase4.md``).
+A ordem das triplas (Fase 4.3)
+------------------------------
+O **#8** torna a inferência dependente da ordem em que as triplas chegam
+(``bugs_originais.md`` §#8): quando duas variações colapsam, sobrevive o
+``count`` da primeira. Então as duas engines precisam devolver as triplas na
+**mesma ordem**, e não só o mesmo conjunto.
+
+A ordem escolhida é a de **primeira aparição, lendo cada coleção em ordem
+crescente de ``_id``**, e as coleções na ordem pedida:
+
+- **Python:** o ``find()`` é ordenado por ``_id``. Sem isso, a ordem seria a
+  física do disco, que muda com o jeito como o banco foi carregado (é o caso das
+  15 contra 12 divergências do Northwind).
+- **Spark:** o ``reduceByKey`` embaralha a ordem, então cada grupo carrega a
+  **posição** em que apareceu primeiro: o número da fatia e o número do
+  documento dentro dela. As fatias são numeradas na ordem das coleções e, dentro
+  de cada coleção, na ordem de ``_id``; cada partição lê a sua fatia ordenada
+  por ``_id``. O ``reduceByKey`` fica com a menor posição
+  (:func:`_reduce_with_position`, que chama o ``reduce_pairs`` sem mudá-lo nos
+  dados), e o driver ordena por ela antes de montar as linhas.
+
+Nenhuma das duas ordens é a do oráculo, que sai do hash do ``reduceByKey`` do
+Java. O ponto é as duas engines darem o **mesmo** resultado, e esse resultado
+não depender da ordem física.
 """
 
 from __future__ import annotations
@@ -169,13 +189,21 @@ SIMPLE_DEFAULT_OBJECTID: dict[str, str] = {"$oid": "000000000000000000000000"}
 #: XMI de referência tem campo ``long``); cobrir com teste dedicado.
 SIMPLE_DEFAULT_LONG: dict[str, str] = {"$numberLong": "0"}
 
-#: Uma fatia do backend Spark: ``(coleção, inferior, superior)``, com os limites
-#: de :func:`~uschema.extractors.partition.ranges_from_boundaries`.
-_Slice = tuple[str, Any, Any]
+#: Uma fatia da engine Spark: ``(coleção, inferior, superior, número)``, com os
+#: limites de :func:`~uschema.extractors.partition.ranges_from_boundaries`. O
+#: número é a posição da fatia na lista de todas as fatias (Fase 4.3).
+_Slice = tuple[str, Any, Any, int]
 
 #: Chave do ``reduceByKey``: ``(coleção, esqueleto canônico)``. A coleção entra
 #: porque as fatias de todas as coleções dividem o mesmo RDD.
 _GroupKey = tuple[str, str]
+
+#: Onde um documento foi lido: ``(número da fatia, número do documento dentro
+#: dela)``. Comparar duas posições como tupla dá a ordem de leitura (Fase 4.3).
+_Position = tuple[int, int]
+
+#: Valor do ``reduceByKey``: a tripla de dados e a posição da primeira aparição.
+_PositionedData = tuple[tuple[int, int, int], _Position]
 
 
 def reduce_pairs(first: tuple[int, int, int], second: tuple[int, int, int]) -> tuple[int, int, int]:
@@ -336,7 +364,7 @@ def generate_document_pair(
 def _group_key(schema: dict[str, Any]) -> str:
     """Chave canônica de agrupamento de um esqueleto.
 
-    Compartilhada pelos dois backends, para que agrupem pelo mesmo critério. Ver
+    Compartilhada pelas duas engines, para que agrupem pelo mesmo critério. Ver
     "Como o agrupamento por assinatura funciona" na docstring do módulo.
 
     Parameters
@@ -360,7 +388,7 @@ def _triple_row(
     """Anexar o ``_type`` ao esqueleto e montar a linha da tripla.
 
     É o passo final do ``processEntity`` (``MongoDB2USchema.java:78-83``), o único
-    que o backend Spark executa no driver.
+    que a engine Spark executa no driver.
 
     Parameters
     ----------
@@ -457,6 +485,14 @@ def extract_database_triples(
 
     Parameters
     ----------
+    Cada coleção é lida **em ordem crescente de ``_id``** (Fase 4.3), não na
+    ordem física do disco: por causa do #8, a ordem de leitura decide qual
+    ``count`` sobrevive ao colapso de variações, e a engine Spark só consegue
+    reproduzir uma ordem que não dependa de como o banco foi carregado. Ver "A
+    ordem das triplas" na docstring do módulo.
+
+    Parameters
+    ----------
     database : pymongo.database.Database
         Conexão já aberta com o banco.
     collections : Iterable of str
@@ -469,12 +505,13 @@ def extract_database_triples(
     list of dict of str to Any
         As triplas de todas as coleções, combinadas numa lista só (uma
         coleção não influencia o agrupamento de outra — ``build_triples`` é
-        chamada uma vez por coleção). Cada item tem as chaves ``"schema"``,
-        ``"count"``, ``"firstTimestamp"`` e ``"lastTimestamp"``.
+        chamada uma vez por coleção), na ordem de primeira aparição. Cada item
+        tem as chaves ``"schema"``, ``"count"``, ``"firstTimestamp"`` e
+        ``"lastTimestamp"``.
     """
     new_list = []
     for name in collections:
-        new_list.extend(build_triples(database[name].find(), name))
+        new_list.extend(build_triples(database[name].find().sort("_id", 1), name))
     return new_list
 
 
@@ -482,15 +519,19 @@ def _read_partition(
     database_uri: str,
     database_name: str,
     partition: Iterable[_Slice],
-) -> Iterator[tuple[_GroupKey, tuple[int, int, int]]]:
+) -> Iterator[tuple[_GroupKey, _PositionedData]]:
     """Ler as fatias de uma partição e emitir os pares já simplificados.
 
     Roda **no executor** (Fase 4.1). A conexão abre aqui dentro, e não no driver,
     porque conexão aberta não atravessa o *pickle*: o que viaja é a URI.
 
     A fronteira de tipagem fica aqui. O ``simplify`` roda antes de qualquer coisa
-    voltar ao Spark, e o que sai é só ``str`` (a chave) e ``int`` (os dados). O
-    BSON nunca sai do executor (item de fronteira da 4.0).
+    voltar ao Spark, e o que sai é só ``str`` (a chave) e ``int`` (os dados e a
+    posição). O BSON nunca sai do executor (item de fronteira da 4.0).
+
+    Cada fatia é lida **em ordem crescente de ``_id``** (Fase 4.3). O filtro de
+    faixa sozinho não garante ordem: a fatia sem limites (coleção menor que o
+    número de fatias) vira ``{}`` e viria na ordem física do disco.
 
     Parameters
     ----------
@@ -500,26 +541,55 @@ def _read_partition(
         Nome do banco. Presa do mesmo jeito.
     partition : Iterable of _Slice
         As fatias desta partição. Com ``parallelize(fatias, len(fatias))``, é uma
-        só, mas a função não depende disso.
+        só, mas a função não depende disso: a posição vem do número da fatia, não
+        do índice da partição.
 
     Yields
     ------
-    tuple of (_GroupKey, tuple of (int, int, int))
-        ``((coleção, esqueleto canônico), (first, last, count))`` por documento.
-        O ``reduceByKey`` combina esses pares depois.
+    tuple of (_GroupKey, _PositionedData)
+        ``((coleção, esqueleto canônico), ((first, last, count), (fatia, documento)))``
+        por documento. O ``reduceByKey`` combina esses pares depois.
     """
     with MongoClient[Mapping[str, Any]](database_uri) as mc:
         db = mc[database_name]
 
-        for name, inferior, superior in partition:
-            cursor = db[name].find(slice_filter(inferior, superior))
+        for name, inferior, superior, slice_number in partition:
+            cursor = db[name].find(slice_filter(inferior, superior)).sort("_id", 1)
 
-            for doc in cursor:
+            for doc_number, doc in enumerate(cursor):
                 schema, data = generate_document_pair(doc)
 
                 key = (name, _group_key(schema))
 
-                yield key, data
+                position = slice_number, doc_number
+                yield key, (data, position)
+
+
+def _reduce_with_position(first: _PositionedData, second: _PositionedData) -> _PositionedData:
+    """Combinar dois valores do mesmo grupo, guardando a primeira aparição.
+
+    É a função do ``reduceByKey`` da engine Spark (Fase 4.3). Os dados vão para
+    o :func:`reduce_pairs`, sem mudar nada nele; das duas posições, fica a menor,
+    que é onde o grupo apareceu primeiro na ordem de leitura. Comutativa e
+    associativa, como o ``reduceByKey`` exige: o ``reduce_pairs`` já é, e o menor
+    de dois também.
+
+    Parameters
+    ----------
+    first, second : _PositionedData
+        ``((first, last, count), (fatia, documento))`` de duas leituras do mesmo
+        grupo.
+
+    Returns
+    -------
+    _PositionedData
+        Os dados combinados pelo :func:`reduce_pairs` e a menor das duas posições.
+    """
+    first_data, first_position = first[0], first[1]
+    second_data, second_position = second[0], second[1]
+    triple = reduce_pairs(first_data, second_data)
+    min_position = min(first_position, second_position)
+    return (triple, min_position)
 
 
 def _extract_triples_spark(
@@ -529,7 +599,7 @@ def _extract_triples_spark(
     collections: Iterable[str],
     slices: int | None,
 ) -> list[dict[str, Any]]:
-    """Backend Spark de :func:`extract_triples` (Fase 4.1).
+    """Engine Spark de :func:`extract_triples` (Fase 4.1).
 
     Parameters
     ----------
@@ -547,8 +617,8 @@ def _extract_triples_spark(
     Returns
     -------
     list of dict of str to Any
-        As mesmas linhas do backend Python, **como conjunto**: a ordem sai do
-        hash do ``reduceByKey``, não da primeira aparição (tratado na 4.3).
+        As mesmas linhas da engine Python, **na mesma ordem** (Fase 4.3): a de
+        primeira aparição, com cada coleção lida em ordem de ``_id``.
     """
     # Import local de propósito: o topo do módulo não pode puxar o pyspark, que é
     # o que spark.py faz ao ser importado. Ver o bloco de imports.
@@ -557,7 +627,7 @@ def _extract_triples_spark(
     if slices is None:
         slices = default_slices()
 
-    slices_list = []
+    slices_list: list[_Slice] = []
 
     with MongoClient[Mapping[str, Any]](database_uri) as mc:
         for name in collections:
@@ -566,7 +636,7 @@ def _extract_triples_spark(
             limits = ranges_from_boundaries(ids_boundaries_list)
 
             for inferior_limit, superior_limit in limits:
-                slices_list.append((name, inferior_limit, superior_limit))
+                slices_list.append((name, inferior_limit, superior_limit, len(slices_list)))
 
     if not slices_list:
         return []
@@ -575,13 +645,15 @@ def _extract_triples_spark(
 
     rdd_partitioned = rdd.mapPartitions(partial(_read_partition, database_uri, database_name))
 
-    rdd_reduced = rdd_partitioned.reduceByKey(reduce_pairs)
+    rdd_reduced = rdd_partitioned.reduceByKey(_reduce_with_position)
 
     pairs_list = rdd_reduced.collect()
 
+    pairs_list_sorted = sorted(pairs_list, key=lambda x: x[1][1])
+
     rows = []
 
-    for key, data in pairs_list:
+    for key, (data, _) in pairs_list_sorted:
         name = key[0]
         schema = json.loads(key[1])
 
@@ -619,17 +691,19 @@ def extract_triples(
     collections : Iterable of str
         Nomes das coleções a extrair.
     spark : pyspark.sql.SparkSession or None, optional
-        Backend. ``None`` (padrão) é o caminho Python de sempre. Uma sessão liga o
-        backend Spark (Fase 4.1). A sessão vem aberta de fora para que a bateria
+        Engine. ``None`` (padrão) é o caminho Python de sempre. Uma sessão liga a
+        engine Spark (Fase 4.1). A sessão vem aberta de fora para que a bateria
         meça o boot da JVM separado do trabalho (4.4).
     slices : int or None, optional
-        Fatias por coleção no backend Spark; ignorado sem ``spark``.
+        Fatias por coleção na engine Spark; ignorado sem ``spark``.
 
     Returns
     -------
     list of dict of str to Any
         As triplas de todas as coleções indicadas, cada uma com as chaves
         ``"schema"``, ``"count"``, ``"firstTimestamp"`` e ``"lastTimestamp"``.
+        A lista e a ordem são as mesmas nas duas engines (Fase 4.3): primeira
+        aparição, com cada coleção lida em ordem de ``_id``.
     """
     if spark is None:
         with MongoClient[Mapping[str, Any]](database_uri) as client:
