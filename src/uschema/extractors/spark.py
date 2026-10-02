@@ -1,8 +1,8 @@
-"""Infraestrutura do backend Spark da extração (Fase 4.0).
+"""Infraestrutura da engine Spark da extração (Fase 4.0).
 
 Só a sessão e o número de fatias moram aqui. O uso do Spark — o
 ``mapPartitions`` sobre as faixas de :mod:`uschema.extractors.partition` e o
-``reduceByKey`` sobre o ``reduce_pairs`` — fica no backend de cada extrator
+``reduceByKey`` sobre o ``reduce_pairs`` — fica na engine de cada extrator
 (4.1 e 4.2).
 
 Papel do Spark, e o que ele **não** é

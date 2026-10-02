@@ -703,7 +703,7 @@ def _read_label_combination(
         Fração de relacionamentos de saída amostrados; ``1.0`` desliga a
         amostragem (sem cláusula extra no ``WHERE``).
     slice_index, slices : int or None, optional
-        Fatia do backend Spark (Fase 4.2): só os nós com
+        Fatia da engine Spark (Fase 4.2): só os nós com
         ``id(n) % slices == slice_index``. ``None`` nos dois (padrão) é a
         *query* de sempre, sem filtro — o caminho Python não muda. O filtro é
         sobre ``n``, antes do ``OPTIONAL MATCH``, então todas as arestas de um
@@ -792,7 +792,7 @@ def extract_database_archetype_counts(
 
 
 #: Fábrica de driver: chamada sem argumentos, devolve um driver usável com
-#: ``with``. O backend Spark recebe a fábrica, e não o driver, porque driver
+#: ``with``. A engine Spark recebe a fábrica, e não o driver, porque driver
 #: aberto não atravessa o *pickle*; cada partição chama a fábrica e abre o seu.
 #: Em produção é ``partial(GraphDatabase.driver, uri, auth=auth)``; nos testes,
 #: um driver falso.
@@ -887,7 +887,7 @@ def _extract_archetype_counts_spark(
     sampling_rate: float,
     slices: int | None,
 ) -> list[dict[str, Any]]:
-    """Backend Spark da extração do grafo (Fase 4.2).
+    """Engine Spark da extração do grafo (Fase 4.2).
 
     Parameters
     ----------
@@ -907,7 +907,7 @@ def _extract_archetype_counts_spark(
     Returns
     -------
     list of dict of str to Any
-        As mesmas contagens do backend Python (formato de
+        As mesmas contagens da engine Python (formato de
         :func:`build_archetype_counts`), **como conjunto**: a ordem sai do
         hash do ``reduceByKey`` (tratado na 4.3).
     """
@@ -947,11 +947,11 @@ def extract_archetype_counts_from_uri(
     spark: SparkSession | None = None,
     slices: int | None = None,
 ) -> list[dict[str, Any]]:
-    """Abrir a conexão com o Neo4j e extrair as contagens, num dos dois backends.
+    """Abrir a conexão com o Neo4j e extrair as contagens, numa das duas engines.
 
     Porta de entrada por URI — o par, no grafo, do ``extract_triples`` do Mongo.
     O caminho Python é o :func:`extract_database_archetype_counts` de sempre, só
-    que com o driver aberto aqui. O backend Spark (Fase 4.2) precisa da URI, e
+    que com o driver aberto aqui. A engine Spark (Fase 4.2) precisa da URI, e
     não de um driver aberto, porque cada partição abre o seu.
 
     Parameters
@@ -965,10 +965,10 @@ def extract_archetype_counts_from_uri(
     sampling_rate : float, optional
         Ver :func:`extract_database_archetype_counts`.
     spark : pyspark.sql.SparkSession or None, optional
-        Backend. ``None`` (padrão) é o caminho Python. A sessão vem aberta de
+        Engine. ``None`` (padrão) é o caminho Python. A sessão vem aberta de
         fora para que a bateria meça o boot da JVM separado do trabalho (4.4).
     slices : int or None, optional
-        Fatias por combinação de labels no backend Spark; ignorado sem ``spark``.
+        Fatias por combinação de labels na engine Spark; ignorado sem ``spark``.
 
     Returns
     -------
@@ -978,7 +978,7 @@ def extract_archetype_counts_from_uri(
     Raises
     ------
     ValueError
-        Se ``sampling_rate`` for ``<= 0`` ou ``> 1``, nos dois backends.
+        Se ``sampling_rate`` for ``<= 0`` ou ``> 1``, nas duas engines.
     """
     if spark is None:
         with GraphDatabase.driver(uri, auth=auth) as driver:

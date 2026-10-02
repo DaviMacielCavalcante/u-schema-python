@@ -1,6 +1,6 @@
-"""Gate da 4.2: o backend Spark do extrator Neo4j contra o backend Python.
+"""Gate da 4.2: a engine Spark do extrator Neo4j contra a engine Python.
 
-O gate (``todolist_fase4.md``): contagens **idênticas** às do backend Python,
+O gate (``todolist_fase4.md``): contagens **idênticas** às da engine Python,
 incluindo o ``count`` de ``RelationshipType`` — fontes distintas, não arestas
 brutas, que é o que uma partição mal feita quebra primeiro. A comparação é
 **como conjunto** de ``(arquétipo, contagem)``: a ordem sai do hash do
@@ -277,7 +277,7 @@ def test_merge_counts_soma_e_mantem_o_arquetipo() -> None:
 
 @pytest.mark.unit
 @pytest.mark.parametrize("taxa", [0.0, -0.5, 1.5])
-def test_sampling_rate_invalido_nos_dois_backends(taxa: float) -> None:
+def test_sampling_rate_invalido_nas_duas_engines(taxa: float) -> None:
     # Sem spark: o caminho Python valida (driver do neo4j é preguiçoso, não conecta).
     with pytest.raises(ValueError, match="Sampling rate"):
         extract_archetype_counts_from_uri("bolt://localhost:1", sampling_rate=taxa)
@@ -294,7 +294,7 @@ def test_sampling_rate_invalido_nos_dois_backends(taxa: float) -> None:
 
 
 @pytest.mark.spark
-def test_backends_iguais_como_conjunto(spark: SparkSession) -> None:
+def test_engines_iguais_como_conjunto(spark: SparkSession) -> None:
     graph = _sample_graph()
 
     python_rows = extract_database_archetype_counts(_GraphDriver(graph))  # type: ignore[arg-type]
@@ -361,8 +361,8 @@ def test_banco_vazio_devolve_lista_vazia(spark: SparkSession) -> None:
 def test_porta_por_uri_com_spark_igual_ao_python(
     spark: SparkSession, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Com ``spark`` e taxa válida, ``extract_archetype_counts_from_uri`` usa o
-    backend Spark com a fábrica certa. O teste de ``sampling_rate`` para no
+    """Com ``spark`` e taxa válida, ``extract_archetype_counts_from_uri`` usa a
+    engine Spark com a fábrica certa. O teste de ``sampling_rate`` para no
     ``raise`` e nunca chega a essa chamada."""
     monkeypatch.setattr(GraphDatabase, "driver", _fake_neo4j_driver)
 

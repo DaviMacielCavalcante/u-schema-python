@@ -1,7 +1,7 @@
 # Fase 4 — Spark como paralelizador da extração (guia detalhado)
 
 **Parte de:** `roadmap_portabilidade.md`
-**Entregável:** backend Spark opcional para os dois extratores + bateria comparativa · **Pré-requisito:** Fase 3 fechada (é dela que vem a linha de base)
+**Entregável:** engine Spark opcional para os dois extratores + bateria comparativa · **Pré-requisito:** Fase 3 fechada (é dela que vem a linha de base)
 
 > **Este documento é o plano; as tarefas e o status estão em
 > `todolist_fase4.md`**, que é a fonte da verdade da fase — mesma divisão das
@@ -17,7 +17,7 @@
 
 ## Objetivo
 
-Dar aos extratores da Fase 2 um **backend Spark opcional**, mantendo o
+Dar aos extratores da Fase 2 uma **engine Spark opcional**, mantendo o
 Python como padrão, e medir o que ele muda na curva tempo × volume. O
 `pyspark` já é dependência declarada (e é o motivo do teto em Python 3.12);
 hoje não é usado em runtime. A Fase 4 ou o justifica com medida, ou o remove.
@@ -83,9 +83,9 @@ roda dentro do executor, e o que volta é o dict de sentinelas — `str`/`int`/
 
 ---
 
-## 4.1 — Backend Spark do extrator MongoDB
+## 4.1 — Engine Spark do extrator MongoDB
 
-O backend entra em `extract_triples`, escolhido pela `SparkSession` que ela
+A engine entra em `extract_triples`, escolhida pela `SparkSession` que ela
 recebe; **o padrão continua Python** (`spark=None`) e nenhum caminho existente
 muda de assinatura. Não entra em `extract_database_triples` porque ela recebe
 uma conexão já aberta, e conexão aberta não vai para o executor: cada partição
@@ -99,13 +99,13 @@ trabalho para até a causa estar entendida. Do `build_triples`, só o final roda
 no driver, sobre o resultado coletado: anexar o `_type` e montar as linhas. O
 resto dele — o map e o reduce sobre documentos crus — é o que o Spark substitui.
 
-**Gate 4.1:** para o mesmo banco, o conjunto de `SchemaTriple` do backend Spark
+**Gate 4.1:** para o mesmo banco, o conjunto de `SchemaTriple` da engine Spark
 é **idêntico** ao do Python — mesmos esquemas, mesmos `count`, mesmos
 timestamps.
 
 ---
 
-## 4.2 — Backend Spark do extrator Neo4j — condicional ao ganho da 4.1
+## 4.2 — Engine Spark do extrator Neo4j — condicional ao ganho da 4.1
 
 **Só acontece se o Mongo mostrar ganho** (decisão de 17/09/2026). Sem ganho no
 documento, o grafo não se justifica: a leitura é client-bound (~30k linhas/s,
@@ -137,7 +137,7 @@ A leitura de cada partição continua **lazy** (*streaming*) — o `E1` foi
 exatamente a leitura *eager* enchendo o buffer, e repeti-la dentro de um
 executor esconderia o problema em vez de mostrá-lo.
 
-**Gate 4.2:** contagens idênticas às do backend Python, incluindo a
+**Gate 4.2:** contagens idênticas às da engine Python, incluindo a
 semântica de `count` em `RelationshipType` (fontes distintas, não arestas
 brutas) — é a que a partição mais facilmente quebra.
 
@@ -151,7 +151,7 @@ variações descarta o `meta` da ocorrência perdida, então uma ordem diferente
 move a subcontagem de lugar. É a mesma sensibilidade já medida entre ler o
 Northwind por arquivo (15 divergências) e por cursor (12), com o mesmo dado.
 
-Consequência: **mudar de backend muda a quantidade de divergências não-fatais,
+Consequência: **mudar de engine muda a quantidade de divergências não-fatais,
 sem quebrar a equivalência.** Isso é resultado esperado, não regressão — e
 precisa estar escrito antes de a bateria rodar, ou vira alarme falso.
 
@@ -161,7 +161,7 @@ Duas formas de tratar, e a segunda é a que se tenta primeiro:
 2. **Tornar as duas ordens iguais por construção:** particionar por faixa de
    `_id` ordenada e concatenar as partições por índice reproduz a ordem de um
    cursor ordenado por `_id`. A linha de base Python roda com o mesmo
-   `sort`, e aí os dois backends ficam **idênticos tripla a tripla** — o que
+   `sort`, e aí as duas engines ficam **idênticas tripla a tripla** — o que
    remove a dúvida inteira em vez de documentá-la.
 
 Se (2) não fechar, cai-se para (1) **com a faixa medida**, nunca com um número
@@ -170,7 +170,7 @@ ordem-dependência, agora por partição.
 
 **Gate 4.3:** `compare()` dá `equivalent=True` nos dois paradigmas e em todos os
 tamanhos, com as divergências restantes **todas de `count`** e todas na
-assinatura do #8. Divergência estrutural aqui é defeito do backend, não do #8.
+assinatura do #8. Divergência estrutural aqui é defeito da engine, não do #8.
 
 ---
 
@@ -179,39 +179,39 @@ assinatura do #8. Divergência estrutural aqui é defeito do backend, não do #8
 A bateria da Fase 3 é reaproveitada — a fase não constrói medição nova, só
 acrescenta uma dimensão.
 
-Os quatro tamanhos rodam nos dois backends, com a regra da mediana da 3.2, e o
+Os quatro tamanhos rodam nas duas engines, com a regra da mediana da 3.2, e o
 resultado sai como **três curvas** — porte Python, porte Spark e oráculo —, com a
 coluna `normalized`, já que a máquina do artigo é outra. As tabelas de `results/`
-ganham a coluna `backend`, com o significado escrito em `dicionario_de_dados.md`
+ganham a coluna `engine`, com o significado escrito em `dicionario_de_dados.md`
 **antes** de medir.
 
 Uma armadilha de leitura: o **custo fixo de boot** da JVM/Spark tem de sair do
 tempo de trabalho. O oráculo já mostrou que ele domina os tamanhos pequenos
-(9,21s para 150k nós, quase tudo boot); o backend Spark paga o mesmo pedágio, e
+(9,21s para 150k nós, quase tudo boot); a engine Spark paga o mesmo pedágio, e
 sem separá-lo a comparação nos tamanhos menores não diz nada.
 
-A infraestrutura que a decisão de manter o backend exige — JVM no CI para o job
+A infraestrutura que a decisão de manter a engine exige — JVM no CI para o job
 de testes `spark`, pre-commit continuando só com `unit` — está no todolist.
 
-**Saída:** as tabelas de volume com a dimensão `backend`, e a resposta à pergunta da fase.
+**Saída:** as tabelas de volume com a dimensão `engine`, e a resposta à pergunta da fase.
 
 ---
 
 ## Gate de aceite da Fase 4
 
-- Backend Spark disponível nos dois extratores, **opcional**, com o Python
+- Engine Spark disponível nos dois extratores, **opcional**, com o Python
   como padrão e sem mudança de comportamento no caminho existente.
-- Triplas/arquétipos idênticos entre backends (4.1/4.2) e `equivalent=True`
+- Triplas/arquétipos idênticos entre engines (4.1/4.2) e `equivalent=True`
   contra o oráculo nos quatro tamanhos (4.3).
-- Curva tempo × volume medida nos dois backends, com boot separado do trabalho,
+- Curva tempo × volume medida nas duas engines, com boot separado do trabalho,
   e a conclusão declarada nos dois sentidos possíveis — inclusive "não houve
   ganho", que fecha o gate igual.
 - Suíte `spark` verde no pre-push e no CI.
 
 ## Entregáveis
 
-Backend Spark em `extractors/mongo.py` e `extractors/neo4j.py`, testes
-`@pytest.mark.spark`, coluna `backend` nas tabelas e no dicionário de dados, a
+Engine Spark em `extractors/mongo.py` e `extractors/neo4j.py`, testes
+`@pytest.mark.spark`, coluna `engine` nas tabelas e no dicionário de dados, a
 tabela comparativa das três curvas, e o material do capítulo sobre a origem da
 diferença de crescimento.
 

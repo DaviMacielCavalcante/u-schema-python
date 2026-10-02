@@ -1,4 +1,4 @@
-"""Infraestrutura do backend Spark (Fase 4.0).
+"""Infraestrutura da engine Spark (Fase 4.0).
 
 Dois tipos de teste convivem aqui, e é de propósito: ``default_slices`` é
 aritmética pura (``unit``, roda no pre-commit), enquanto ``local_session`` sobe
@@ -87,7 +87,7 @@ def test_particoes_preservam_a_ordem_no_collect() -> None:
 
     ``collect()`` devolve partição por partição, na ordem do índice — é isso
     que permite reconstruir a ordem do cursor ordenado por ``_id`` e manter os
-    dois backends idênticos tripla a tripla. Se o Spark deixasse de garantir
+    duas engines idênticas tripla a tripla. Se o Spark deixasse de garantir
     isso, a ordem-dependência do #8 voltaria a morder.
     """
     with local_session(cores=4) as spark:

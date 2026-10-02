@@ -109,7 +109,7 @@ distintos cresce 13 → 421 no documento) e **arquitetural** (o oráculo distrib
 o map-reduce em executores; o porte roda single-thread). A Fase 4 separa as
 duas rodando o **mesmo** código de assinatura sob um paralelizador.
 
-- **Backend Spark opcional** (`mapPartitions` + `reduceByKey`), com o Python como
+- **Engine Spark opcional** (`mapPartitions` + `reduceByKey`), com o Python como
   padrão. Começa pelo **MongoDB**; o **Neo4j fica condicional** ao Mongo mostrar
   ganho — sem ele, o grafo não se justifica (leitura client-bound e nove
   arquétipos em todos os tamanhos). A `reduce_pairs` já é comutativa e
@@ -119,7 +119,7 @@ duas rodando o **mesmo** código de assinatura sob um paralelizador.
   a assinatura. A partição é por coleção / combinação de labels, subparticionada
   por faixa de `_id` (sem isso, o User Profiles dá duas partições úteis).
 - **Determinismo sob partição é o ponto delicado:** o `count` é invariante à
-  ordem, mas o **#8 não é** — mudar de backend move a subcontagem de lugar sem
+  ordem, mas o **#8 não é** — mudar de engine move a subcontagem de lugar sem
   quebrar a equivalência, como já acontece entre ler o Northwind por arquivo e
   por cursor.
 - **Nenhum ganho também fecha o gate**: joga a diferença de curva inteira para o
@@ -144,6 +144,6 @@ O risco é **tempo**, não impossibilidade. Com a metacamada fora do caminho cr�
 | 1 | núcleo `doc2uschema` em Python (inferência completa) | cada módulo ≡ XMI-oráculo (estrutural) | concluída |
 | 2 | extratores MongoDB + Neo4j (driver nativo, não PySpark) | contagens == Java; XMI ≡ oráculo | concluída |
 | 3 | ponta a ponta, equivalência + volume, bugs corrigidos | Northwind ok; tendência Tabela 4 reproduzida | concluída |
-| 4 | backend Spark opcional (Mongo; Neo4j condicional) + bateria comparativa | triplas idênticas entre backends; `equivalent=True`; curva medida nos dois (inclusive "sem ganho") | em aberto |
+| 4 | engine Spark opcional (Mongo; Neo4j condicional) + bateria comparativa | triplas idênticas entre engines; `equivalent=True`; curva medida nos dois (inclusive "sem ganho") | em aberto |
 
 **Sequência:** 0 → 1 → 2 → 3 → 4. Metacamada: trabalho futuro. Sirius/UI: fora de escopo (reconstruível em outra stack se desejado).

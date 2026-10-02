@@ -52,9 +52,9 @@ they are catalogued, with line-level evidence, in `bugs_originais.md`.
 Neither database is required to run the test suite, and neither is required for
 the file-based Northwind equivalence path — the 17 JSONL files are versioned
 under `resources/datasets/northwind/`. The one exception is opportunistic: the
-Phase 4 MongoDB backend tests (marked `integration`) use a `mongod` on
+Phase 4 MongoDB Spark-engine tests (marked `integration`) use a `mongod` on
 `localhost:27017` when one answers — in a throwaway database, dropped afterwards
-— and are **skipped** otherwise. The Neo4j backend tests use a fake driver.
+— and are **skipped** otherwise. The Neo4j Spark-engine tests use a fake driver.
 
 > **MongoDB on recent Ubuntu kernels.** `mongod` 8.0 refuses to start on Linux
 > kernels 6.19 through 7.0.13 ([SERVER-121912](https://jira.mongodb.org/browse/SERVER-121912)).
