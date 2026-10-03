@@ -54,8 +54,10 @@ arquitetura e o que é algoritmo (`fase4_spark.md`, `todolist_fase4.md`). **4.0 
 4.1 fechadas** (26/09/2026): a engine Spark do Mongo dá triplas idênticas às do
 Python, e ganha 4,5× no maior tamanho. **4.2 (Neo4j) fechada** (30/09/2026): a
 engine Spark do grafo dá contagens idênticas às do Python, nos testes (driver
-falso) e no `up_larger` real, com ganho indicativo de ~11× (uma corrida). Em
-aberto: **4.3** (determinismo sob partição) e **4.4** (bateria comparativa).
+falso) e no `up_larger` real, com ganho indicativo de ~11× (uma corrida). **4.3
+(determinismo sob partição) fechada** (03/10/2026): as duas engines do Mongo leem
+cada coleção em ordem de `_id` e dão triplas idênticas, e o gate contra o
+oráculo passou nos dois paradigmas. Em aberto: **4.4** (bateria comparativa).
 
 Uma ausência real, para não ser confundida com lacuna de porte:
 

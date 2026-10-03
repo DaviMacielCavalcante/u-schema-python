@@ -212,7 +212,7 @@ produzem modelos diferentes:
 | Caminho de leitura | Divergências não-fatais | `Orders` | `Purchase_orders` | `Products` |
 |---|---|---|---|---|
 | Arquivos `.json` (ordem de linha) | **15** | 24 | 22 | 40 |
-| `MongoClient` (ordem do cursor) | **12** | 38 | 23 | 40 |
+| `MongoClient` (ordem do cursor, sem `sort`) | **12** | 38 | 23 | 40 |
 
 Causa cravada: a coleção `orders` devolve `_id` na ordem `30, 31, 32, 33…` no
 arquivo e `33, 37, 32, 30…` no cursor (banco carregado com inserção
@@ -287,7 +287,7 @@ Rota A; 21/43/133/463 na B).
 
 Os dois achados não se contradizem — eles isolam a variável:
 
-- **Northwind:** *mesmo* dado, ordem de leitura *diferente* (arquivo vs. cursor) → resultado **diferente** (15 vs. 12 divergências).
+- **Northwind:** *mesmo* dado, ordem de leitura *diferente* (arquivo vs. cursor) → resultado **diferente** (15 vs. 12 divergências). Desde a 4.3 o cursor lê em ordem de `_id` e os dois caminhos dão 15 — ver a seção seguinte.
 - **User Profiles:** dado *diferente* (3 sementes), ordem de leitura *igual* (o gerador insere em `for i in range(n)` e o cursor devolve aproximadamente na ordem de inserção) → resultado **igual**.
 
 Ou seja: **o que decide qual variação sobrevive ao colapso é a ordem em que as
@@ -295,6 +295,47 @@ ocorrências chegam, não quais valores elas têm.** Consequência prática para
 texto: os percentuais podem ser citados como propriedade estrutural; o que
 precisa vir declarado junto é o **caminho de extração**, porque é ele que fixa
 a ordem.
+
+### Ordem-dependência sob partição (Fase 4.3, 03/10/2026)
+
+A engine Spark da Fase 4 lê cada coleção em fatias, em paralelo, e o
+`reduceByKey` devolve as triplas na ordem do hash, não na de primeira aparição.
+Pelo #8, outra ordem move o `count` que sobrevive ao colapso: com o mesmo dado,
+a engine Spark daria divergências de `count` diferentes das da engine Python —
+um alarme falso com cara de defeito da engine.
+
+**A resposta foi fixar a ordem no porte, não corrigir o #8.** As duas engines
+leem cada coleção em ordem de `_id`. Na Python, o `find()` ganhou
+`sort("_id", 1)`; na Spark, cada partição lê ordenada, a posição (fatia,
+documento) viaja junto com os dados, o *reduce* fica com a menor e o driver
+ordena por ela. O #8 continua descartando o `meta` da ocorrência que chega
+depois — a mesma nas duas engines. Desenho e testes em `todolist_fase4.md` §4.3.
+
+**Evidência** (gate de 03/10/2026, semente 23, engine Spark contra o oráculo):
+
+| Paradigma | Corridas | Contra o oráculo | Engine Spark × Python |
+|---|---|---|---|
+| Documento (User Profiles) | 8 bancos | `equivalent=True`; 46 divergências, todas `count` não-fatais | as mesmas 46, linha a linha; XMI igual (Rota B byte a byte; na A, só os timestamps do `ObjectId`) |
+| Grafo | 4 tamanhos | `equivalent=True`, zero divergências | só muda a ordem de entidades e variações |
+
+O grafo não tem o #8: o `neo4j_model` soma os `count` ao fundir variações
+repetidas, então a ordem não muda o resultado — as 40.320 ordens dos 8
+arquétipos do golden-master dão zero divergências.
+
+**Consequência no Northwind.** O banco foi carregado fora de ordem, e o arquivo
+está em ordem de `_id`. Com o cursor ordenado, o caminho `database` passou de
+**12 para 15** divergências — as mesmas 15 do caminho `file`, linha a linha, com
+XMI idêntico. `equivalent=True` e 14/17 se mantêm nos dois.
+
+**O que o `sort` não faz: alinhar o porte com o oráculo.** O conector Spark do
+Java lê na ordem dele, e por isso as divergências de `count` entre porte e
+oráculo continuam — são as 46 da tabela. O que mudou é que o porte deixou de
+depender da ordem física do banco.
+
+**Os números da bateria canônica de 27/08 seguem valendo como estão.** Nos User
+Profiles o `sort` não muda nada, porque a ordem física já é a de `_id` (as listas
+de triplas com e sem `sort` são idênticas nos oito bancos). No Northwind, o 12
+publicado é o do cursor sem `sort`, e precisa vir declarado assim.
 
 ### Incerteza declarada, adjacente ao #8
 

@@ -55,10 +55,12 @@ e o banco pelo cursor do `pymongo` — e compara cada um com
 uv run python scripts/run_northwind.py
 ```
 
-Os dois caminhos existem porque o **#8 é sensível à ordem de leitura**: dá 15
-divergências por arquivo e 12 por cursor, com o mesmo dado. O invariante
-citável não é esse número — é `equivalent=True` mais **14/17** coleções
-fechando a contagem, que vale nos dois caminhos.
+Os dois caminhos existem porque o **#8 é sensível à ordem de leitura**: na
+bateria canônica (27/08) deram 15 divergências por arquivo e 12 por cursor, com
+o mesmo dado. Desde a 4.3 o cursor lê em ordem de `_id`, que é a ordem do
+arquivo, e os dois caminhos dão as mesmas 15, com XMI idêntico (medido em
+03/10/2026). O invariante citável não é esse número — é `equivalent=True` mais
+**14/17** coleções fechando a contagem, que vale nos dois caminhos.
 
 Os JSONs estão versionados em `resources/datasets/northwind/` (BSD 2-Clause, com
 o `LICENSE` junto), então o caminho `file` **roda sem banco e sem dependência

@@ -307,12 +307,13 @@ já medida no Northwind entre ler por arquivo (15 divergências) e por cursor (1
 
 **Escrever isto antes de rodar a bateria**, ou a primeira corrida vira alarme falso.
 
-> **Desenho decidido em 01/10/2026: a opção 2 (ordem igual por construção).**
-> Testes do gate validados antes contra uma implementação de referência fora do
-> repo. **Implementado em 02/10/2026** (`extractors/mongo.py`): suíte completa
-> com 681 testes verdes e nenhum pulado (com `mongod` no ar). Falta o gate
-> contra o oráculo: os `run_oracle_*` têm esqueleto da opção `--engine`
-> (`TODO(4.3)`), ainda sem corpo.
+> **Estado em 03/10/2026: Gate 4.3 fechado.** Desenho decidido em 01/10/2026 (a
+> opção 2, ordem igual por construção), com os testes do gate validados antes
+> contra uma implementação de referência fora do repo. Implementado em
+> 02/10/2026 (`extractors/mongo.py`): suíte completa com 681 testes verdes e
+> nenhum pulado (com `mongod` no ar). Gate contra o oráculo em 03/10/2026, nos
+> dois paradigmas (abaixo). Registrado em `bugs_originais.md` §#8,
+> "Ordem-dependência sob partição".
 >
 > - **A ordem comum é a de primeira aparição, com cada coleção lida em ordem de
 >   `_id`.** No Python, o `find()` ganha `sort("_id", 1)`. No Spark, cada fatia
@@ -335,7 +336,7 @@ já medida no Northwind entre ler por arquivo (15 divergências) e por cursor (1
 >   (chance de ~1% no `small` a ~7% no `larger`), os documentos daquele segundo
 >   saem fora de ordem. **Muda** o Northwind lido do banco, carregado fora de
 >   ordem: previsão de 12 → 15 divergências (o arquivo está em ordem de
->   `_id`), a medir.
+>   `_id`), confirmada em 03/10/2026 (abaixo).
 > - **O grafo não precisa de nada.** O `neo4j_model` soma os `count` ao fundir
 >   variações repetidas, então não tem o #8. As 40.320 ordens possíveis dos 8
 >   arquétipos do golden-master dão `equivalent=True` com zero divergências nos
@@ -347,7 +348,7 @@ já medida no Northwind entre ler por arquivo (15 divergências) e por cursor (1
 >   ou descartar os dados no *reduce* — cada uma derruba ao menos um teste.
 >
 > **Gate contra o oráculo rodado em 03/10/2026.** Os dois `run_oracle_*` ganharam
-> `--engine`/`--slices` (ainda fora de commit). Semente 23, engine Spark, tabelas
+> `--engine`/`--slices` (commit `4da37c4`). Semente 23, engine Spark, tabelas
 > fora de `results/` (`out/gate_4_3/` e `out/gate_4_3_neo4j/`, com os logs).
 >
 > - **Mongo, 8 bancos: passou.** `equivalent=True` nos oito. As 46 divergências
@@ -374,14 +375,21 @@ já medida no Northwind entre ler por arquivo (15 divergências) e por cursor (1
 - [ ] Se não fechar, reportar a **faixa** de divergências não-fatais, nunca um
       número solto. *Não se aplica: fechou.*
 - [x] Gate do grafo no `up_larger` — passou na segunda tentativa (03/10/2026).
-- [ ] Medir o Northwind lido do banco com o `sort` (`run_northwind.py`, outro
-      `--output-dir`): previsão de 12 → 15 divergências.
-- [ ] Registrar o achado em `bugs_originais.md` §#8 — mais uma evidência de
-      ordem-dependência, agora por partição.
+- [x] Medir o Northwind lido do banco com o `sort` (`run_northwind.py`, outro
+      `--output-dir`): previsão de 12 → 15 divergências. **Confirmada em
+      03/10/2026** (`out/northwind_4_3/`): o caminho `database` dá 15, idênticas
+      linha a linha às do `file`, com XMI igual byte a byte; o `file` segue com
+      as mesmas 15 da bateria canônica. `equivalent=True` e 14/17 nos dois. O
+      XMI canônico `out/porte/mongo_northwind_database.xmi` foi restaurado; o
+      novo está em `out/northwind_4_3/mongo_northwind_database_sorted.xmi`.
+- [x] Registrar o achado em `bugs_originais.md` §#8 — mais uma evidência de
+      ordem-dependência, agora por partição. Feito em 03/10/2026 ("Ordem-
+      dependência sob partição"), com o Northwind.
 
 **Gate 4.3:** `compare()` dá `equivalent=True` em todos os tamanhos, com as
 divergências restantes **todas de `count`** e todas na assinatura do #8.
-Divergência estrutural aqui é defeito da engine, não é o #8.
+Divergência estrutural aqui é defeito da engine, não é o #8. **Cumprido em
+03/10/2026**, nos dois paradigmas.
 
 ---
 
