@@ -1,4 +1,4 @@
-# scripts/ — baterias de avaliação e geradores (Fase 3)
+# scripts/ — baterias de avaliação e geradores (Fases 3 e 4)
 
 Scripts de execução das baterias de **equivalência** e **volume**, fora do pacote
 importável.
@@ -8,9 +8,11 @@ importável.
 > significa, quem produziu o número e as leituras que induzem a erro. Este
 > README descreve *como rodar*; o dicionário, *o que sai*.
 >
-> Esquema revisado em 15/08/2026: semente única com padrão, tabela `oracle.csv`
-> própria, e as colunas `query_time`/`normalized` do artigo. **Ainda não
-> medido** — o `results/` em disco é anterior a elas.
+> **Dois diretórios de saída.** `results/` e `out/{porte,oraculo}/` guardam a
+> bateria canônica da Fase 3 (27/08/2026, versionada arquivo a arquivo). Desde a
+> Fase 4.4 as baterias gravam em `results/fase4/` e `out/fase4/`, com a coluna
+> `engine` e o `boot_time` no `runs.csv` — o código atual não produz mais o
+> esquema canônico, e a guarda de cabeçalho recusa anexar nele.
 
 ## Geradores de dataset (vindos do repo original, autoria do Davi)
 
@@ -101,25 +103,23 @@ MongoDB o `--db` **é** o banco a conectar, e as coleções vão por
 `MONGO_COLLECTIONS`. Nos dois casos o valor precisa casar com o nome que o porte
 usa — divergência de `SCHEMA_NAME` é fatal no harness.
 
-**Engine do porte (Fase 4.3).** `--engine spark` extrai pela engine Spark, com
-`--slices` fatias (padrão: uma por núcleo). A sessão abre uma vez, antes do
-laço, então o boot da JVM fica fora do `t_extraction`, e o XMI do porte ganha o
-sufixo `_spark` (`out/porte/mongo_<banco>_seed<N>_spark.xmi`) para não
-sobrescrever o da engine Python. Até a 4.4 criar a coluna `engine`, a corrida
-Spark **recusa** gravar em `results/` — ficaria indistinguível da Python, com o
-mesmo `run_id` — e exige outro `--output-dir`:
+**Engine do porte (Fases 4.3 e 4.4).** `--engine spark` extrai pela engine
+Spark, com `--slices` fatias (padrão: uma por núcleo), e grava o tempo de subir
+a sessão em `boot_time`, fora do `total_time`. **Uma corrida Spark por
+processo:** o PySpark não derruba a JVM entre sessões, e os tamanhos seguintes
+pegariam a JVM aquecida pelo primeiro; por isso, com `--engine spark`, as quatro
+baterias recusam mais de uma rota ou tamanho (`engines.py`). A mesma regra vale
+nas baterias por tamanho, abaixo.
 
 ```bash
-uv run python scripts/run_oracle_mongo.py --seed 23 --engine spark --output-dir out/gate_4_3
-uv run python scripts/run_oracle_neo4j.py --seed 23 --engine spark --output-dir out/gate_4_3_neo4j
+uv run python scripts/run_oracle_mongo.py --seed 23 --engine spark --routes A --sizes small
+uv run python scripts/run_oracle_neo4j.py --seed 23 --engine spark --sizes small
 ```
 
-Os tempos dessa corrida são de uma execução só, sem a regra da mediana: servem
-ao gate de equivalência, não a curva.
-
-O XMI do oráculo é preservado com a semente no nome
-(`out/oraculo/neo4j_<schema>_seed<N>.xmi`) para que a corrida seguinte não
-sobrescreva a evidência da anterior. O `total_time` da linha `producer=oracle`
+Os dois XMIs da corrida — o do porte e o do oráculo — se chamam pelo `run_id`
+(`out/fase4/porte/<run_id>.xmi` e `out/fase4/oraculo/<run_id>.xmi`), para que a
+corrida seguinte não sobrescreva a evidência da anterior. Na bateria canônica o
+oráculo ficou com a semente no nome (`out/oraculo/neo4j_<schema>_seed<N>.xmi`). O `total_time` da linha `producer=oracle`
 é **relógio de parede do container** — inclui boot de Maven, JVM e Spark, que no
 MongoDB são ~18s fixos, então não é comparável ao cronômetro interno do Java nem
 citável em volume pequeno.
@@ -129,6 +129,15 @@ citável em volume pequeno.
 Uma bateria por paradigma, quatro tamanhos cada. Não rode as duas em paralelo:
 os clientes Python não disputam, mas mongod e Neo4j disputam CPU e disco, e os
 tempos vão para a avaliação.
+
+São as baterias que medem as curvas da Fase 4.4, nas duas engines. O
+`--engine`/`--slices` e a regra de uma corrida Spark por processo são os da
+cadeia do oráculo, acima:
+
+```bash
+uv run python scripts/run_size_mongo.py --seed 23 --engine spark --routes A --sizes small
+uv run python scripts/run_size_neo4j.py --seed 23 --engine spark --sizes small
+```
 
 ## Orquestração — `run_suite.sh`
 
@@ -141,9 +150,17 @@ e o grafo do Neo4j — o `northwind` nunca é tocado, porque é dataset real
 versionado e não se regenera por semente.
 
 ```bash
-./scripts/run_suite.sh            # semente padrão dos scripts (23)
+./scripts/run_suite.sh            # semente padrão dos scripts (23), engine python
 ./scripts/run_suite.sh 69         # outra semente
+./scripts/run_suite.sh 69 spark   # outra semente, engine spark
 ```
+
+**Uma combinação por processo, nas duas engines.** Desde a 4.4 a suíte chama
+cada bateria uma vez por rota e tamanho: é o que a engine Spark exige para que
+todo boot seja o de uma JVM nova, e a Python roda igual para as duas serem
+medidas do mesmo jeito. O **Northwind** só roda na primeira suíte de
+`results/fase4/`: não tem semente nem engine Spark, e repeti-lo duplicaria a
+chave.
 
 Substituiu o `run_scale_suite.sh`, que orquestrava só o tamanho e existia para
 varrer três sementes — com a semente única, o que restava a orquestrar era a
@@ -154,9 +171,9 @@ Sem argumento ele **não passa** `--seed`: vale o `DEFAULT_SEED`, que mora em
 repetida, abaixo, lê o mesmo valor de lá — duplicá-lo no shell abriria espaço
 para os dois divergirem, que é justamente o caso que a guarda existe para pegar.
 
-**Recusa repetir uma semente já gravada** (exit 3). As baterias gravam em
-append, então repetir não sobrescreve — duplica, e a duplicata só apareceria
-depois, num `uniq -d`. Já custou duas sessões.
+**Recusa repetir uma semente já gravada na mesma engine** (exit 3). As baterias
+gravam em append, então repetir não sobrescreve — duplica, e a duplicata só
+apareceria depois, num `uniq -d`. Já custou duas sessões.
 
 ## Query de referência — `baseline.py`
 
@@ -229,7 +246,7 @@ O que ele ainda é o único a tocar: nenhum dataset da fase tem `Int64`
 
 ## Saída — quatro tabelas, um grão cada
 
-Todas as baterias gravam pelo `output.py`, em `results/`, modo append,
+Todas as baterias gravam pelo `output.py`, em `results/fase4/`, modo append,
 com **guarda de cabeçalho** (se o esquema mudar, a bateria recusa anexar em vez
 de corromper o arquivo em silêncio) e `flush` por linha, para que uma corrida de
 uma hora interrompida preserve o que já mediu.
@@ -249,15 +266,19 @@ log de cada bateria.
 O que segue aqui é só o que muda a forma de rodar as baterias.
 
 Unidas por `run_id`, determinístico a partir de experimento, paradigma, alvo,
-semente e origem (`size-mongodb-up_a_small-23`,
-`oracle_chain-neo4j-movies_min-23`, `equivalence-mongodb-northwind-file`).
+semente, origem e engine (`size-mongodb-up_a_small-23-spark`,
+`oracle_chain-neo4j-movies_min-23-python`,
+`equivalence-mongodb-northwind-file-python`). Na bateria canônica o `run_id` não
+leva a engine.
 
 **Uma corrida `oracle_chain` grava em `runs.csv` e em `oracle.csv`**, uma linha
 em cada. Em `runs.csv` o `run_id` é chave sozinho.
 
-Os XMIs vão para **`out/porte/`**, separados dos do oráculo (`out/oraculo/`) e
-dos de referência (`resources/`) — a convenção está em `resources/README.md`,
-"Onde cada XMI mora".
+Os XMIs vão para **`out/fase4/porte/`**, separados dos do oráculo
+(`out/fase4/oraculo/`) e dos de referência (`resources/`), cada um com o nome do
+`run_id` da corrida que o produziu. Os da bateria canônica seguem em
+`out/porte/` e `out/oraculo/` — a convenção está em `resources/README.md`, "Onde
+cada XMI mora".
 
 **A limpeza tem tabela própria**, e isso é lição aprendida: na primeira bateria o
 gerador rodava com `--drop` e o cronômetro da geração engolia a deleção do grafo

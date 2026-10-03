@@ -18,34 +18,40 @@ então os tamanhos não coexistem nem podem ser paralelizados. Exige a imagem
     uv run python scripts/run_oracle_neo4j.py --seed 23
     uv run python scripts/run_oracle_neo4j.py --seed 23 --sizes larger
 
-Engine do porte (Fase 4.3): ``--engine spark`` extrai pela engine Spark, com
-``--slices`` fatias por combinação de labels (padrão: uma por núcleo). A sessão
-abre uma vez, antes do laço, para que o boot da JVM fique fora do tempo de
-extração. Até a 4.4 criar a coluna ``engine`` nos CSVs, a corrida Spark **não**
-grava em ``results/`` — ficaria indistinguível da Python, com o mesmo
-``run_id``. Passe outro ``--output-dir``:
+Engine do porte (Fases 4.3 e 4.4): ``--engine spark`` extrai pela engine
+Spark, com ``--slices`` fatias por combinação de labels (padrão: uma por
+núcleo), e grava o boot da sessão em ``boot_time``. Uma corrida Spark por
+processo — um tamanho por vez; ver `engines.py`:
 
-    uv run python scripts/run_oracle_neo4j.py --seed 23 --engine spark --output-dir out/gate_4_3
+    uv run python scripts/run_oracle_neo4j.py --seed 23 --engine spark --sizes small
 """
 
 import argparse
 import subprocess
 import sys
 import time
-from contextlib import AbstractContextManager, nullcontext
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
+from engines import SINGLE_RUN, engine_session
 from neo4j import GraphDatabase
 from pyecore.ecore import EPackage
 
 from baseline import neo4j_query_time
 from output import (
     DEFAULT_SEED,
+    ENGINES,
+    ORACLE_XMI_DIR,
     PORT,
+    PORT_XMI_DIR,
+    PYTHON,
     RESOURCES,
+    RESULTS_DIR,
+    ROOT,
     SEEDED_ORACLE,
+    SPARK,
     Results,
+    format_boot,
     format_query_time,
     format_seconds,
     fraction,
@@ -54,19 +60,11 @@ from output import (
     run_id,
 )
 from runs import Neo4jOracleRun
-from uschema.extractors.neo4j import (
-    extract_archetype_counts_from_uri,
-)
+from uschema.extractors.neo4j import extract_archetype_counts_from_uri
 from uschema.extractors.neo4j_model import build_uschema_from_archetypes
 from uschema.metamodel.registry import load_metamodel
 from uschema.metamodel.xmi import load_model, save_model
 from uschema.validation.equivalence import compare
-
-if TYPE_CHECKING:
-    # Só para anotação: a engine Python não pode carregar o pyspark.
-    from pyspark.sql import SparkSession
-
-ENGINES = ["python", "spark"]
 
 SCHEMA_BY_SIZE = {
     "small": "movies_min",
@@ -79,11 +77,8 @@ DEFAULT_SIZES = ["small", "medium", "large", "larger"]
 
 LABELS = ("User", "Movie")
 
-ROOT = Path(__file__).resolve().parents[1]
 GENERATOR = ROOT / "scripts" / "gen_userprofiles_neo4j.py"
 CLEANER = ROOT / "scripts" / "clean_databases.py"
-PORT_OUTPUT = ROOT / "out" / "porte"
-ORACLE_OUTPUT = ROOT / "out" / "oraculo"
 IMAGE = "extrator-uschema"
 
 
@@ -114,7 +109,7 @@ def generate(size: str, uri: str, seed: int) -> tuple[float, float]:
     return t_cleanup, time.perf_counter() - start
 
 
-def run_oracle(schema: str, seed: int) -> tuple[float, Path]:
+def run_oracle(schema: str, target: Path) -> tuple[float, Path]:
     """Roda o extrator Java no container sobre o grafo já materializado.
 
     O `--db` é o nome do **schema**, não do banco a conectar: o
@@ -126,15 +121,16 @@ def run_oracle(schema: str, seed: int) -> tuple[float, Path]:
     ----------
     schema : str
         Nome do schema no modelo, e do arquivo de saída (`movies_min`, ...).
-    seed : int
-        Semente da instância medida; entra no nome do XMI preservado.
+    target : Path
+        Onde preservar o XMI do oráculo — nomeado pelo ``run_id`` da corrida,
+        para que a seguinte não sobrescreva a evidência desta.
 
     Returns
     -------
     tuple of (float, Path)
-        Tempo de parede do container e o XMI já renomeado por semente.
+        Tempo de parede do container e o XMI já em ``target``.
     """
-    ORACLE_OUTPUT.mkdir(parents=True, exist_ok=True)
+    ORACLE_XMI_DIR.mkdir(parents=True, exist_ok=True)
 
     start = time.perf_counter()
 
@@ -145,7 +141,7 @@ def run_oracle(schema: str, seed: int) -> tuple[float, Path]:
             "--rm",
             "--network=host",
             "-v",
-            f"{ORACLE_OUTPUT}:/output",
+            f"{ORACLE_XMI_DIR}:/output",
             IMAGE,
             "--db",
             schema,
@@ -158,10 +154,8 @@ def run_oracle(schema: str, seed: int) -> tuple[float, Path]:
     elapsed = time.perf_counter() - start
 
     # O container escreve como root; renomear só exige permissão no diretório,
-    # que é nosso. A semente no nome evita que a próxima corrida sobrescreva a
-    # evidência desta.
-    written = ORACLE_OUTPUT / f"{schema}.xmi"
-    target = ORACLE_OUTPUT / f"neo4j_{schema}_seed{seed}.xmi"
+    # que é nosso.
+    written = ORACLE_XMI_DIR / f"{schema}.xmi"
     written.replace(target)
 
     return elapsed, target
@@ -179,17 +173,17 @@ def sum_by_label(rows: list[dict[str, Any]], label: str) -> int:
 def measure(
     size: str,
     uri: str,
-    seed: int,
     pkg: EPackage,
+    key: str,
     *,
-    spark: "SparkSession | None" = None,
+    engine: str = PYTHON,
     slices: int | None = None,
 ) -> Neo4jOracleRun:
     """Roda porte e oráculo sobre a mesma instância e compara os três XMIs.
 
-    Com ``spark``, o porte extrai pela engine Spark (Fase 4.3); sem, pela Python
-    de sempre. A sessão vem aberta de fora: o boot da JVM não entra no
-    ``t_extraction``.
+    A sessão Spark abre e fecha em volta da extração do porte: o boot sai
+    cronometrado à parte, e a JVM do porte já caiu quando o container do oráculo
+    sobe. Os dois XMIs gerados se chamam pelo ``key``.
     """
     schema = SCHEMA_BY_SIZE[size]
 
@@ -203,10 +197,11 @@ def measure(
             for label in LABELS
         }
 
+    with engine_session(engine) as (spark, t_boot):
         start = time.perf_counter()
 
         rows: list[dict[str, Any]] = extract_archetype_counts_from_uri(
-            uri, auth=None, spark=spark, slices=slices
+            uri, spark=spark, slices=slices
         )
 
         t_extraction = time.perf_counter() - start
@@ -219,14 +214,11 @@ def measure(
 
     start = time.perf_counter()
 
-    if spark is not None:
-        save_model(port, PORT_OUTPUT / f"neo4j_{schema}_seed{seed}_spark.xmi")
-    else:
-        save_model(port, PORT_OUTPUT / f"neo4j_{schema}_seed{seed}.xmi")
+    save_model(port, PORT_XMI_DIR / f"{key}.xmi")
 
     t_write = time.perf_counter() - start
 
-    t_oracle, oracle_xmi = run_oracle(schema, seed)
+    t_oracle, oracle_xmi = run_oracle(schema, ORACLE_XMI_DIR / f"{key}.xmi")
 
     oracle = load_model(oracle_xmi, pkg)
 
@@ -243,6 +235,8 @@ def measure(
         t_extraction=t_extraction,
         t_inference=t_inference,
         t_write=t_write,
+        engine=engine,
+        t_boot=t_boot,
         t_oracle=t_oracle,
         t_query=t_query,
         counts={
@@ -254,15 +248,13 @@ def measure(
     )
 
 
-def record(tables: Results, seed: int, run: Neo4jOracleRun) -> None:
+def record(tables: Results, key: str, run: Neo4jOracleRun) -> None:
     """Distribui a corrida pelas tabelas de resultado.
 
     O porte vai para `runs`, o oráculo para `oracle`. Grava **duas**
     comparações: o mesmo modelo do porte confrontado com o oráculo semeado e com
     o XMI publicado em `resources/`.
     """
-    key = run_id("oracle_chain", "neo4j", run.schema, seed=seed)
-
     tables.add_run(
         {
             "run_id": key,
@@ -271,10 +263,12 @@ def record(tables: Results, seed: int, run: Neo4jOracleRun) -> None:
             "paradigm": "neo4j",
             "target": run.schema,
             "origin": "database",
+            "engine": run.engine,
             "total_time": format_seconds(run.total),
             "extraction_time": format_seconds(run.t_extraction),
             "inference_time": format_seconds(run.t_inference),
             "write_time": format_seconds(run.t_write),
+            "boot_time": format_boot(run.t_boot),
             "query_time": format_query_time(run.t_query),
             "normalized": normalized(run.total, run.t_query),
         }
@@ -292,29 +286,20 @@ def main() -> None:
     ap.add_argument("--seed", type=int, default=DEFAULT_SEED)
     ap.add_argument("--uri", default="bolt://localhost:7687")
     ap.add_argument("--sizes", nargs="+", choices=list(SCHEMA_BY_SIZE), default=DEFAULT_SIZES)
-    ap.add_argument("--output-dir", type=Path, default=ROOT / "results")
-    ap.add_argument("--engine", choices=ENGINES, default="python")
+    ap.add_argument("--output-dir", type=Path, default=RESULTS_DIR)
+    ap.add_argument("--engine", choices=ENGINES, default=PYTHON)
     ap.add_argument("--slices", type=int, default=None)
 
     args = ap.parse_args()
 
-    if args.engine == "spark" and args.output_dir.resolve() == (ROOT / "results").resolve():
-        ap.error("--output-dir precisa ser outro diretório")
+    if args.engine == SPARK and len(args.sizes) > 1:
+        ap.error(SINGLE_RUN)
 
     pkg = load_metamodel()
 
-    PORT_OUTPUT.mkdir(parents=True, exist_ok=True)
+    PORT_XMI_DIR.mkdir(parents=True, exist_ok=True)
 
-    context_engine: AbstractContextManager[SparkSession | None]
-
-    if args.engine == "spark":
-        from uschema.extractors.spark import local_session
-
-        context_engine = local_session()
-    else:
-        context_engine = nullcontext()
-
-    with Results(args.output_dir) as tables, context_engine as context:
+    with Results(args.output_dir) as tables:
         for size in args.sizes:
             print(f"\n=== seed {args.seed} | tamanho {size} | {args.engine} ===", flush=True)
 
@@ -322,11 +307,16 @@ def main() -> None:
             # duas é medida do porte nem do oráculo, e as duas saíram dos CSVs.
             t_cleanup, t_generation = generate(size, args.uri, args.seed)
 
-            run = measure(size, args.uri, args.seed, pkg, spark=context, slices=args.slices)
+            key = run_id(
+                "oracle_chain", "neo4j", SCHEMA_BY_SIZE[size], seed=args.seed, engine=args.engine
+            )
+
+            run = measure(size, args.uri, pkg, key, engine=args.engine, slices=args.slices)
 
             print(
                 f"  limpeza={t_cleanup:.2f}s"
                 f"  geracao={t_generation:.2f}s"
+                f"  boot={format_boot(run.t_boot) or '-'}"
                 f"  extracao={run.t_extraction:.2f}s"
                 f"  inferencia={run.t_inference:.2f}s"
                 f"  escrita={run.t_write:.2f}s"
@@ -352,7 +342,7 @@ def main() -> None:
                 flush=True,
             )
 
-            record(tables, args.seed, run)
+            record(tables, key, run)
 
 
 if __name__ == "__main__":
