@@ -99,6 +99,22 @@ MongoDB o `--db` **é** o banco a conectar, e as coleções vão por
 `MONGO_COLLECTIONS`. Nos dois casos o valor precisa casar com o nome que o porte
 usa — divergência de `SCHEMA_NAME` é fatal no harness.
 
+**Engine do porte (Fase 4.3).** `--engine spark` extrai pela engine Spark, com
+`--slices` fatias (padrão: uma por núcleo). A sessão abre uma vez, antes do
+laço, então o boot da JVM fica fora do `t_extraction`, e o XMI do porte ganha o
+sufixo `_spark` (`out/porte/mongo_<banco>_seed<N>_spark.xmi`) para não
+sobrescrever o da engine Python. Até a 4.4 criar a coluna `engine`, a corrida
+Spark **recusa** gravar em `results/` — ficaria indistinguível da Python, com o
+mesmo `run_id` — e exige outro `--output-dir`:
+
+```bash
+uv run python scripts/run_oracle_mongo.py --seed 23 --engine spark --output-dir out/gate_4_3
+uv run python scripts/run_oracle_neo4j.py --seed 23 --engine spark --output-dir out/gate_4_3_neo4j
+```
+
+Os tempos dessa corrida são de uma execução só, sem a regra da mediana: servem
+ao gate de equivalência, não a curva.
+
 O XMI do oráculo é preservado com a semente no nome
 (`out/oraculo/neo4j_<schema>_seed<N>.xmi`) para que a corrida seguinte não
 sobrescreva a evidência da anterior. O `total_time` da linha `producer=oracle`

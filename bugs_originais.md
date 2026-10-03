@@ -1238,6 +1238,41 @@ contorno de uma causa que não existia, e custava ~6 min por suíte de três
 sementes. A limpeza do grafo segue acontecendo e vai para o log das baterias;
 deixou de ser gravada em 15/08, junto com a tabela `cleanup.csv`.
 
+### Reincidência sob streaming (03/10/2026)
+
+No gate da 4.3 (`run_oracle_neo4j.py --engine spark`, semente 23), o
+`up_larger` não terminou. Das 64 fatias (2 combinações de labels × 32), 63
+acabaram; a última, de `User`, rastejou por 40 minutos e a corrida foi
+interrompida. A leitura é a corrigida: no caminho Spark, o
+`_read_label_combination` também itera `session.run()`.
+
+Estado TCP capturado com `ss -tnio` antes de matar (cópia local em
+`out/gate_4_3_neo4j/stall_tcp_snapshot.txt`, fora do git):
+
+| lado | estado |
+|---|---|
+| servidor (`:7687`) | `rwnd_limited` em 100% dos 2.404 s, `snd_wnd: 9216`, timer `persist`, ~200 KB em `notsent`, 310 KB retransmitidos |
+| cliente (worker do Spark) | `Recv-Q: 0`, processo parado em `poll` com ~2% de CPU, `rcvmss: 9216`, 2 pacotes fora de ordem |
+
+Três amostras de 5 s deram ~45 KB/s — uma janela de 9.216 bytes a cada ~200 ms
+de `persist`. O Neo4j também estava ocioso.
+
+**O que difere do `E1` de 08/08.** Lá, o `Recv-Q: 0` registrado era o do socket
+do servidor, que não diz nada sobre a janela do cliente. Aqui o do **cliente**
+também é zero: o worker leu tudo o que chegou e está esperando, e mesmo assim a
+janela anunciada não passa de 9 KB. "O consumidor não consome" não descreve este
+estado — a janela não reabre com o buffer vazio. É da mesma família do resíduo
+citado acima (o `small` a 156 s), mas é **uma ocorrência só**: a causa segue em
+aberto, e nada aqui autoriza concluir mecanismo.
+
+**`rwnd_limited` alto não é a assinatura.** A segunda tentativa do `up_larger`,
+no mesmo dia, terminou normal (extração em 67 s), com o lado servidor gravado a
+cada 15 s (`out/gate_4_3_neo4j/tcp_monitor_retry.txt`). As fatias saudáveis
+também mostram `rwnd_limited` em ~97%, timer `persist` e `snd_wnd` de 5 a 39 KB
+— é o normal de um cliente que é o gargalo. O que separa o travamento é o
+cliente **ocioso** com `Recv-Q: 0` e a vazão: ~45 KB/s contra ~1 MB/s por
+conexão.
+
 ---
 
 ## O que **não** é defeito

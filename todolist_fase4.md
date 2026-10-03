@@ -345,13 +345,37 @@ já medida no Northwind entre ler por arquivo (15 divergências) e por cursor (1
 >   **Checados por mutação:** tirar o `sort` do Python, o `sort` da partição ou
 >   a ordenação no driver, trocar o menor pelo maior, tirar a fatia da posição
 >   ou descartar os dados no *reduce* — cada uma derruba ao menos um teste.
+>
+> **Gate contra o oráculo rodado em 03/10/2026.** Os dois `run_oracle_*` ganharam
+> `--engine`/`--slices` (ainda fora de commit). Semente 23, engine Spark, tabelas
+> fora de `results/` (`out/gate_4_3/` e `out/gate_4_3_neo4j/`, com os logs).
+>
+> - **Mongo, 8 bancos: passou.** `equivalent=True` nos oito. As 46 divergências
+>   restantes são todas `count`, não-fatais, e **idênticas linha a linha** às da
+>   linha de base Python da Fase 3 (`results/divergences.csv`, semente 23). O XMI
+>   Spark é igual ao Python byte a byte na Rota B; na A, só diferem
+>   `firstTimestamp`/`lastTimestamp`, que vêm do `ObjectId` e guardam a hora em
+>   que o banco foi gerado. A ordem fechou: não há faixa a reportar.
+> - **Neo4j, 4 tamanhos: passou.** Os quatro deram `equivalent=True` com zero
+>   divergências contra o oráculo semeado (e as 7 de sempre contra
+>   `resources/`). Os XMIs diferem dos da engine Python só na ordem de entidades
+>   e variações, e no `variationId` que segue essa ordem — o `compare()` não vê,
+>   como previsto acima.
+> - **O `up_larger` precisou de duas tentativas.** Na primeira, uma das 64
+>   fatias rastejou a ~46 KB/s por 40 minutos, com o worker e o Neo4j ociosos, e
+>   a corrida foi interrompida — ver `bugs_originais.md` §**E1**, "Reincidência
+>   sob streaming". A segunda, no mesmo dia, extraiu em 67 s.
 
-- [ ] Tentar a ordem igual por construção: fatias de `_id` ordenadas, concatenadas
+- [x] Tentar a ordem igual por construção: fatias de `_id` ordenadas, concatenadas
       por índice, reproduzindo a ordem de um cursor ordenado por `_id` — com a
       linha de base Python rodando o mesmo `sort`. Se fechar, as duas engines
-      ficam **idênticas tripla a tripla** e a dúvida some.
+      ficam **idênticas tripla a tripla** e a dúvida some. **Fechou** (gate do
+      Mongo de 03/10/2026, acima).
 - [ ] Se não fechar, reportar a **faixa** de divergências não-fatais, nunca um
-      número solto.
+      número solto. *Não se aplica: fechou.*
+- [x] Gate do grafo no `up_larger` — passou na segunda tentativa (03/10/2026).
+- [ ] Medir o Northwind lido do banco com o `sort` (`run_northwind.py`, outro
+      `--output-dir`): previsão de 12 → 15 divergências.
 - [ ] Registrar o achado em `bugs_originais.md` §#8 — mais uma evidência de
       ordem-dependência, agora por partição.
 

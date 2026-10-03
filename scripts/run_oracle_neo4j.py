@@ -17,14 +17,24 @@ então os tamanhos não coexistem nem podem ser paralelizados. Exige a imagem
 
     uv run python scripts/run_oracle_neo4j.py --seed 23
     uv run python scripts/run_oracle_neo4j.py --seed 23 --sizes larger
+
+Engine do porte (Fase 4.3): ``--engine spark`` extrai pela engine Spark, com
+``--slices`` fatias por combinação de labels (padrão: uma por núcleo). A sessão
+abre uma vez, antes do laço, para que o boot da JVM fique fora do tempo de
+extração. Até a 4.4 criar a coluna ``engine`` nos CSVs, a corrida Spark **não**
+grava em ``results/`` — ficaria indistinguível da Python, com o mesmo
+``run_id``. Passe outro ``--output-dir``:
+
+    uv run python scripts/run_oracle_neo4j.py --seed 23 --engine spark --output-dir out/gate_4_3
 """
 
 import argparse
 import subprocess
 import sys
 import time
+from contextlib import AbstractContextManager, nullcontext
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from neo4j import GraphDatabase
 from pyecore.ecore import EPackage
@@ -44,11 +54,19 @@ from output import (
     run_id,
 )
 from runs import Neo4jOracleRun
-from uschema.extractors.neo4j import extract_database_archetype_counts
+from uschema.extractors.neo4j import (
+    extract_archetype_counts_from_uri,
+)
 from uschema.extractors.neo4j_model import build_uschema_from_archetypes
 from uschema.metamodel.registry import load_metamodel
 from uschema.metamodel.xmi import load_model, save_model
 from uschema.validation.equivalence import compare
+
+if TYPE_CHECKING:
+    # Só para anotação: a engine Python não pode carregar o pyspark.
+    from pyspark.sql import SparkSession
+
+ENGINES = ["python", "spark"]
 
 SCHEMA_BY_SIZE = {
     "small": "movies_min",
@@ -158,8 +176,21 @@ def sum_by_label(rows: list[dict[str, Any]], label: str) -> int:
     )
 
 
-def measure(size: str, uri: str, seed: int, pkg: EPackage) -> Neo4jOracleRun:
-    """Roda porte e oráculo sobre a mesma instância e compara os três XMIs."""
+def measure(
+    size: str,
+    uri: str,
+    seed: int,
+    pkg: EPackage,
+    *,
+    spark: "SparkSession | None" = None,
+    slices: int | None = None,
+) -> Neo4jOracleRun:
+    """Roda porte e oráculo sobre a mesma instância e compara os três XMIs.
+
+    Com ``spark``, o porte extrai pela engine Spark (Fase 4.3); sem, pela Python
+    de sempre. A sessão vem aberta de fora: o boot da JVM não entra no
+    ``t_extraction``.
+    """
     schema = SCHEMA_BY_SIZE[size]
 
     with GraphDatabase.driver(uri, auth=None) as driver:
@@ -174,7 +205,9 @@ def measure(size: str, uri: str, seed: int, pkg: EPackage) -> Neo4jOracleRun:
 
         start = time.perf_counter()
 
-        rows: list[dict[str, Any]] = extract_database_archetype_counts(driver)
+        rows: list[dict[str, Any]] = extract_archetype_counts_from_uri(
+            uri, auth=None, spark=spark, slices=slices
+        )
 
         t_extraction = time.perf_counter() - start
 
@@ -186,7 +219,10 @@ def measure(size: str, uri: str, seed: int, pkg: EPackage) -> Neo4jOracleRun:
 
     start = time.perf_counter()
 
-    save_model(port, PORT_OUTPUT / f"neo4j_{schema}_seed{seed}.xmi")
+    if spark is not None:
+        save_model(port, PORT_OUTPUT / f"neo4j_{schema}_seed{seed}_spark.xmi")
+    else:
+        save_model(port, PORT_OUTPUT / f"neo4j_{schema}_seed{seed}.xmi")
 
     t_write = time.perf_counter() - start
 
@@ -257,22 +293,36 @@ def main() -> None:
     ap.add_argument("--uri", default="bolt://localhost:7687")
     ap.add_argument("--sizes", nargs="+", choices=list(SCHEMA_BY_SIZE), default=DEFAULT_SIZES)
     ap.add_argument("--output-dir", type=Path, default=ROOT / "results")
+    ap.add_argument("--engine", choices=ENGINES, default="python")
+    ap.add_argument("--slices", type=int, default=None)
 
     args = ap.parse_args()
+
+    if args.engine == "spark" and args.output_dir.resolve() == (ROOT / "results").resolve():
+        ap.error("--output-dir precisa ser outro diretório")
 
     pkg = load_metamodel()
 
     PORT_OUTPUT.mkdir(parents=True, exist_ok=True)
 
-    with Results(args.output_dir) as tables:
+    context_engine: AbstractContextManager[SparkSession | None]
+
+    if args.engine == "spark":
+        from uschema.extractors.spark import local_session
+
+        context_engine = local_session()
+    else:
+        context_engine = nullcontext()
+
+    with Results(args.output_dir) as tables, context_engine as context:
         for size in args.sizes:
-            print(f"\n=== seed {args.seed} | tamanho {size} ===", flush=True)
+            print(f"\n=== seed {args.seed} | tamanho {size} | {args.engine} ===", flush=True)
 
             # Limpeza e geração são cronometradas só para o log: nenhuma das
             # duas é medida do porte nem do oráculo, e as duas saíram dos CSVs.
             t_cleanup, t_generation = generate(size, args.uri, args.seed)
 
-            run = measure(size, args.uri, args.seed, pkg)
+            run = measure(size, args.uri, args.seed, pkg, spark=context, slices=args.slices)
 
             print(
                 f"  limpeza={t_cleanup:.2f}s"

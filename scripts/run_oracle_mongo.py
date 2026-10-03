@@ -18,6 +18,15 @@ só sobre os 397 do Northwind (Fase 0.5). Comece pelos tamanhos menores.
 
     uv run python scripts/run_oracle_mongo.py --seed 23 --sizes small
     uv run python scripts/run_oracle_mongo.py --seed 23 --routes A --sizes small medium
+
+Engine do porte (Fase 4.3): ``--engine spark`` extrai pela engine Spark, com
+``--slices`` fatias por coleção (padrão: uma por núcleo). A sessão abre uma vez,
+antes do laço, para que o boot da JVM fique fora do tempo de extração. Até a
+4.4 criar a coluna ``engine`` nos CSVs, a corrida Spark **não** grava em
+``results/`` — ficaria indistinguível da Python, com o mesmo ``run_id``. Passe
+outro ``--output-dir``:
+
+    uv run python scripts/run_oracle_mongo.py --seed 23 --engine spark --output-dir out/gate_4_3
 """
 
 import argparse
@@ -25,8 +34,9 @@ import subprocess
 import sys
 import time
 from collections.abc import Mapping
+from contextlib import AbstractContextManager, nullcontext
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from pyecore.ecore import EObject, EPackage
 from pymongo import MongoClient
@@ -46,15 +56,20 @@ from output import (
     run_id,
 )
 from runs import MongoOracleRun
-from uschema.extractors.mongo import extract_database_triples
+from uschema.extractors.mongo import extract_triples
 from uschema.extractors.triple import triples_from_rows
 from uschema.inference.build_uschema import BuildUSchema
 from uschema.metamodel.registry import load_metamodel
 from uschema.metamodel.xmi import load_model, save_model
 from uschema.validation.equivalence import compare
 
+if TYPE_CHECKING:
+    # Só para anotação: a engine Python não pode carregar o pyspark.
+    from pyspark.sql import SparkSession
+
 DEFAULT_SIZES = ["small", "medium", "large", "larger"]
 DEFAULT_ROUTES = ["A", "B"]
+ENGINES = ["python", "spark"]
 
 ROOT = Path(__file__).resolve().parents[1]
 GENERATOR = ROOT / "scripts" / "gen_userprofiles.py"
@@ -152,8 +167,22 @@ def run_oracle(database: str, collections: list[str], uri: str, seed: int) -> Pa
     return target
 
 
-def measure(route: str, size: str, uri: str, seed: int, pkg: EPackage) -> MongoOracleRun:
-    """Roda porte e oráculo sobre o mesmo banco e compara os dois XMIs."""
+def measure(
+    route: str,
+    size: str,
+    uri: str,
+    seed: int,
+    pkg: EPackage,
+    *,
+    spark: "SparkSession | None" = None,
+    slices: int | None = None,
+) -> MongoOracleRun:
+    """Roda porte e oráculo sobre o mesmo banco e compara os dois XMIs.
+
+    Com ``spark``, o porte extrai pela engine Spark (Fase 4.3); sem, pela Python
+    de sempre. A sessão vem aberta de fora: o boot da JVM não entra no
+    ``t_extraction``.
+    """
     database = database_name(route, size)
 
     # Mapping, não dict: Database é invariante no parâmetro de tipo.
@@ -168,7 +197,9 @@ def measure(route: str, size: str, uri: str, seed: int, pkg: EPackage) -> MongoO
 
         start = time.perf_counter()
 
-        rows: list[dict[str, Any]] = extract_database_triples(db, collections)
+        rows: list[dict[str, Any]] = extract_triples(
+            uri, db.name, collections, spark=spark, slices=slices
+        )
 
         t_extraction = time.perf_counter() - start
 
@@ -183,7 +214,10 @@ def measure(route: str, size: str, uri: str, seed: int, pkg: EPackage) -> MongoO
 
     start = time.perf_counter()
 
-    save_model(port, PORT_OUTPUT / f"mongo_{database}_seed{seed}.xmi")
+    if spark is not None:
+        save_model(port, PORT_OUTPUT / f"mongo_{database}_seed{seed}_spark.xmi")
+    else:
+        save_model(port, PORT_OUTPUT / f"mongo_{database}_seed{seed}.xmi")
 
     t_write = time.perf_counter() - start
 
@@ -277,23 +311,42 @@ def main() -> None:
     ap.add_argument("--routes", nargs="+", choices=DEFAULT_ROUTES, default=DEFAULT_ROUTES)
     ap.add_argument("--sizes", nargs="+", choices=DEFAULT_SIZES, default=DEFAULT_SIZES)
     ap.add_argument("--output-dir", type=Path, default=ROOT / "results")
+    ap.add_argument("--engine", choices=ENGINES, default="python")
+    ap.add_argument("--slices", type=int, default=None)
 
     args = ap.parse_args()
+
+    if args.engine == "spark" and args.output_dir.resolve() == (ROOT / "results").resolve():
+        ap.error("--output-dir precisa ser outro diretório")
 
     pkg = load_metamodel()
 
     PORT_OUTPUT.mkdir(parents=True, exist_ok=True)
 
-    with Results(args.output_dir) as tables:
+    context_engine: AbstractContextManager[SparkSession | None]
+
+    if args.engine == "spark":
+        from uschema.extractors.spark import local_session
+
+        context_engine = local_session()
+    else:
+        context_engine = nullcontext()
+
+    with Results(args.output_dir) as tables, context_engine as spark:
         for route in args.routes:
             for size in args.sizes:
-                print(f"\n=== seed {args.seed} | rota {route} | {size} ===", flush=True)
+                print(
+                    f"\n=== seed {args.seed} | rota {route} | {size} | {args.engine} ===",
+                    flush=True,
+                )
 
                 # A geração é cronometrada só para o log: não é medida de
                 # produtor nenhum, e saiu do esquema dos CSVs.
                 t_generation = generate(route, size, args.uri, args.seed)
 
-                run = measure(route, size, args.uri, args.seed, pkg)
+                run = measure(
+                    route, size, args.uri, args.seed, pkg, spark=spark, slices=args.slices
+                )
 
                 print(
                     f"  geracao={t_generation:.2f}s"
