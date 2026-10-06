@@ -21,7 +21,10 @@ repos:
       - id: end-of-file-fixer
       - id: check-yaml
       - id: check-toml
+      # 600 KB, e não os 500 do padrão: dois logs versionados da bateria da 4.4
+      # têm ~530 KB (avisos de deprecation do driver do Neo4j).
       - id: check-added-large-files
+        args: ["--maxkb=600"]
       - id: check-merge-conflict
       - id: mixed-line-ending
 

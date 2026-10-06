@@ -398,8 +398,8 @@ Divergência estrutural aqui é defeito da engine, não é o #8. **Cumprido em
 Reaproveita a infra da 3.0; a fase não constrói medição nova, só acrescenta uma
 dimensão.
 
-> **Estado em 05/10/2026: bateria rodada, curvas e tabelas feitas; falta a resposta
-> escrita e o CI.**
+> **Estado em 05/10/2026: bateria rodada, curvas e tabelas feitas, resposta da
+> fase escrita no TC; falta o CI.**
 >
 > - **Bateria de 04/10/2026, semente 23, nas duas engines.** 50 corridas em
 >   `results/fase4/`, as 42 comparações com `equivalent=True` e nenhuma corrida
@@ -427,9 +427,14 @@ dimensão.
 >   juntos nos quatro tamanhos (de 0,84× a 1,12×).
 > - **Curvas e tabelas**, fora do repo, em `~/Documents/uschema_fase4_medicoes/`:
 >   `plot_backends.py` gera uma figura por banco, e `tabelas_4_4.py` refaz as
->   Tabelas 2, 3 e 4 do TC num `.docx` sem legenda, com o próprio TC de modelo.
->   Os dois leem o `results/fase4/runs.csv` e os quatro logs; a docstring de cada
->   um diz de onde sai cada número.
+>   Tabelas 1 a 4 do TC num `.docx` sem legenda, com o próprio TC de modelo.
+>   Os dois leem o `results/fase4/` e os quatro logs; a docstring de cada um diz
+>   de onde sai cada número.
+> - **Equivalência (Tabela 1):** as 42 comparações equivalentes, sem divergência
+>   fatal, iguais nas duas engines. Rota A, rota B e grafo repetem as
+>   divergências do TC (28, 18 e 0 de `count`). O Northwind lido do banco foi de
+>   7 para 10 de `count` (15 no total, como o lido de arquivo): é a leitura em
+>   ordem de `_id` da 4.3.
 > - **Contagens da rota A iguais às da Fase 3.** As duas engines do porte dão as
 >   mesmas contagens de `User`, e elas repetem as da Tabela 4 do TC, assim como o
 >   oráculo da suíte Python. O oráculo da suíte Spark difere só no `larger`:
@@ -455,7 +460,8 @@ dimensão.
       `normalized` (a máquina do artigo é outra). Curvas de tempo de extração e
       a Tabela 2 do TC refeita com o `normalized`, uma linha por engine
       (05/10/2026, ver o estado acima).
-- [ ] Responder a pergunta da fase por escrito, nos dois sentidos possíveis.
+- [x] Responder a pergunta da fase por escrito, nos dois sentidos possíveis.
+      Respondida no texto do TC.
 
 **Saída:** tabelas de volume com a dimensão `engine` e a resposta da fase.
 

@@ -8,7 +8,8 @@ Esquema das tabelas de evidência das **Fases 3 e 4**, escritas por
 > - **`results/`** guarda a bateria canônica da Fase 3 (27/08/2026, versionada
 >   arquivo a arquivo — ver `results/README.md`). O `runs.csv` dela tem 13
 >   colunas e é todo da engine Python, que era a única.
-> - **`results/fase4/`** recebe a bateria comparativa da Fase 4.4. O `runs.csv`
+> - **`results/fase4/`** recebe a bateria comparativa da Fase 4.4 (2026-10-04,
+>   versionada arquivo a arquivo — ver `results/fase4/README.md`). O `runs.csv`
 >   ganha duas colunas, `engine` e `boot_time`, e a engine entra no `run_id`.
 >   As outras três tabelas não mudam de esquema.
 > - **Dois kernels em `results/fase4/`.** Na bateria de 04/10/2026, o MongoDB

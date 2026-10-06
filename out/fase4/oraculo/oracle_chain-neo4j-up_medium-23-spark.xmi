@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<USchema:USchema xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:USchema="http://www.modelum.es/USchema" name="up_medium">
+  <entities name="User" root="true">
+    <variations variationId="1" count="12616" logicalFeatures="//@entities.0/@variations.0/@features.8" structuralFeatures="//@entities.0/@variations.0/@features.0 //@entities.0/@variations.0/@features.1 //@entities.0/@variations.0/@features.2 //@entities.0/@variations.0/@features.3 //@entities.0/@variations.0/@features.4 //@entities.0/@variations.0/@features.5 //@entities.0/@variations.0/@features.6 //@entities.0/@variations.0/@features.7">
+      <features xsi:type="USchema:Attribute" name="address_street">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="surname" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="name">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="address_postcode" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="id">
+        <type xsi:type="USchema:PrimitiveType" name="integer"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="email">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="address_city">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="address_number">
+        <type xsi:type="USchema:PrimitiveType" name="integer"/>
+      </features>
+      <features xsi:type="USchema:Reference" name="WATCHED" refsTo="//@entities.1" isFeaturedBy="//@relationships.0/@variations.0" upperBound="1" lowerBound="1"/>
+    </variations>
+    <variations variationId="2" count="72169" logicalFeatures="//@entities.0/@variations.1/@features.8 //@entities.0/@variations.1/@features.9" structuralFeatures="//@entities.0/@variations.1/@features.0 //@entities.0/@variations.1/@features.1 //@entities.0/@variations.1/@features.2 //@entities.0/@variations.1/@features.3 //@entities.0/@variations.1/@features.4 //@entities.0/@variations.1/@features.5 //@entities.0/@variations.1/@features.6 //@entities.0/@variations.1/@features.7">
+      <features xsi:type="USchema:Attribute" name="address_street">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="surname" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="name">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="address_postcode" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="id">
+        <type xsi:type="USchema:PrimitiveType" name="integer"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="email">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="address_city">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="address_number">
+        <type xsi:type="USchema:PrimitiveType" name="integer"/>
+      </features>
+      <features xsi:type="USchema:Reference" name="WATCHED" refsTo="//@entities.1" isFeaturedBy="//@relationships.0/@variations.0" upperBound="1" lowerBound="1"/>
+      <features xsi:type="USchema:Reference" name="FAVORITE" refsTo="//@entities.1" isFeaturedBy="//@relationships.1/@variations.0" upperBound="1" lowerBound="1"/>
+    </variations>
+    <variations variationId="3" count="15215" structuralFeatures="//@entities.0/@variations.2/@features.0 //@entities.0/@variations.2/@features.1 //@entities.0/@variations.2/@features.2 //@entities.0/@variations.2/@features.3 //@entities.0/@variations.2/@features.4 //@entities.0/@variations.2/@features.5 //@entities.0/@variations.2/@features.6 //@entities.0/@variations.2/@features.7">
+      <features xsi:type="USchema:Attribute" name="address_street">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="surname" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="name">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="address_postcode" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="id">
+        <type xsi:type="USchema:PrimitiveType" name="integer"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="email">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="address_city">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="address_number">
+        <type xsi:type="USchema:PrimitiveType" name="integer"/>
+      </features>
+    </variations>
+    <variations variationId="4" count="84939" logicalFeatures="//@entities.0/@variations.3/@features.6" structuralFeatures="//@entities.0/@variations.3/@features.0 //@entities.0/@variations.3/@features.1 //@entities.0/@variations.3/@features.2 //@entities.0/@variations.3/@features.3 //@entities.0/@variations.3/@features.4 //@entities.0/@variations.3/@features.5">
+      <features xsi:type="USchema:Attribute" name="address_street">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="name">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="id">
+        <type xsi:type="USchema:PrimitiveType" name="integer"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="email">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="address_city">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="address_number">
+        <type xsi:type="USchema:PrimitiveType" name="integer"/>
+      </features>
+      <features xsi:type="USchema:Reference" name="WATCHED" refsTo="//@entities.1" isFeaturedBy="//@relationships.0/@variations.0" upperBound="1" lowerBound="1"/>
+    </variations>
+    <variations variationId="5" count="15061" structuralFeatures="//@entities.0/@variations.4/@features.0 //@entities.0/@variations.4/@features.1 //@entities.0/@variations.4/@features.2 //@entities.0/@variations.4/@features.3 //@entities.0/@variations.4/@features.4 //@entities.0/@variations.4/@features.5">
+      <features xsi:type="USchema:Attribute" name="address_street">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="name">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="id">
+        <type xsi:type="USchema:PrimitiveType" name="integer"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="email">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="address_city">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="address_number">
+        <type xsi:type="USchema:PrimitiveType" name="integer"/>
+      </features>
+    </variations>
+  </entities>
+  <entities name="Movie" root="true">
+    <variations variationId="1" count="100000" structuralFeatures="//@entities.1/@variations.0/@features.0 //@entities.1/@variations.0/@features.1 //@entities.1/@variations.0/@features.2 //@entities.1/@variations.0/@features.3">
+      <features xsi:type="USchema:Attribute" name="year">
+        <type xsi:type="USchema:PrimitiveType" name="integer"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="genre">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="id">
+        <type xsi:type="USchema:PrimitiveType" name="integer"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="title">
+        <type xsi:type="USchema:PrimitiveType" name="string"/>
+      </features>
+    </variations>
+  </entities>
+  <relationships name="WATCHED">
+    <variations variationId="1" count="169724" structuralFeatures="//@relationships.0/@variations.0/@features.0">
+      <features xsi:type="USchema:Attribute" name="stars">
+        <type xsi:type="USchema:PrimitiveType" name="integer"/>
+      </features>
+    </variations>
+  </relationships>
+  <relationships name="FAVORITE">
+    <variations variationId="1" count="72169"/>
+  </relationships>
+</USchema:USchema>
