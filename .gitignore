@@ -9,18 +9,27 @@ __pycache__/
 # results
 #
 # `results/` e `out/` seguem ignorados: as baterias são reexecutáveis e o disco
-# acumula uma corrida por execução. A EXCEÇÃO é a bateria canônica de
-# 2026-08-27 11:10 — a que sustenta as tabelas e figuras do artigo. Ela é
-# liberada arquivo a arquivo, não por diretório nem por glob: um glob deixaria
-# a próxima corrida da mesma semente entrar sozinha, que é justamente o que não
-# se quer. Corrida nova = arquivo novo = ignorado por padrão.
-# Proveniência e limitações: `results/README.md`.
+# acumula uma corrida por execução. As EXCEÇÕES são as baterias que sustentam as
+# tabelas e figuras do artigo: a canônica da Fase 3 (2026-08-27 11:10) e a
+# comparativa da Fase 4.4 (2026-10-04). Cada uma é liberada arquivo a arquivo,
+# não por diretório nem por glob: um glob deixaria a próxima corrida da mesma
+# semente entrar sozinha, que é justamente o que não se quer. Corrida nova =
+# arquivo novo = ignorado por padrão.
+# Proveniência e limitações: `results/README.md` e `results/fase4/README.md`.
 results/*
 !results/README.md
 !results/comparisons.csv
 !results/divergences.csv
 !results/oracle.csv
 !results/runs.csv
+
+!results/fase4/
+results/fase4/*
+!results/fase4/README.md
+!results/fase4/comparisons.csv
+!results/fase4/divergences.csv
+!results/fase4/oracle.csv
+!results/fase4/runs.csv
 
 out/*
 !out/oraculo/
@@ -63,6 +72,90 @@ out/porte/*
 !out/porte/neo4j_up_medium_seed23.xmi
 !out/porte/neo4j_up_large_seed23.xmi
 !out/porte/neo4j_up_larger_seed23.xmi
+
+# Fase 4.4: os XMIs levam o `run_id` no nome, um por corrida.
+!out/fase4/
+out/fase4/*
+!out/fase4/oraculo/
+!out/fase4/porte/
+out/fase4/oraculo/*
+out/fase4/porte/*
+
+!out/fase4/oraculo/oracle_chain-mongodb-up_a_large-23-python.xmi
+!out/fase4/oraculo/oracle_chain-mongodb-up_a_large-23-spark.xmi
+!out/fase4/oraculo/oracle_chain-mongodb-up_a_larger-23-python.xmi
+!out/fase4/oraculo/oracle_chain-mongodb-up_a_larger-23-spark.xmi
+!out/fase4/oraculo/oracle_chain-mongodb-up_a_medium-23-python.xmi
+!out/fase4/oraculo/oracle_chain-mongodb-up_a_medium-23-spark.xmi
+!out/fase4/oraculo/oracle_chain-mongodb-up_a_small-23-python.xmi
+!out/fase4/oraculo/oracle_chain-mongodb-up_a_small-23-spark.xmi
+!out/fase4/oraculo/oracle_chain-mongodb-up_b_large-23-python.xmi
+!out/fase4/oraculo/oracle_chain-mongodb-up_b_large-23-spark.xmi
+!out/fase4/oraculo/oracle_chain-mongodb-up_b_larger-23-python.xmi
+!out/fase4/oraculo/oracle_chain-mongodb-up_b_larger-23-spark.xmi
+!out/fase4/oraculo/oracle_chain-mongodb-up_b_medium-23-python.xmi
+!out/fase4/oraculo/oracle_chain-mongodb-up_b_medium-23-spark.xmi
+!out/fase4/oraculo/oracle_chain-mongodb-up_b_small-23-python.xmi
+!out/fase4/oraculo/oracle_chain-mongodb-up_b_small-23-spark.xmi
+!out/fase4/oraculo/oracle_chain-neo4j-movies_min-23-python.xmi
+!out/fase4/oraculo/oracle_chain-neo4j-movies_min-23-spark.xmi
+!out/fase4/oraculo/oracle_chain-neo4j-up_large-23-python.xmi
+!out/fase4/oraculo/oracle_chain-neo4j-up_large-23-spark.xmi
+!out/fase4/oraculo/oracle_chain-neo4j-up_larger-23-python.xmi
+!out/fase4/oraculo/oracle_chain-neo4j-up_larger-23-spark.xmi
+!out/fase4/oraculo/oracle_chain-neo4j-up_medium-23-python.xmi
+!out/fase4/oraculo/oracle_chain-neo4j-up_medium-23-spark.xmi
+
+!out/fase4/porte/equivalence-mongodb-northwind-database-python.xmi
+!out/fase4/porte/equivalence-mongodb-northwind-file-python.xmi
+!out/fase4/porte/oracle_chain-mongodb-up_a_large-23-python.xmi
+!out/fase4/porte/oracle_chain-mongodb-up_a_large-23-spark.xmi
+!out/fase4/porte/oracle_chain-mongodb-up_a_larger-23-python.xmi
+!out/fase4/porte/oracle_chain-mongodb-up_a_larger-23-spark.xmi
+!out/fase4/porte/oracle_chain-mongodb-up_a_medium-23-python.xmi
+!out/fase4/porte/oracle_chain-mongodb-up_a_medium-23-spark.xmi
+!out/fase4/porte/oracle_chain-mongodb-up_a_small-23-python.xmi
+!out/fase4/porte/oracle_chain-mongodb-up_a_small-23-spark.xmi
+!out/fase4/porte/oracle_chain-mongodb-up_b_large-23-python.xmi
+!out/fase4/porte/oracle_chain-mongodb-up_b_large-23-spark.xmi
+!out/fase4/porte/oracle_chain-mongodb-up_b_larger-23-python.xmi
+!out/fase4/porte/oracle_chain-mongodb-up_b_larger-23-spark.xmi
+!out/fase4/porte/oracle_chain-mongodb-up_b_medium-23-python.xmi
+!out/fase4/porte/oracle_chain-mongodb-up_b_medium-23-spark.xmi
+!out/fase4/porte/oracle_chain-mongodb-up_b_small-23-python.xmi
+!out/fase4/porte/oracle_chain-mongodb-up_b_small-23-spark.xmi
+!out/fase4/porte/oracle_chain-neo4j-movies_min-23-python.xmi
+!out/fase4/porte/oracle_chain-neo4j-movies_min-23-spark.xmi
+!out/fase4/porte/oracle_chain-neo4j-up_large-23-python.xmi
+!out/fase4/porte/oracle_chain-neo4j-up_large-23-spark.xmi
+!out/fase4/porte/oracle_chain-neo4j-up_larger-23-python.xmi
+!out/fase4/porte/oracle_chain-neo4j-up_larger-23-spark.xmi
+!out/fase4/porte/oracle_chain-neo4j-up_medium-23-python.xmi
+!out/fase4/porte/oracle_chain-neo4j-up_medium-23-spark.xmi
+!out/fase4/porte/size-mongodb-up_a_large-23-python.xmi
+!out/fase4/porte/size-mongodb-up_a_large-23-spark.xmi
+!out/fase4/porte/size-mongodb-up_a_larger-23-python.xmi
+!out/fase4/porte/size-mongodb-up_a_larger-23-spark.xmi
+!out/fase4/porte/size-mongodb-up_a_medium-23-python.xmi
+!out/fase4/porte/size-mongodb-up_a_medium-23-spark.xmi
+!out/fase4/porte/size-mongodb-up_a_small-23-python.xmi
+!out/fase4/porte/size-mongodb-up_a_small-23-spark.xmi
+!out/fase4/porte/size-mongodb-up_b_large-23-python.xmi
+!out/fase4/porte/size-mongodb-up_b_large-23-spark.xmi
+!out/fase4/porte/size-mongodb-up_b_larger-23-python.xmi
+!out/fase4/porte/size-mongodb-up_b_larger-23-spark.xmi
+!out/fase4/porte/size-mongodb-up_b_medium-23-python.xmi
+!out/fase4/porte/size-mongodb-up_b_medium-23-spark.xmi
+!out/fase4/porte/size-mongodb-up_b_small-23-python.xmi
+!out/fase4/porte/size-mongodb-up_b_small-23-spark.xmi
+!out/fase4/porte/size-neo4j-movies_min-23-python.xmi
+!out/fase4/porte/size-neo4j-movies_min-23-spark.xmi
+!out/fase4/porte/size-neo4j-up_large-23-python.xmi
+!out/fase4/porte/size-neo4j-up_large-23-spark.xmi
+!out/fase4/porte/size-neo4j-up_larger-23-python.xmi
+!out/fase4/porte/size-neo4j-up_larger-23-spark.xmi
+!out/fase4/porte/size-neo4j-up_medium-23-python.xmi
+!out/fase4/porte/size-neo4j-up_medium-23-spark.xmi
 
 # Distribution / packaging
 .Python
@@ -119,6 +212,15 @@ cover/
 # fonte da figura dos tempos de job do Spark; foi anonimizado antes de entrar —
 # o que foi substituído está em `results/README.md`.
 !logs/baterias_20260827_111058.log
+# Exceção: os logs da bateria da Fase 4.4, também anonimizados (o que foi
+# substituído está em `results/fase4/README.md`). Os quatro primeiros são a
+# fonte dos tempos de job do oráculo; o último é a suíte Spark abortada no
+# kernel 6.17, citada como evidência em `bugs_originais.md` §E1.
+!logs/baterias_20261004_125459.log
+!logs/baterias_20261004_130229.log
+!logs/baterias_20261004_131929.log
+!logs/baterias_20261004_135251.log
+!logs/baterias_20261004_115923.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal

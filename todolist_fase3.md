@@ -242,7 +242,7 @@ transcrevê-las à mão.
 ## 3.0 — Infra de bateria — **FECHADO**
 
 > O guia assumia "ler o tempo de inferência do log do Spark". Não existe log de
-> executor: a 2.0 decidiu driver nativo, pura-Python. A medição é em processo.
+> executor: a 2.0 decidiu driver nativo, Python. A medição é em processo.
 
 ### Scripts
 
@@ -431,7 +431,7 @@ arrays vazios (cenário relacional→NoSQL, que exercita #6 e #7).
 
 - [x] Gerar os 4 tamanhos, rodar Mongo (A e B) e grafo, coletar CSV.
 - [x] **Leitura integral** — fecha no grafo (100% em todas as corridas), **não** fecha no documento, e não deve: é o #8 replicado.
-- [x] **Sem `OutOfMemoryError`/`MemoryError`** em nenhuma corrida, apesar de pura-Python nos 800k. Se um dia estourar, `mapPartitions` entra sem reescrever a lógica (o `reduce_pairs` é comutativo e associativo, provado na 2.0) e os testes novos levam `@pytest.mark.spark`.
+- [x] **Sem `OutOfMemoryError`/`MemoryError`** em nenhuma corrida, apesar de rodar em Python nos 800k. Se um dia estourar, `mapPartitions` entra sem reescrever a lógica (o `reduce_pairs` é comutativo e associativo, provado na 2.0) e os testes novos levam `@pytest.mark.spark`.
 - [x] **Extração domina a geração nos quatro tamanhos do grafo** — 6,18 vs 16,36s (`small`), 15,88 vs 36,78s (`medium`), 49,85 vs 120,34s (`large`), 173,41 vs 429,85s (`larger`). A afirmação do guia ("a geração custa mais") **não se sustenta**: a evidência que a sustentava vinha de um cronômetro que incluía apagar o grafo anterior, por causa do `--drop`. Hoje a limpeza é etapa própria, com coluna `t_limpeza`.
 - [x] **`t_limpeza` de uma linha é o custo de apagar o grafo da linha anterior** — 2,58s (apagando `small`), 7,29s (`medium`), 26,47s (`large`), ~110s (`larger`, 10,2M arestas). Ler ao contrário inverte a conclusão.
 - [x] **A Rota B é ~2× mais rápida que a A** (14,52 vs 30,07s no `larger`). O artigo também tem B mais rápida, mas por ~15%. Suspeita: o ObjectId da Rota A exige extrair `generation_time` e montar o agregado `{"$oid": …}` por documento.
@@ -574,7 +574,7 @@ Coletar as métricas e compará-las com o artigo. Nada além.
 - **Comparar tamanhos diferentes sob o mesmo rótulo** — aconteceu com grafo `larger` × Northwind.
 - **MongoDB não sobe em kernel ≥6.19.** O `mongod` recusa iniciar — guarda deliberada, não crash. Contorno: bootar o **6.17.0-40-generic**. Docker **não** resolve, o container compartilha o kernel do host. Diagnóstico medido em 15/08/2026 abaixo.
 - **Alvo do #8 conflitante com a fidelidade** — se passar batido, ou o gate de equivalência quebra ou se publica um número que o porte não produz.
-- **Memória em pura-Python** nos 800k — perfil diferente do Spark; `mapPartitions` é a saída, não a reescrita.
+- **Memória em Python** nos 800k — perfil diferente do Spark; `mapPartitions` é a saída, não a reescrita.
 - **Sakila descartado (02/08/2026)** — a equivalência do documento fica com um dataset real só, o Northwind, e o *overfitting* a ele não está descartado. Deixa de ser risco em aberto e passa a ser limitação declarada.
 - **`N1` (nós multi-label)** aparecendo pela primeira vez numa extração real — diagnosticar pelo `.java`, não pelo sintoma.
 

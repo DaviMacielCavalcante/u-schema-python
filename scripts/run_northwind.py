@@ -19,6 +19,10 @@ Os JSONs estão versionados em `resources/datasets/northwind/` (BSD 2-Clause,
 proveniência no README de lá), então o caminho de arquivo roda sem banco e sem
 dependência externa.
 
+Roda só na engine Python (Fase 4.4): o caminho de arquivo não tem banco a
+fatiar, e o Northwind é gate de equivalência, não de volume. A coluna ``engine``
+sai ``python`` e o ``boot_time``, vazio.
+
     uv run python scripts/run_northwind.py
     uv run python scripts/run_northwind.py --json-dir /outro/caminho
 """
@@ -36,7 +40,11 @@ from pymongo import MongoClient
 
 from output import (
     PORT,
+    PORT_XMI_DIR,
+    PYTHON,
     RESOURCES,
+    RESULTS_DIR,
+    ROOT,
     Results,
     entity_name,
     format_seconds,
@@ -51,9 +59,7 @@ from uschema.metamodel.registry import load_metamodel
 from uschema.metamodel.xmi import load_model, save_model
 from uschema.validation.equivalence import compare
 
-ROOT = Path(__file__).resolve().parents[1]
 ORACLE_XMI = ROOT / "resources" / "mongodb" / "model_northwind.xmi"
-XMI_OUTPUT = ROOT / "out" / "porte"
 DEFAULT_JSON_DIR = ROOT / "resources" / "datasets" / "northwind"
 
 SCHEMA_NAME = "northwind"
@@ -130,7 +136,7 @@ def evaluate(
 
     start = time.perf_counter()
 
-    save_model(port, XMI_OUTPUT / f"mongo_northwind_{origin}.xmi")
+    save_model(port, PORT_XMI_DIR / f"{northwind_key(origin)}.xmi")
 
     t_write = time.perf_counter() - start
 
@@ -152,13 +158,18 @@ def evaluate(
     )
 
 
+def northwind_key(origin: str) -> str:
+    """O ``run_id`` de um caminho de leitura — também o nome do XMI dele."""
+    return run_id("equivalence", "mongodb", SCHEMA_NAME, origin=origin, engine=PYTHON)
+
+
 def record(tables: Results, run: NorthwindRun) -> None:
     """Distribui a corrida pelas tabelas de resultado.
 
     Só o porte produz linhas aqui: esta bateria compara com o XMI publicado em
     `resources/`, não roda o oráculo.
     """
-    key = run_id("equivalence", "mongodb", SCHEMA_NAME, origin=run.origin)
+    key = northwind_key(run.origin)
 
     tables.add_run(
         {
@@ -167,6 +178,7 @@ def record(tables: Results, run: NorthwindRun) -> None:
             "paradigm": "mongodb",
             "target": SCHEMA_NAME,
             "origin": run.origin,
+            "engine": PYTHON,
             "total_time": format_seconds(run.total),
             "extraction_time": format_seconds(run.t_extraction),
             "inference_time": format_seconds(run.t_inference),
@@ -200,7 +212,7 @@ def main() -> None:
     ap.add_argument("--uri", default="mongodb://localhost:27017")
     ap.add_argument("--db", default=SCHEMA_NAME)
     ap.add_argument("--json-dir", type=Path, default=DEFAULT_JSON_DIR)
-    ap.add_argument("--output-dir", type=Path, default=ROOT / "results")
+    ap.add_argument("--output-dir", type=Path, default=RESULTS_DIR)
 
     args = ap.parse_args()
 
@@ -209,7 +221,7 @@ def main() -> None:
 
     pkg = load_metamodel()
 
-    XMI_OUTPUT.mkdir(parents=True, exist_ok=True)
+    PORT_XMI_DIR.mkdir(parents=True, exist_ok=True)
 
     print(f"dataset: {args.json_dir}\nsha256:  {digest(args.json_dir)}")
 

@@ -43,6 +43,7 @@ they are catalogued, with line-level evidence, in `bugs_originais.md`.
 | MongoDB | 8.0.31 | version used in the canonical run; `localhost:27017`, no authentication |
 | Neo4j | 2026.07.1 Community | version used in the canonical run; `bolt://localhost:7687`, no authentication |
 | Docker | any recent engine | **only** needed to build and run the Java oracle; the base image is digest-pinned in `oracle/Dockerfile` |
+| JDK | **17 or 21** | needed by the `spark`-marked tests (Phase 4); `JAVA_HOME` must point at it — see below |
 
 <!-- TODO: the minimum supported MongoDB and Neo4j versions have never been
      determined. The versions above are the ones the canonical battery was
@@ -50,7 +51,17 @@ they are catalogued, with line-level evidence, in `bugs_originais.md`.
 
 Neither database is required to run the test suite, and neither is required for
 the file-based Northwind equivalence path — the 17 JSONL files are versioned
-under `resources/datasets/northwind/`.
+under `resources/datasets/northwind/`. The one exception is opportunistic: the
+Phase 4 MongoDB Spark-engine tests (marked `integration`) use a `mongod` on
+`localhost:27017` when one answers — in a throwaway database, dropped afterwards
+— and are **skipped** otherwise. The Neo4j Spark-engine tests use a fake driver.
+
+> **MongoDB on recent Ubuntu kernels.** `mongod` 8.0 refuses to start on Linux
+> kernels 6.19 through 7.0.13 ([SERVER-121912](https://jira.mongodb.org/browse/SERVER-121912)).
+> Ubuntu's `7.0.0-N` kernels already carry the upstream fix but report `7.0.0`,
+> so `mongod` up to 8.0.32 still refuses them; the Ubuntu exemption lands in
+> 8.0.35 ([SERVER-131779](https://jira.mongodb.org/browse/SERVER-131779)). Until
+> then, boot a 6.17 kernel for timing runs.
 
 ## Installation
 
@@ -71,6 +82,28 @@ uv run pytest
 uv run ruff check .
 uv run mypy .
 ```
+
+### `JAVA_HOME` for the Spark-backed tests
+
+`uv run pytest` runs the whole suite, which since Phase 4 includes tests marked
+`spark`. Those boot a real JVM, and **PySpark 4.x requires Java 17 or 21** — it
+does not run on Java 8, and newer JDKs are not supported yet. If your default
+`java` is an older one (check with `java -version`), point `JAVA_HOME` at a
+compatible JDK before running them:
+
+```bash
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64   # adjust to your install
+```
+
+Without it the `spark` tests fail with a message naming this requirement. To run
+everything else in the meantime:
+
+```bash
+uv run pytest -m "not spark"
+```
+
+The pre-commit hook already excludes them; the pre-push hook and CI do not, so
+the variable has to be set in the environment those run in.
 
 Quality gates are enforced by pre-commit hooks and by CI. Install the hooks once:
 

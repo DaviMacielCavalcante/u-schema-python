@@ -1,14 +1,28 @@
 # Dicionário de dados — `results/`
 
-Esquema das tabelas de evidência da **Fase 3**, escritas por
+Esquema das tabelas de evidência das **Fases 3 e 4**, escritas por
 `scripts/output.py`.
 
-> **Estado.** Esquema **implementado, ainda não medido**. As colunas
-> `query_time` e `normalized` entraram em 15/08/2026 e exigem uma medição nova —
-> a query de referência nunca rodou nas instâncias antigas, e o valor não é
-> retroativo. O `results/` em disco é anterior a elas: a guarda de cabeçalho
-> recusa anexar, e ele precisa ser arquivado antes da próxima corrida. Não há
-> outros diretórios de resultado.
+> **Estado: dois diretórios, dois esquemas de `runs.csv`.**
+>
+> - **`results/`** guarda a bateria canônica da Fase 3 (27/08/2026, versionada
+>   arquivo a arquivo — ver `results/README.md`). O `runs.csv` dela tem 13
+>   colunas e é todo da engine Python, que era a única.
+> - **`results/fase4/`** recebe a bateria comparativa da Fase 4.4 (2026-10-04,
+>   versionada arquivo a arquivo — ver `results/fase4/README.md`). O `runs.csv`
+>   ganha duas colunas, `engine` e `boot_time`, e a engine entra no `run_id`.
+>   As outras três tabelas não mudam de esquema.
+> - **Dois kernels em `results/fase4/`.** Na bateria de 04/10/2026, o MongoDB
+>   foi medido no `6.17.0-40`, o mesmo da bateria canônica, e o Neo4j no
+>   `7.0.0-34`: o `mongod` não sobe no 7.0, e no 6.17 a leitura do grafo pela
+>   engine Spark travou (`bugs_originais.md` §E1). O kernel não é coluna. Comparar
+>   as engines dentro de um banco é seguro; comparar tempo entre os bancos, ou o
+>   grafo de `results/fase4/` com o da bateria canônica, carrega essa diferença.
+>
+> O código atual só produz o esquema novo. A guarda de cabeçalho do `output.py`
+> impede a mistura: uma corrida de agora recusa anexar no `results/` canônico.
+> Tudo o que este documento diz sobre `engine` e `boot_time` vale só para
+> `results/fase4/`.
 
 ## Convenções
 
@@ -39,25 +53,37 @@ Só o **porte**. O oráculo tem tabela própria.
 
 | # | coluna | tipo | valores | vazia quando |
 |---|---|---|---|---|
-| 1 | `run_id` | texto | `oracle_chain-mongodb-up_a_small-23` | nunca |
+| 1 | `run_id` | texto | `size-mongodb-up_a_small-23-spark` | nunca |
 | 2 | `experiment` | texto | `equivalence` · `size` · `oracle_chain` | nunca |
 | 3 | `size` | texto | `small` · `medium` · `large` · `larger` | Northwind |
 | 4 | `paradigm` | texto | `mongodb` · `neo4j` | nunca |
 | 5 | `route` | texto | `A` · `B` | Neo4j, Northwind |
 | 6 | `target` | texto | `up_a_small` · `northwind` · `movies_min` | nunca |
 | 7 | `origin` | texto | `file` · `database` | nunca |
-| 8 | `total_time` | segundos | — | nunca |
-| 9 | `extraction_time` | segundos | — | nunca |
-| 10 | `inference_time` | segundos | — | nunca |
-| 11 | `write_time` | segundos | — | nunca |
-| 12 | `query_time` | segundos | — | `equivalence` |
-| 13 | `normalized` | razão | — | `equivalence` |
+| 8 | `engine` | texto | `python` · `spark` | nunca |
+| 9 | `total_time` | segundos | — | nunca |
+| 10 | `extraction_time` | segundos | — | nunca |
+| 11 | `inference_time` | segundos | — | nunca |
+| 12 | `write_time` | segundos | — | nunca |
+| 13 | `boot_time` | segundos | — | engine `python` |
+| 14 | `query_time` | segundos | — | `equivalence` |
+| 15 | `normalized` | razão | — | `equivalence` |
+
+`engine` e `boot_time` existem só em `results/fase4/`. A bateria canônica de
+`results/` tem as outras 13 colunas, e o `run_id` dela não leva a engine.
 
 ### Colunas
 
 **`run_id`** — determinístico, montado de
-`experiment`-`paradigm`-`target`-`seed`-`origin`, omitindo as partes ausentes.
-É a chave desta tabela e da `oracle.csv`, e junta com as outras três.
+`experiment`-`paradigm`-`target`-`seed`-`origin`-`engine`, omitindo as partes
+ausentes. É a chave desta tabela e da `oracle.csv`, e junta com as outras três.
+
+> **A engine entra sempre, inclusive `python`.** Sem ela, a corrida Python e a
+> Spark do mesmo alvo e semente teriam a mesma chave, e a guarda de duplicata
+> recusaria a segunda. Consequência: os `run_id` de `results/fase4/` não casam
+> com os da bateria canônica (`size-mongodb-up_a_small-23` lá,
+> `size-mongodb-up_a_small-23-python` aqui). Para cruzar as duas, tire o último
+> segmento.
 
 > **Sozinho ele não identifica um confronto nem uma divergência.** Uma corrida
 > do grafo compara o mesmo modelo com `resources` **e** com `seeded_oracle`:
@@ -67,7 +93,9 @@ Só o **porte**. O oráculo tem tabela própria.
 
 > **A semente não é coluna, mas está no identificador.** É ela que separa duas
 > corridas do mesmo alvo com `--seed` diferente; sem ela a chave duplicaria em
-> silêncio. Para filtrar por semente, quebre o `run_id` no último hífen.
+> silêncio. Para filtrar por semente, quebre o `run_id` nos hífens: na bateria
+> canônica a semente é o último segmento; em `results/fase4/`, o penúltimo,
+> porque o último é a engine.
 
 **`experiment`** — qual bateria gerou a linha.
 
@@ -101,6 +129,13 @@ dentro do XMI. Divergência de `SCHEMA_NAME` é **fatal** no harness.
 **`origin`** — por qual caminho o dado foi lido. Só o Northwind é medido pelos
 dois; todo o resto é `database`.
 
+**`engine`** — qual engine do porte fez a extração (Fase 4): `python`, o
+caminho de sempre, ou `spark`, que paraleliza o map-reduce da extração
+(`extractors/mongo.py` e `extractors/neo4j.py`). Só a extração muda: a
+inferência e a escrita rodam o mesmo código nas duas engines, no processo
+principal. O oráculo não tem engine — é o Java, com o Spark dele dentro do
+container, sempre.
+
 **`total_time`** — relógio de parede do banco até o XMI em disco: o pipeline
 inteiro, extração, inferência e serialização.
 
@@ -121,6 +156,31 @@ não o de maior volume.
 descreve formas, não dados: o maior já produzido tem 107 KB (Northwind), e os do
 grafo têm 9,4 KB. **Máximo de 0,01s** em toda a bateria de 08/08/2026, nas 62
 corridas.
+
+**`boot_time`** — subir a `SparkSession` local (JVM e contexto Spark) antes da
+extração: o custo fixo que a engine Spark paga e a Python não. Medido em
+processo, da chamada ao `local_session()` até a sessão pronta. Vazia na engine
+`python`.
+
+> **Uma corrida Spark por processo.** O `session.stop()` do PySpark encerra a
+> sessão, mas não a JVM: ela segue viva no processo, e a sessão seguinte a
+> reaproveita já aquecida. Com vários tamanhos num processo só, o primeiro
+> pagaria o boot inteiro e os outros quase nada — e são justamente os tamanhos
+> pequenos que a comparação distorceria. Por isso as baterias recusam mais de
+> uma combinação com `--engine spark`, e o `run_suite.sh` roda cada combinação
+> num processo próprio (`scripts/engines.py`). Todo `boot_time` gravado é,
+> portanto, o de uma JVM nova.
+
+> **Fica fora do `total_time`.** As três parcelas continuam somando o
+> `total_time`, e o `normalized` continua `total_time / query_time` —
+> comparáveis entre as engines e com a bateria canônica. O custo de ponta a
+> ponta da engine Spark é `boot_time + total_time`, e é conta da análise.
+
+> **O que o `boot_time` não pega.** O aquecimento da JVM durante o primeiro job
+> (carga de classes, JIT) acontece dentro da extração e fica no
+> `extraction_time`. Como toda corrida começa com JVM nova, ele pesa igual em
+> todos os tamanhos. O oráculo não tem coluna equivalente: o container reporta
+> um número só, com o boot dentro (ver `oracle.csv`).
 
 **`query_time`** — tempo da **query de referência**: a média de filmes
 assistidos por usuário, rodada no mesmo banco. Não é parte do pipeline; existe
@@ -156,12 +216,13 @@ sem depender da máquina.
 ### Notas de leitura
 
 **As três parcelas somam o `total_time`**, sempre — nenhuma é vazia. Verificado
-nas 26 corridas de 08/08/2026.
+nas 26 corridas de 08/08/2026. O `boot_time` não entra na soma.
 
-**`run_id` é chave sozinho.** A checagem de duplicata:
+**`run_id` é chave sozinho.** A checagem de duplicata, em cada diretório:
 
 ```bash
-awk -F, 'NR>1{print $1}' results/runs.csv | sort | uniq -d   # tem de sair vazio
+awk -F, 'NR>1{print $1}' results/runs.csv | sort | uniq -d         # tem de sair vazio
+awk -F, 'NR>1{print $1}' results/fase4/runs.csv | sort | uniq -d   # idem
 ```
 
 **Bancos e saídas ficam em sistemas de arquivos diferentes.** Os bancos em

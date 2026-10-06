@@ -2,7 +2,11 @@
 
 Este diretório e mais dois (`out/` e `logs/`) guardam **uma** execução da suíte
 de baterias da Fase 3: a de **2026-08-27, 11:10:58 → 12:07:49 (-03:00)**. É a
-corrida da qual saem as tabelas e figuras do artigo, e é a única versionada.
+corrida da qual saem as tabelas e figuras da Fase 3 no artigo.
+
+Há uma segunda bateria versionada: a comparativa da Fase 4.4, de 2026-10-04, em
+`results/fase4/`, com README próprio. Ela não substitui esta — tem outro esquema
+de `runs.csv` e mede as duas engines do porte.
 
 As outras execuções que existam em disco **não** estão no repositório, de
 propósito. O `.gitignore` libera esta bateria **arquivo a arquivo** — não por

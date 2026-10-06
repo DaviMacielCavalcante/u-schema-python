@@ -6,7 +6,7 @@
 > **Premissas corrigidas pelas Fases 1 e 2 — ler antes de executar a fase.**
 >
 > - **Não há "log do Spark" para ler.** A 2.0 decidiu leitura por **driver
->   nativo** (`pymongo`/`neo4j`), pura-Python; o tempo de inferência tem de ser
+>   nativo** (`pymongo`/`neo4j`), Python; o tempo de inferência tem de ser
 >   medido **em processo** (cronometrar o pipeline `extract_* → BuildUSchema`),
 >   não extraído de log de executor. Spark segue como paralelizador opcional.
 > - **O Northwind já fechou** na Fase 2.3 e foi re-executado em 31/07/2026
@@ -53,7 +53,7 @@ Era para replicar o protocolo (documento e/ou grafo) e servir de segundo ponto d
 
 ## 3.2 Tamanho (datasets sintéticos)
 
-Reproduzir o experimento de volume do artigo (Tabelas 3/4), confirmando que o porte preserva a propriedade de crescimento. (Em **pura-Python** — a 2.0 dispensou o Spark; ver o banner no topo.)
+Reproduzir o experimento de volume do artigo (Tabelas 3/4), confirmando que o porte preserva a propriedade de crescimento. (Em **Python** — a 2.0 dispensou o Spark; ver o banner no topo.)
 
 **Geradores (já existentes):** `gen_userprofiles.py` (MongoDB, Rotas A/B) e `gen_userprofiles_neo4j.py` (grafo). Quatro tamanhos: 100k/200k/400k/800k `User` (50k/100k/200k/400k `Movie`).
 
@@ -122,4 +122,4 @@ Scripts de execução das baterias (equivalência + volume), suíte de regressã
 
 ## Riscos da fase
 
-Python mais lento que a JVM (**parcialmente** irrelevante — H1 é sobre tendência, mas a bateria de 31/07/2026 mostrou que o porte é **superlinear** onde o oráculo é quase linear, então "a curva se preserva" precisa ser afirmado com ressalva, não como dado); custo de **geração** do grafo Neo4j dominando o tempo de bateria em volume grande (medido: 176,95s no `large`; é da materialização, não da inferência — e no `small` a extração custa mais que a geração); **geradores sem semente**, o que impede reconstruir a instância exata que produziu os XMIs de referência; divergência estrutural residual em dataset real (o harness aponta a categoria; voltar à Fase 1/2 conforme o módulo); **perfil de memória** diferente do oráculo, já que a leitura é pura-Python em processo e não distribuída em executores.
+Python mais lento que a JVM (**parcialmente** irrelevante — H1 é sobre tendência, mas a bateria de 31/07/2026 mostrou que o porte é **superlinear** onde o oráculo é quase linear, então "a curva se preserva" precisa ser afirmado com ressalva, não como dado); custo de **geração** do grafo Neo4j dominando o tempo de bateria em volume grande (medido: 176,95s no `large`; é da materialização, não da inferência — e no `small` a extração custa mais que a geração); **geradores sem semente**, o que impede reconstruir a instância exata que produziu os XMIs de referência; divergência estrutural residual em dataset real (o harness aponta a categoria; voltar à Fase 1/2 conforme o módulo); **perfil de memória** diferente do oráculo, já que a leitura roda em Python, no próprio processo, e não distribuída em executores.

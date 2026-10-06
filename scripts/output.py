@@ -1,4 +1,4 @@
-"""Tabelas de resultado da Fase 3 — **um grão por arquivo**.
+"""Tabelas de resultado das Fases 3 e 4 — **um grão por arquivo**.
 
 As baterias antes gravavam um CSV cada, misturando três granularidades no mesmo
 arquivo: fatos da corrida (os tempos) repetidos em cada linha de entidade, e
@@ -21,6 +21,11 @@ utilitário.
 **O esquema completo, coluna a coluna, está em `dicionario_de_dados.md`** (raiz
 do repositório), que é a referência para quem for analisar os CSVs. Este módulo
 implementa o que aquele documento descreve.
+
+Desde a Fase 4.4, ``runs`` carrega ``engine`` e ``boot_time``, e a engine entra
+no ``run_id``. O esquema de 13 colunas da bateria canônica (``results/``) não é
+mais produzido: a guarda de cabeçalho recusa anexar nele, e a bateria da Fase 4
+grava em ``results/fase4/``.
 
 Todo número gravado tem **dono explícito**
 ------------------------------------------
@@ -75,12 +80,29 @@ PORT = "port"
 RESOURCES = "resources"
 SEEDED_ORACLE = "seeded_oracle"
 
+#: Valores de ``engine`` (Fase 4): qual engine do porte fez a extração. Constantes
+#: pelo mesmo motivo de :data:`PORT` — um ``"sprak"`` passaria pelo mypy.
+PYTHON = "python"
+SPARK = "spark"
+ENGINES = [PYTHON, SPARK]
+
 #: Semente padrão das baterias. Mora aqui — e não em cada script — porque o
 #: `run_suite.sh` também precisa dela: a guarda contra rodar a mesma semente duas
-#: vezes procura o valor em `results/runs.csv`, e duplicá-lo no shell abriria
-#: espaço para os dois divergirem, que é justamente o caso que a guarda existe
-#: para pegar.
+#: vezes procura o valor em `results/fase4/runs.csv`, e duplicá-lo no shell
+#: abriria espaço para os dois divergirem, que é justamente o caso que a guarda
+#: existe para pegar.
 DEFAULT_SEED = 23
+
+ROOT = Path(__file__).resolve().parents[1]
+
+#: Saídas da Fase 4: tabelas e XMIs numa árvore própria. A bateria canônica de
+#: 27/08 mora em `results/` e `out/{porte,oraculo}/`, versionada arquivo a
+#: arquivo, e uma corrida nova com os nomes antigos sobrescreveria aqueles XMIs —
+#: já aconteceu no gate da 4.3. Aqui cada XMI se chama pelo ``run_id`` da
+#: corrida que o produziu, que é único por construção.
+RESULTS_DIR = ROOT / "results" / "fase4"
+PORT_XMI_DIR = ROOT / "out" / "fase4" / "porte"
+ORACLE_XMI_DIR = ROOT / "out" / "fase4" / "oraculo"
 
 #: Casas decimais das colunas de tempo. `query_time` leva quatro porque é o
 #: divisor de `normalized`: a duas casas o arredondamento sozinho desloca a razão
@@ -98,10 +120,13 @@ RUNS = [
     "route",
     "target",
     "origin",
+    "engine",
     "total_time",
     "extraction_time",
     "inference_time",
     "write_time",
+    # Fora do `total_time`: o custo fixo da engine Spark, vazio na Python.
+    "boot_time",
     "query_time",
     "normalized",
 ]
@@ -150,6 +175,7 @@ def run_id(
     target: str,
     seed: int | None = None,
     origin: str | None = None,
+    engine: str | None = None,
 ) -> str:
     """Montar o identificador determinístico de uma corrida.
 
@@ -161,6 +187,11 @@ def run_id(
     **A semente entra no identificador mesmo não sendo mais coluna.** É ela que
     separa duas corridas do mesmo alvo com sementes diferentes; sem ela, rodar
     com ``--seed`` distinto produziria chave duplicada em silêncio.
+
+    **A engine entra por último, e sempre** nas tabelas da Fase 4 — inclusive
+    ``python`` —, pelo mesmo motivo: as duas engines medem o mesmo alvo com a
+    mesma semente. É opcional aqui só porque a bateria canônica da Fase 3 foi
+    gravada sem ela.
 
     Parameters
     ----------
@@ -175,6 +206,8 @@ def run_id(
     origin : str, optional
         ``file`` ou ``database``, quando o mesmo alvo é lido por mais de um
         caminho.
+    engine : str, optional
+        :data:`PYTHON` ou :data:`SPARK`, a engine do porte que fez a extração.
 
     Returns
     -------
@@ -187,6 +220,8 @@ def run_id(
     'size-mongodb-up_a_small-23'
     >>> run_id("equivalence", "mongodb", "northwind", origin="file")
     'equivalence-mongodb-northwind-file'
+    >>> run_id("size", "mongodb", "up_a_small", seed=23, engine="spark")
+    'size-mongodb-up_a_small-23-spark'
     """
     parts = [experiment, paradigm, target]
 
@@ -195,6 +230,9 @@ def run_id(
 
     if origin is not None:
         parts.append(origin)
+
+    if engine is not None:
+        parts.append(engine)
 
     return "-".join(parts)
 
@@ -281,6 +319,29 @@ def format_seconds(value: float) -> str:
     '23.45'
     """
     return f"{value:.{TIME_DECIMALS}f}"
+
+
+def format_boot(value: float | None) -> str:
+    """Formatar a coluna ``boot_time``, vazia na engine Python.
+
+    Parameters
+    ----------
+    value : float or None
+        Segundos para subir a ``SparkSession``; ``None`` na engine Python.
+
+    Returns
+    -------
+    str
+        O valor com :data:`TIME_DECIMALS` casas, ou vazio.
+
+    Examples
+    --------
+    >>> format_boot(3.214)
+    '3.21'
+    >>> format_boot(None)
+    ''
+    """
+    return "" if value is None else format_seconds(value)
 
 
 def format_query_time(value: float) -> str:
