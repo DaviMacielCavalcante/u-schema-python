@@ -57,7 +57,11 @@ engine Spark do grafo dá contagens idênticas às do Python, nos testes (driver
 falso) e no `up_larger` real, com ganho indicativo de ~11× (uma corrida). **4.3
 (determinismo sob partição) fechada** (03/10/2026): as duas engines do Mongo leem
 cada coleção em ordem de `_id` e dão triplas idênticas, e o gate contra o
-oráculo passou nos dois paradigmas. Em aberto: **4.4** (bateria comparativa).
+oráculo passou nos dois paradigmas. **4.4 (bateria comparativa) rodada**
+(04/10/2026) nas duas engines, com as 42 comparações equivalentes: o Mongo no
+kernel 6.17 e o Neo4j no 7.0, porque no 6.17 a leitura do grafo travou
+(`bugs_originais.md` §E1). Curvas e tabelas feitas (05/10/2026). Em aberto: a
+resposta escrita da fase e a JVM e o `mongod` no CI.
 
 Uma ausência real, para não ser confundida com lacuna de porte:
 

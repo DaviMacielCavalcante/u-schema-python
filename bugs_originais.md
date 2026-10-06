@@ -76,7 +76,7 @@ contrário.
 | **M5** | `DefaultEVariationMerger.java:132` | `homogeneousArraysMerge` indexa array vazio quando os dois lados colapsam vazios | **crash confirmado (Java e porte)** | replicado (fiel) |
 | **M6** | `DefaultReferenceMatcher.java:34-50` | chave concatenada crua no regex, sem escape — metacaractere vira regex | **equivalência confirmada (Java e porte)** | replicado (fiel) |
 | **N1** | `IdArchetypeMapping.java:60-62,100-104` | labels próprios ordenados, `refsTo` não — dois `EntityType` pro mesmo nó multi-label | **equivalência confirmada (dado real)** | replicado (fiel) |
-| **E1** | `extractors/neo4j.py` — `_read_label_combination` (**nosso**, não do original) | leitura *eager* enche o buffer, fecha a janela TCP e derruba a vazão a ~47 KB/s em resultado grande | **medido (6,3× mais lento que streaming)** | **corrigido** em 08/08/2026 |
+| **E1** | `extractors/neo4j.py` — `_read_label_combination` (**nosso**, não do original) | leitura *eager* enche o buffer, fecha a janela TCP e derruba a vazão a ~47 KB/s em resultado grande | **medido (6,3× mais lento que streaming)** | **corrigido** em 08/08/2026; o resíduo vem do kernel 6.17, e o grafo se mede num kernel mais novo (04/10/2026) |
 
 `C7` está numa família própria: os demais fazem o harness **reprovar** algo
 válido ou explodir. `C7` faz o harness **aprovar** um modelo errado — o único
@@ -1313,6 +1313,78 @@ também mostram `rwnd_limited` em ~97%, timer `persist` e `snd_wnd` de 5 a 39 KB
 — é o normal de um cliente que é o gargalo. O que separa o travamento é o
 cliente **ocioso** com `Recv-Q: 0` e a vazão: ~45 KB/s contra ~1 MB/s por
 conexão.
+
+### Regressão do kernel 6.17 (04/10/2026)
+
+Na bateria da 4.4, no `6.17.0-40`, o `oracle_chain` `up_large` com a engine
+Spark travou **três vezes seguidas**, do mesmo jeito: 63 das 64
+fatias prontas e uma conexão a 49 KB/s (`logs/baterias_20261004_115923.log`).
+Cada tentativa começava do zero — processo, sessão Spark e conexões novas, grafo
+apagado e regerado com a mesma semente. Entre elas, só ficaram iguais o servidor
+do Neo4j, o conteúdo do grafo e a máquina. No mesmo dia, a suíte Python inteira
+e o `small` e o `medium` da Spark passaram.
+
+Foi a primeira vez que o travamento se repetiu numa mesma combinação. A busca
+achou uma regressão conhecida do TCP do Linux que bate com o quadro:
+
+- **`1d2fbaad7cd8`** ("tcp: stronger sk_rcvbuf checks"), do 6.17, endureceu a
+  checagem de memória na recepção, e **`f017c1f768b6`** ("tcp: use skb->len
+  instead of skb->truesize in tcp_can_ingest()") a agravou. O receptor passa a
+  descartar segmentos que cabiam na janela que ele mesmo anunciou
+  (`TcpExtTCPRcvQDrop`), sobretudo em loopback. O relato na netdev mediu a taxa
+  subindo de praticamente zero para 0,83 descarte por segundo.
+- A mudança foi revertida por **`026dfef287c0`** ("tcp: give up on stronger
+  sk_rcvbuf checks (for now)"), aplicado em 28/02/2026. O Ubuntu `6.17.0-29`
+  trouxe o `f017c1f768b6` (changelog do pacote); nenhum changelog dos 6.17
+  instalados (`-29`, `-35`, `-40`) traz a reversão.
+- Dois patches vizinhos descrevem o resto do quadro. Um, de abril de 2026 ("tcp:
+  do not shrink window clamp", sem merge), descreve a janela esmagada em loopback
+  e um laço de sonda de 200 ms — os nossos 9 KB a cada ~200 ms. O outro
+  (`0e125ecfe20c`, 03/08/2026) descreve o `rcv_ssthresh` cortado por queda do
+  `scaling_ratio` desde o 6.12, com P99 subindo de <10 ms para ~100 ms — os
+  ~100 ms por lote medidos em agosto.
+
+Os contadores da máquina, desde o boot:
+
+| contador | 6.17, das 11:14 às ~12:40 | 7.0, das 13:12 ao fim da suíte do grafo |
+|---|---|---|
+| `TcpExtTCPRcvQDrop` | 1.732 | 0 |
+| `TcpExtRcvPruned` | 1.739 | 0 |
+| `TcpRetransSegs` | 19.940 | 2.726 |
+| `TcpExtTCPDSACKRecv` | 17.011 | 2.332 |
+
+As cargas não são iguais: no 6.17 rodaram a suíte Python inteira e a Spark até
+parar; no 7.0, só as duas suítes do grafo. Mesmo assim, o zero do 7.0 não vem de
+tráfego baixo — o grafo é a parte mais pesada da bateria. As retransmissões que
+sobram no 7.0 são quase todas acusadas por DSACK: o segmento original tinha
+chegado.
+
+No `7.0.0-34` (upstream 7.0.14, posterior à reversão pela data; não conferido no
+fonte), a suíte do grafo inteira — Python e Spark, 16 corridas — rodou sem
+nenhum travamento, e o `up_large` Spark extraiu em 12,8 s de primeira.
+A Spark do grafo também ficou mais rápida nos tamanhos menores: 3,95 s e 5,42 s
+no `small` e no `medium` do `oracle_chain`, contra 11,44 s e 9,35 s no 6.17 no
+mesmo dia. A Python não mudou (13 · 36 · 121 · 423 s, o histórico).
+
+**Não foi a primeira vez, e a saída já era conhecida.** O travamento do grafo já
+tinha aparecido antes, e foi resolvido rodando num kernel mais novo — a mesma
+saída de agora (lembrança do Davi em 05/10/2026; o episódio anterior não ficou
+registrado neste documento). O resíduo do `E1` é, portanto, defeito do
+**ambiente**, e o prefixo `E` volta ao sentido original. Sem demonstração fica
+só o mecanismo: os contadores são da máquina inteira e não foram vistos subindo
+durante um travamento, então atribuí-lo aos commits acima é inferência. A regra
+prática não depende disso: **o grafo se mede num kernel mais novo que o 6.17.**
+
+**Consequência para a 4.4:** o Neo4j foi medido no 7.0 e o MongoDB no 6.17, onde
+o `mongod` sobe (`todolist_fase4.md`, requisito de ambiente da 4.1). Dentro de
+cada banco, as duas engines estão no mesmo kernel.
+
+Fontes:
+[reversão](https://ratatoskr.run/netdev/2026/02/11348789/t) ·
+[relato dos descartes em loopback](https://ratatoskr.run/netdev/2026/02/11348634/t) ·
+[window clamp](https://ratatoskr.run/lkml/2026/04/3531785/t) ·
+[`rcv_ssthresh`](https://ratatoskr.run/lkml/2026/07/17317706/t) ·
+[caso parecido no 6.17](https://github.com/goceleris/celeris/issues/783)
 
 ---
 

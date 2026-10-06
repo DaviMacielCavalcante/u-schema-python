@@ -11,6 +11,12 @@ Esquema das tabelas de evidência das **Fases 3 e 4**, escritas por
 > - **`results/fase4/`** recebe a bateria comparativa da Fase 4.4. O `runs.csv`
 >   ganha duas colunas, `engine` e `boot_time`, e a engine entra no `run_id`.
 >   As outras três tabelas não mudam de esquema.
+> - **Dois kernels em `results/fase4/`.** Na bateria de 04/10/2026, o MongoDB
+>   foi medido no `6.17.0-40`, o mesmo da bateria canônica, e o Neo4j no
+>   `7.0.0-34`: o `mongod` não sobe no 7.0, e no 6.17 a leitura do grafo pela
+>   engine Spark travou (`bugs_originais.md` §E1). O kernel não é coluna. Comparar
+>   as engines dentro de um banco é seguro; comparar tempo entre os bancos, ou o
+>   grafo de `results/fase4/` com o da bateria canônica, carrega essa diferença.
 >
 > O código atual só produz o esquema novo. A guarda de cabeçalho do `output.py`
 > impede a mistura: uma corrida de agora recusa anexar no `results/` canônico.

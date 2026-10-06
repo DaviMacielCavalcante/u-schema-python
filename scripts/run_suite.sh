@@ -25,18 +25,26 @@
 # intocada. O Northwind só roda na primeira suíte do diretório: não tem semente
 # nem engine Spark, e uma segunda corrida duplicaria a chave dele.
 #
+# O terceiro argumento restringe a suíte a um banco (`mongodb` ou `neo4j`); sem
+# ele, roda os dois. Separar deixa cada banco rodar no seu kernel: a leitura do
+# grafo trava no 6.17 (§E1) e roda num kernel mais novo, em que o mongod não
+# sobe. O Northwind é do MongoDB, e só roda na suíte que o inclui.
+#
 # DESTRUTIVO: começa esvaziando os bancos das baterias (`up_*` no MongoDB e o
-# grafo do Neo4j) e depois cada corrida dropa e regera o seu. Com a semente no
-# `run_id`, o dado é reconstruível — é para isso que a semente existe.
+# grafo do Neo4j; só o do banco pedido, quando há um) e depois cada corrida
+# dropa e regera o seu. Com a semente no `run_id`, o dado é reconstruível — é
+# para isso que a semente existe.
 # O `northwind` NÃO é tocado (ver scripts/clean_databases.py).
 #
 # Uso:
-#   ./scripts/run_suite.sh              # semente padrão dos scripts (23), engine python
-#   ./scripts/run_suite.sh 69           # outra semente
-#   ./scripts/run_suite.sh 69 spark     # outra semente, engine spark
+#   ./scripts/run_suite.sh                  # semente padrão dos scripts (23), engine python
+#   ./scripts/run_suite.sh 69               # outra semente
+#   ./scripts/run_suite.sh 69 spark         # outra semente, engine spark
+#   ./scripts/run_suite.sh 69 spark neo4j   # só as baterias do grafo
 #   nohup ./scripts/run_suite.sh 23 spark > /dev/null 2>&1 &   # e ir dormir
 #
-# Pré-requisitos: mongod e neo4j ativos, imagem do oráculo buildada.
+# Pré-requisitos: o banco pedido ativo (os dois, sem o terceiro argumento),
+# imagem do oráculo buildada.
 #   systemctl is-active mongod neo4j
 #   docker image inspect extrator-uschema > /dev/null
 # Lembrete: o mongod não sobe em kernel >= 6.19 (guarda do rseq) — ver
@@ -46,9 +54,9 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
-if [ $# -gt 2 ]; then
-    echo "erro: no máximo uma semente e uma engine" >&2
-    echo "  uso: $0 [semente [engine]]" >&2
+if [ $# -gt 3 ]; then
+    echo "erro: no máximo uma semente, uma engine e um banco" >&2
+    echo "  uso: $0 [semente [engine [banco]]]" >&2
     exit 2
 fi
 
@@ -57,6 +65,23 @@ if [ "$ENGINE" != python ] && [ "$ENGINE" != spark ]; then
     echo "erro: engine desconhecida: $ENGINE (python ou spark)" >&2
     exit 2
 fi
+
+# Vazio = os dois bancos. Os nomes são os da coluna `paradigm` e do `run_id`.
+DATABASE="${3:-}"
+case "$DATABASE" in
+    "") CLEAN_ARGS=() ;;
+    mongodb) CLEAN_ARGS=(--only mongo) ;;
+    neo4j) CLEAN_ARGS=(--only neo4j) ;;
+    *)
+        echo "erro: banco desconhecido: $DATABASE (mongodb ou neo4j)" >&2
+        exit 2
+        ;;
+esac
+
+# Se a suíte inclui as baterias do banco `$1`.
+wants() {
+    [ -z "$DATABASE" ] || [ "$DATABASE" = "$1" ]
+}
 
 RESULTS=results/fase4
 
@@ -70,7 +95,7 @@ ROUTES=(A B)
 # abriria espaço para as duas divergirem.
 SEED_ARGS=()
 SEED_LABEL="padrão dos scripts"
-if [ $# -eq 1 ]; then
+if [ $# -ge 1 ]; then
     SEED_ARGS=(--seed "$1")
     SEED_LABEL="$1"
 fi
@@ -82,11 +107,17 @@ fi
 # A semente da guarda sai do mesmo lugar que a das baterias. Fixá-la aqui era o
 # próprio cenário que a guarda existe para pegar: mudar o DEFAULT_SEED faria o
 # grep procurar a semente errada, e a duplicata voltaria a passar calada.
+#
+# Com um banco só, a guarda olha só as corridas dele (o paradigma é o segundo
+# campo do `run_id`): a suíte do outro banco, na mesma semente e engine, não é
+# repetição.
 if [ -s "$RESULTS/runs.csv" ]; then
     SEED_CHECK="${1:-$(uv run python -c \
         'import sys; sys.path.insert(0, "scripts"); from output import DEFAULT_SEED; print(DEFAULT_SEED)')}"
-    if grep -qE "^[^,]*-${SEED_CHECK}-${ENGINE}," "$RESULTS/runs.csv"; then
-        echo "erro: $RESULTS/runs.csv já tem corridas da semente ${SEED_CHECK} na engine ${ENGINE}." >&2
+    DB_CHECK="${DATABASE:-mongodb|neo4j}"
+    if grep -qE "^[^,-]*-(${DB_CHECK})-[^,]*-${SEED_CHECK}-${ENGINE}," "$RESULTS/runs.csv"; then
+        echo "erro: $RESULTS/runs.csv já tem corridas da semente ${SEED_CHECK}" \
+            "na engine ${ENGINE} (${DB_CHECK})." >&2
         echo "  Arquive o diretório antes de repetir:" >&2
         echo "    mv $RESULTS ${RESULTS}_\$(date +%d-%m)" >&2
         exit 3
@@ -98,24 +129,30 @@ LOG="logs/baterias_$(date +%Y%m%d_%H%M%S).log"
 
 echo "semente  : ${SEED_LABEL}" | tee -a "$LOG"
 echo "engine   : ${ENGINE}" | tee -a "$LOG"
+echo "banco    : ${DATABASE:-mongodb e neo4j}" | tee -a "$LOG"
 echo "log      : $LOG" | tee -a "$LOG"
 echo "início   : $(date --iso-8601=seconds)" | tee -a "$LOG"
 
 echo "" | tee -a "$LOG"
 echo "########## limpeza inicial  $(date +%H:%M:%S) ##########" | tee -a "$LOG"
-uv run python scripts/clean_databases.py 2>&1 | tee -a "$LOG"
+uv run python scripts/clean_databases.py "${CLEAN_ARGS[@]}" 2>&1 | tee -a "$LOG"
 
 # O Northwind não leva `--seed` nem `--engine`: o dataset é real e versionado,
-# não se regenera, e roda só na engine Python. Uma vez por diretório.
-if [ -s "$RESULTS/runs.csv" ] && grep -q "^equivalence-mongodb-northwind-" "$RESULTS/runs.csv"; then
-    echo "" | tee -a "$LOG"
-    echo "########## northwind: já medido em $RESULTS, pulado ##########" | tee -a "$LOG"
-else
+# não se regenera, e roda só na engine Python. Uma vez por diretório, e só na
+# suíte que inclui o MongoDB.
+run_northwind() {
+    if [ -s "$RESULTS/runs.csv" ] && grep -q "^equivalence-mongodb-northwind-" "$RESULTS/runs.csv"; then
+        echo "" | tee -a "$LOG"
+        echo "########## northwind: já medido em $RESULTS, pulado ##########" | tee -a "$LOG"
+        return 0
+    fi
     echo "" | tee -a "$LOG"
     echo "########## northwind  $(date +%H:%M:%S) ##########" | tee -a "$LOG"
     # `tee` sem pipefail mascararia a falha; o `set -o pipefail` acima evita.
     uv run python scripts/run_northwind.py 2>&1 | tee -a "$LOG"
-fi
+}
+
+if wants mongodb; then run_northwind; fi
 
 # Uma combinação por processo (ver o cabeçalho).
 run_mongo() {
@@ -140,10 +177,10 @@ run_neo4j() {
     done
 }
 
-run_mongo run_oracle_mongo
-run_neo4j run_oracle_neo4j
-run_mongo run_size_mongo
-run_neo4j run_size_neo4j
+if wants mongodb; then run_mongo run_oracle_mongo; fi
+if wants neo4j; then run_neo4j run_oracle_neo4j; fi
+if wants mongodb; then run_mongo run_size_mongo; fi
+if wants neo4j; then run_neo4j run_size_neo4j; fi
 
 echo "" | tee -a "$LOG"
 echo "fim      : $(date --iso-8601=seconds)" | tee -a "$LOG"

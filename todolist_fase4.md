@@ -372,8 +372,8 @@ já medida no Northwind entre ler por arquivo (15 divergências) e por cursor (1
       linha de base Python rodando o mesmo `sort`. Se fechar, as duas engines
       ficam **idênticas tripla a tripla** e a dúvida some. **Fechou** (gate do
       Mongo de 03/10/2026, acima).
-- [ ] Se não fechar, reportar a **faixa** de divergências não-fatais, nunca um
-      número solto. *Não se aplica: fechou.*
+- [x] ~~Se não fechar, reportar a **faixa** de divergências não-fatais, nunca um
+      número solto.~~ *Não se aplica: fechou.*
 - [x] Gate do grafo no `up_larger` — passou na segunda tentativa (03/10/2026).
 - [x] Medir o Northwind lido do banco com o `sort` (`run_northwind.py`, outro
       `--output-dir`): previsão de 12 → 15 divergências. **Confirmada em
@@ -398,14 +398,63 @@ Divergência estrutural aqui é defeito da engine, não é o #8. **Cumprido em
 Reaproveita a infra da 3.0; a fase não constrói medição nova, só acrescenta uma
 dimensão.
 
-- [ ] Coluna `engine` (`python`/`spark`) nas tabelas de `results/`, com o
-      significado escrito em `dicionario_de_dados.md` **antes** de medir.
-- [ ] Rodar os quatro tamanhos nas duas engines, com a regra da mediana da 3.2.
-- [ ] **Separar o boot do trabalho.** O oráculo já mostrou que o boot da JVM
+> **Estado em 05/10/2026: bateria rodada, curvas e tabelas feitas; falta a resposta
+> escrita e o CI.**
+>
+> - **Bateria de 04/10/2026, semente 23, nas duas engines.** 50 corridas em
+>   `results/fase4/`, as 42 comparações com `equivalent=True` e nenhuma corrida
+>   repetida. Logs: `logs/baterias_20261004_125459.log` e `_130229`
+>   (MongoDB, Python e Spark); `_131929` e `_135251` (Neo4j).
+> - **Os dois bancos em kernels diferentes.** O MongoDB no `6.17.0-40`, o da linha
+>   de base; o Neo4j no `7.0.0-34`. Uma primeira suíte inteira no 6.17 parou no
+>   `oracle_chain` `up_large` Spark do grafo, travado três vezes seguidas (63/64
+>   fatias, uma conexão a 49 KB/s); no 7.0, a suíte do grafo passou de primeira.
+>   O travamento já era conhecido, e a saída também: rodar o grafo num kernel
+>   mais novo. O mecanismo provável é uma regressão do TCP do 6.17
+>   (`bugs_originais.md` §E1, "Regressão do kernel 6.17"). Para rodar cada banco
+>   no seu kernel, o `run_suite.sh` ganhou um terceiro argumento (`mongodb` ou
+>   `neo4j`).
+> - **Extração no `larger`**, média das duas corridas por engine, boot fora:
+>
+>   | banco | Python | Spark | oráculo (jobs) | Python/Spark | Spark/oráculo |
+>   |---|---|---|---|---|---|
+>   | MongoDB, Rota A | 32,14 s | 8,73 s | 3,69 s | 3,7× | 2,4× |
+>   | MongoDB, Rota B | 15,38 s | 4,46 s | 3,49 s | 3,4× | 1,3× |
+>   | Neo4j | 422,73 s | 39,31 s | 35,20 s | 10,8× | 1,1× |
+>
+>   No `small` do MongoDB, a Spark perde para a Python nas duas rotas (2,31 ×
+>   1,73 s na A; 2,24 × 1,04 s na B). No Neo4j, porte Spark e oráculo andam
+>   juntos nos quatro tamanhos (de 0,84× a 1,12×).
+> - **Curvas e tabelas**, fora do repo, em `~/Documents/uschema_fase4_medicoes/`:
+>   `plot_backends.py` gera uma figura por banco, e `tabelas_4_4.py` refaz as
+>   Tabelas 2, 3 e 4 do TC num `.docx` sem legenda, com o próprio TC de modelo.
+>   Os dois leem o `results/fase4/runs.csv` e os quatro logs; a docstring de cada
+>   um diz de onde sai cada número.
+> - **Contagens da rota A iguais às da Fase 3.** As duas engines do porte dão as
+>   mesmas contagens de `User`, e elas repetem as da Tabela 4 do TC, assim como o
+>   oráculo da suíte Python. O oráculo da suíte Spark difere só no `larger`:
+>   20.901, com 940 na variação com `favoriteMovies`, contra 20.932 e 971. As
+>   Tabelas 3 e 4 usam o da suíte Python.
+
+- [x] Coluna `engine` (`python`/`spark`) nas tabelas de `results/`, com o
+      significado escrito em `dicionario_de_dados.md` **antes** de medir. Entrou
+      junto com o `boot_time`, só em `results/fase4/` (commit `7c68227`).
+- [x] Rodar os quatro tamanhos nas duas engines, com a regra da mediana da 3.2.
+      Na semente única (convenção desde 15/08, `todolist_fase3.md`), a regra é
+      repetir a corrida que sai da curva; na bateria de 04/10 nenhuma precisou.
+      Cada ponto tem duas corridas por engine, uma do `size` e outra do
+      `oracle_chain`, que concordaram a menos de 10%.
+- [x] **Separar o boot do trabalho.** O oráculo já mostrou que o boot da JVM
       domina os tamanhos pequenos (9,21s para 150k nós); a engine Spark paga o
       mesmo pedágio, e sem separá-lo os tamanhos menores não dizem nada.
-- [ ] Reportar as curvas: porte Python, porte Spark e oráculo, com a coluna
-      `normalized` (a máquina do artigo é outra).
+      Coluna `boot_time`, fora do `total_time`, com uma corrida Spark por
+      processo para todo boot ser o de uma JVM nova. Ficou em ~2 s em todas as
+      corridas de 04/10. No oráculo, o boot sai somando os jobs Spark do log, como
+      na 4.1.
+- [x] Reportar as curvas: porte Python, porte Spark e oráculo, com a coluna
+      `normalized` (a máquina do artigo é outra). Curvas de tempo de extração e
+      a Tabela 2 do TC refeita com o `normalized`, uma linha por engine
+      (05/10/2026, ver o estado acima).
 - [ ] Responder a pergunta da fase por escrito, nos dois sentidos possíveis.
 
 **Saída:** tabelas de volume com a dimensão `engine` e a resposta da fase.
@@ -413,6 +462,10 @@ dimensão.
 ---
 
 ## Infra e qualidade (decisão 4)
+
+> **O CI nunca rodou os testes `spark`** (conferido em 05/10/2026). Ele só
+> dispara em push na `main` e em PR, e a `feat/spark` ainda não tem PR. Não se
+> sabe se a JVM que já vem no *runner* basta.
 
 - [ ] JVM no CI (`setup-java`) para o job que roda os testes `spark`.
 - [ ] `mongod` no CI (*service container* `mongo:8.0`) para o teste do gate da

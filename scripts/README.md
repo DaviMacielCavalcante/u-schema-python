@@ -150,10 +150,18 @@ e o grafo do Neo4j — o `northwind` nunca é tocado, porque é dataset real
 versionado e não se regenera por semente.
 
 ```bash
-./scripts/run_suite.sh            # semente padrão dos scripts (23), engine python
-./scripts/run_suite.sh 69         # outra semente
-./scripts/run_suite.sh 69 spark   # outra semente, engine spark
+./scripts/run_suite.sh                  # semente padrão dos scripts (23), engine python
+./scripts/run_suite.sh 69               # outra semente
+./scripts/run_suite.sh 69 spark         # outra semente, engine spark
+./scripts/run_suite.sh 69 spark neo4j   # só as baterias de um banco (mongodb ou neo4j)
 ```
+
+**Um banco por suíte, se pedido.** O terceiro argumento restringe a suíte às
+baterias de um banco; sem ele, roda os dois, na ordem de sempre. A limpeza
+inicial passa a tocar só esse banco, o Northwind só roda na suíte do MongoDB, e a
+guarda de semente repetida olha só as corridas dele. Existe para que cada banco
+rode no seu kernel: a leitura do grafo trava no 6.17 (`bugs_originais.md` §E1) e
+roda num kernel mais novo, em que o mongod não sobe.
 
 **Uma combinação por processo, nas duas engines.** Desde a 4.4 a suíte chama
 cada bateria uma vez por rota e tamanho: é o que a engine Spark exige para que
@@ -171,7 +179,8 @@ Sem argumento ele **não passa** `--seed`: vale o `DEFAULT_SEED`, que mora em
 repetida, abaixo, lê o mesmo valor de lá — duplicá-lo no shell abriria espaço
 para os dois divergirem, que é justamente o caso que a guarda existe para pegar.
 
-**Recusa repetir uma semente já gravada na mesma engine** (exit 3). As baterias
+**Recusa repetir uma semente já gravada na mesma engine** (e no mesmo banco,
+quando há um) (exit 3). As baterias
 gravam em append, então repetir não sobrescreve — duplica, e a duplicata só
 apareceria depois, num `uniq -d`. Já custou duas sessões.
 
