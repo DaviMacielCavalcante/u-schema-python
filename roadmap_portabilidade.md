@@ -144,6 +144,6 @@ O risco é **tempo**, não impossibilidade. Com a metacamada fora do caminho cr�
 | 1 | núcleo `doc2uschema` em Python (inferência completa) | cada módulo ≡ XMI-oráculo (estrutural) | concluída |
 | 2 | extratores MongoDB + Neo4j (driver nativo, não PySpark) | contagens == Java; XMI ≡ oráculo | concluída |
 | 3 | ponta a ponta, equivalência + volume, bugs corrigidos | Northwind ok; tendência Tabela 4 reproduzida | concluída |
-| 4 | engine Spark opcional (Mongo; Neo4j condicional) + bateria comparativa | triplas idênticas entre engines; `equivalent=True`; curva medida nos dois (inclusive "sem ganho") | em aberto |
+| 4 | engine Spark opcional (Mongo; Neo4j condicional) + bateria comparativa | triplas idênticas entre engines; `equivalent=True`; curva medida nos dois (inclusive "sem ganho") | concluída |
 
 **Sequência:** 0 → 1 → 2 → 3 → 4. Metacamada: trabalho futuro. Sirius/UI: fora de escopo (reconstruível em outra stack se desejado).

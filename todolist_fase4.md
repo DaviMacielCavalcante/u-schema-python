@@ -4,6 +4,7 @@
 **Autores:** Davi Cavalcante · João — CESUPA
 **Base:** `fase4_spark.md` · **Linha de base:** `results/` da Fase 3 · **Bugs:** `bugs_originais.md` §#8
 **Pré-requisito:** Fase 3 fechada — a 3.4 (análise e redação) concluiu em 17/09/2026, com a prévia do TC qualificada
+**Estado:** **Fase 4 fechada em 06/10/2026** — os quatro critérios do gate cumpridos (ver "Gate de aceite", no fim)
 
 > **Organização por entrega.** Tarefas agrupadas por entregável (4.0–4.4), não
 > por autor. Cada bloco define uma **Saída** que serve de critério de "pronto".
@@ -398,8 +399,8 @@ Divergência estrutural aqui é defeito da engine, não é o #8. **Cumprido em
 Reaproveita a infra da 3.0; a fase não constrói medição nova, só acrescenta uma
 dimensão.
 
-> **Estado em 05/10/2026: bateria rodada, curvas e tabelas feitas, resposta da
-> fase escrita no TC; falta o CI.**
+> **Estado em 05/10/2026: 4.4 fechada.** Bateria rodada, curvas e tabelas
+> feitas, resposta da fase escrita no TC.
 >
 > - **Bateria de 04/10/2026, semente 23, nas duas engines.** 50 corridas em
 >   `results/fase4/`, as 42 comparações com `equivalent=True` e nenhuma corrida
@@ -469,16 +470,23 @@ dimensão.
 
 ## Infra e qualidade (decisão 4)
 
-> **O CI nunca rodou os testes `spark`** (conferido em 05/10/2026). Ele só
-> dispara em push na `main` e em PR, e a `feat/spark` ainda não tem PR. Não se
-> sabe se a JVM que já vem no *runner* basta.
+> **Verificado no PR #13 (06/10/2026):** primeira corrida do CI com os testes
+> `spark`, nos dois jobs (`quality` e `sonar`) — 681 testes passaram e **nenhum
+> foi pulado**, os 7 do gate da 4.1 inclusive.
+>
+> O quality gate do SonarQube Cloud reprovou o PR por confiabilidade (nota C no
+> código novo, limite A); os demais critérios passaram (cobertura do código novo
+> em 88,8%). Fica para a refatoração, por decisão do Davi.
 
-- [ ] JVM no CI (`setup-java`) para o job que roda os testes `spark`.
-- [ ] `mongod` no CI (*service container* `mongo:8.0`) para o teste do gate da
+- [x] JVM no CI (`setup-java`) para o job que roda os testes `spark`. Java 21
+      (Temurin), antes do `pytest` nos dois jobs.
+- [x] `mongod` no CI (*service container* `mongo:8.0`) para o teste do gate da
       4.1 — sem ele, o teste é pulado no CI e o gate só roda local. **Conferir o
       kernel do *runner*** antes: a guarda de `rseq` do `mongod` recusa de 6.19 a
       7.0.13 (ver o requisito de ambiente da 4.1), e o container usa o kernel do
-      host.
+      host. Nos dois jobs, com *health check* (`mongosh` com `ping`): se o
+      `mongod` não subir, o job falha logo no início, em vez de o teste ser
+      pulado calado. O kernel do *runner* não barrou o `mongod`.
 - [x] Testes novos marcados `@pytest.mark.spark` — pre-push e CI, **não**
       pre-commit (o marker já existe no `pyproject.toml` desde a Fase 2 e nunca
       foi usado; esta fase é a primeira a usá-lo). Os do gate da 4.1 levam
@@ -507,6 +515,12 @@ dimensão.
 - Curva medida nas duas engines, boot separado do trabalho, conclusão escrita
   — inclusive se for "sem ganho".
 - Suíte `spark` verde no pre-push e no CI.
+
+**Cumprido em 06/10/2026.** Engine Spark opcional nos dois extratores, com a
+Python como padrão (4.1 e 4.2); triplas e arquétipos idênticos entre engines e
+`equivalent=True` nos quatro tamanhos (4.3, e de novo nas 42 comparações da
+4.4); curva medida nas duas engines com o boot separado, e a conclusão escrita no
+TC (4.4); suíte `spark` verde no pre-push e no CI (PR #13).
 
 ---
 

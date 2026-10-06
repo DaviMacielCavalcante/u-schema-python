@@ -44,13 +44,14 @@ Northwind em `datasets/`), `oracle/` (Dockerfile + `patches/`), `scripts/`
 tabelas), `results/` (os CSVs medidos, fora do git), `out/` (XMIs gerados, fora
 do git), `tests/` (`unit/`, `regression/`, `datasets/`).
 
-**Estado real do pacote** (mantenha esta lista honesta ao avançar): **Fases 0 a 3
+**Estado real do pacote** (mantenha esta lista honesta ao avançar): **Fases 0 a 4
 fechadas** — todos os subpacotes acima estão implementados e cobertos por
 teste; **não** há stubs com `NotImplementedError`. A **3.4** (análise e redação)
 concluiu em 17/09/2026, com a prévia do TC qualificada: ver `todolist_fase3.md` e
-`scripts/README.md`. Em aberto está a **Fase 4** — engine Spark opcional para os
-extratores, para separar o que na diferença de crescimento contra o oráculo é
-arquitetura e o que é algoritmo (`fase4_spark.md`, `todolist_fase4.md`). **4.0 e
+`scripts/README.md`. A **Fase 4** — engine Spark opcional para os extratores,
+para separar o que na diferença de crescimento contra o oráculo é arquitetura e
+o que é algoritmo (`fase4_spark.md`, `todolist_fase4.md`) — **fechou em
+06/10/2026**. **4.0 e
 4.1 fechadas** (26/09/2026): a engine Spark do Mongo dá triplas idênticas às do
 Python, e ganha 4,5× no maior tamanho. **4.2 (Neo4j) fechada** (30/09/2026): a
 engine Spark do grafo dá contagens idênticas às do Python, nos testes (driver
@@ -61,7 +62,8 @@ oráculo passou nos dois paradigmas. **4.4 (bateria comparativa) rodada**
 (04/10/2026) nas duas engines, com as 42 comparações equivalentes: o Mongo no
 kernel 6.17 e o Neo4j no 7.0, porque no 6.17 a leitura do grafo travou
 (`bugs_originais.md` §E1). Curvas e tabelas feitas (05/10/2026), e a resposta da
-fase está no texto do TC. Em aberto: a JVM e o `mongod` no CI.
+fase está no texto do TC. A bateria está versionada em `results/fase4/`, e o CI
+roda os testes `spark` e o gate da 4.1 desde o PR #13 (06/10/2026).
 
 Uma ausência real, para não ser confundida com lacuna de porte:
 
@@ -157,7 +159,7 @@ três camadas (`.pre-commit-config.yaml` + `.github/workflows/ci.yml`):
 | --- | --- | --- |
 | **pre-commit** | higiene (whitespace, EOF, TOML/YAML, merge conflicts) + `ruff check --fix` + `ruff format` + `mypy` + testes **rápidos** (`pytest -m "not spark and not integration"`) | todo commit |
 | **pre-push** | suíte **completa** (`pytest`, inclui os testes de Spark) | todo push |
-| **CI** | `ruff check` + `ruff format --check` + `mypy` + `pytest` em Python 3.12 | todo push/PR |
+| **CI** | `ruff check` + `ruff format --check` + `mypy` + `pytest` em Python 3.12, com Java 21 e um `mongod` (*service container* `mongo:8.0`) para os testes `spark`/`integration` | todo push/PR |
 
 `ruff`/`mypy`/`pytest` rodam via `uv run` (versões do lockfile). CI é a porta
 real — hooks locais são puláveis com `--no-verify`.
@@ -175,7 +177,8 @@ ativo): marque cada teste como `unit`, `spark` ou `integration`. Só os `unit`
 (rápidos, puros) rodam no pre-commit; `spark`/`integration` ficam para pre-push
 e CI. Desde a Fase 4 há testes `spark` (sobem a JVM; exigem Java 17/21 em
 `JAVA_HOME`, ver o README) e `integration` (o gate da 4.1 usa o `mongod` local,
-num banco temporário apagado no fim, e é **pulado** se não houver `mongod`). Os
+num banco temporário apagado no fim, e é **pulado** se não houver `mongod`; no
+CI o `mongod` sobe com *health check*, então lá o teste roda sempre). Os
 testes Spark do Neo4j usam driver falso — o Community tem um banco só, e teste
 não pode sujar o das baterias.
 
