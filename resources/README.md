@@ -13,6 +13,7 @@ conteúdo, e confundi-los invalida qualquer comparação.
 | **`resources/`** (este) | os **autores originais** do U-Schema, sobre o dataset deles | **sim** — é a amarra com o experimento publicado, e é imutável |
 | **`out/oraculo/`** | o **oráculo Java** (Docker, `oracle/`) rodando sobre **os nossos** dados | não (`.gitignore`) — regenerável pela imagem + semente |
 | **`out/porte/`** | o **porte Python** (baterias da Fase 3) | não (`.gitignore`) — regenerável pelo script + semente |
+| **`out/fase4/oraculo/`**, **`out/fase4/porte/`** | os mesmos dois produtores, nas baterias da Fase 4.4 (as duas engines do porte); cada XMI se chama pelo `run_id` da corrida | não (`.gitignore`) — regenerável pelo script + semente + engine |
 
 **Nunca sobrescrever `resources/` com saída nossa.** Os XMIs daqui vêm de
 uma instância de dataset que não temos e não conseguimos reconstruir (os

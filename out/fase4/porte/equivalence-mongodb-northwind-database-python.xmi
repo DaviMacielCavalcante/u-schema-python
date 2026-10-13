@@ -1,0 +1,1481 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<USchema:USchema xmlns:xmi="http://www.omg.org/XMI" xmlns:USchema="http://www.modelum.es/USchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="northwind" xmi:version="2.0">
+  <entities name="Customers" root="true">
+    <variations variationId="1" count="29" structuralFeatures="//@entities.0/@variations.0/@features.0 //@entities.0/@variations.0/@features.2 //@entities.0/@variations.0/@features.3 //@entities.0/@variations.0/@features.4 //@entities.0/@variations.0/@features.5 //@entities.0/@variations.0/@features.6 //@entities.0/@variations.0/@features.7 //@entities.0/@variations.0/@features.8 //@entities.0/@variations.0/@features.9 //@entities.0/@variations.0/@features.10 //@entities.0/@variations.0/@features.11 //@entities.0/@variations.0/@features.12" logicalFeatures="//@entities.0/@variations.0/@features.1">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.0/@variations.0/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.0/@variations.0/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="address">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="business_phone">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="city">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="company">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="country_region">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="fax_number">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="first_name">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="job_title">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="last_name">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="state_province">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="zip_postal_code">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+  </entities>
+  <entities name="Employees" root="true">
+    <variations variationId="1" count="3" structuralFeatures="//@entities.1/@variations.0/@features.0 //@entities.1/@variations.0/@features.2 //@entities.1/@variations.0/@features.3 //@entities.1/@variations.0/@features.4 //@entities.1/@variations.0/@features.5 //@entities.1/@variations.0/@features.6 //@entities.1/@variations.0/@features.7 //@entities.1/@variations.0/@features.8 //@entities.1/@variations.0/@features.9 //@entities.1/@variations.0/@features.10 //@entities.1/@variations.0/@features.11 //@entities.1/@variations.0/@features.12 //@entities.1/@variations.0/@features.13 //@entities.1/@variations.0/@features.15 //@entities.1/@variations.0/@features.16 //@entities.1/@variations.0/@features.17" logicalFeatures="//@entities.1/@variations.0/@features.1 //@entities.1/@variations.0/@features.14">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.1/@variations.0/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.1/@variations.0/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="address">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="business_phone">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="city">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="company">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="country_region">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="email_address">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="fax_number">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="first_name">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="home_phone">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="job_title">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="last_name">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="privileges" references="//@entities.1/@variations.0/@features.14" optional="true">
+        <type xsi:type="USchema:PList"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.10" upperBound="-1" attributes="//@entities.1/@variations.0/@features.13"/>
+      <features xsi:type="USchema:Attribute" name="state_province">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="web_page">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="zip_postal_code">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+    <variations variationId="2" count="6" structuralFeatures="//@entities.1/@variations.1/@features.0 //@entities.1/@variations.1/@features.2 //@entities.1/@variations.1/@features.3 //@entities.1/@variations.1/@features.4 //@entities.1/@variations.1/@features.5 //@entities.1/@variations.1/@features.6 //@entities.1/@variations.1/@features.7 //@entities.1/@variations.1/@features.8 //@entities.1/@variations.1/@features.9 //@entities.1/@variations.1/@features.10 //@entities.1/@variations.1/@features.11 //@entities.1/@variations.1/@features.12 //@entities.1/@variations.1/@features.13 //@entities.1/@variations.1/@features.14 //@entities.1/@variations.1/@features.16 //@entities.1/@variations.1/@features.17 //@entities.1/@variations.1/@features.18" logicalFeatures="//@entities.1/@variations.1/@features.1 //@entities.1/@variations.1/@features.15">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.1/@variations.1/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.1/@variations.1/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="address">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="business_phone">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="city">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="company">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="country_region">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="email_address">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="fax_number">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="first_name">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="home_phone">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="job_title">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="last_name">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="notes" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="privileges" references="//@entities.1/@variations.1/@features.15" optional="true">
+        <type xsi:type="USchema:PList">
+          <elementType xsi:type="USchema:PrimitiveType" name="Number"/>
+        </type>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.10" upperBound="-1" attributes="//@entities.1/@variations.1/@features.14"/>
+      <features xsi:type="USchema:Attribute" name="state_province">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="web_page">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="zip_postal_code">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+  </entities>
+  <entities name="Inventory_transaction_types" root="true">
+    <variations variationId="1" count="4" structuralFeatures="//@entities.2/@variations.0/@features.0 //@entities.2/@variations.0/@features.2" logicalFeatures="//@entities.2/@variations.0/@features.1">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.2/@variations.0/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.2/@variations.0/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="type_name">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+    </variations>
+  </entities>
+  <entities name="Inventory_transactions" root="true">
+    <variations variationId="1" count="88" structuralFeatures="//@entities.3/@variations.0/@features.0 //@entities.3/@variations.0/@features.2 //@entities.3/@variations.0/@features.4 //@entities.3/@variations.0/@features.5 //@entities.3/@variations.0/@features.6 //@entities.3/@variations.0/@features.7" logicalFeatures="//@entities.3/@variations.0/@features.1 //@entities.3/@variations.0/@features.3">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.3/@variations.0/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.3/@variations.0/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="product_id" references="//@entities.3/@variations.0/@features.3">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.11" lowerBound="1" upperBound="1" attributes="//@entities.3/@variations.0/@features.2"/>
+      <features xsi:type="USchema:Attribute" name="quantity">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="transaction_created_date">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="transaction_modified_date">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="transaction_type">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+    <variations variationId="2" count="14" structuralFeatures="//@entities.3/@variations.1/@features.0 //@entities.3/@variations.1/@features.2 //@entities.3/@variations.1/@features.3 //@entities.3/@variations.1/@features.5 //@entities.3/@variations.1/@features.6 //@entities.3/@variations.1/@features.7 //@entities.3/@variations.1/@features.8" logicalFeatures="//@entities.3/@variations.1/@features.1 //@entities.3/@variations.1/@features.4">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.3/@variations.1/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.3/@variations.1/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="comments" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="product_id" references="//@entities.3/@variations.1/@features.4">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.11" lowerBound="1" upperBound="1" attributes="//@entities.3/@variations.1/@features.3"/>
+      <features xsi:type="USchema:Attribute" name="quantity">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="transaction_created_date">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="transaction_modified_date">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="transaction_type">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+  </entities>
+  <entities name="Invoices" root="true">
+    <variations variationId="1" count="35" structuralFeatures="//@entities.4/@variations.0/@features.0 //@entities.4/@variations.0/@features.2 //@entities.4/@variations.0/@features.3 //@entities.4/@variations.0/@features.5 //@entities.4/@variations.0/@features.7 //@entities.4/@variations.0/@features.8" logicalFeatures="//@entities.4/@variations.0/@features.1 //@entities.4/@variations.0/@features.4 //@entities.4/@variations.0/@features.6">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.4/@variations.0/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.4/@variations.0/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="amount_due">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="invoice_date" references="//@entities.4/@variations.0/@features.4">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.4" lowerBound="1" upperBound="1" attributes="//@entities.4/@variations.0/@features.3"/>
+      <features xsi:type="USchema:Attribute" name="order_id" references="//@entities.4/@variations.0/@features.6">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.7" lowerBound="1" upperBound="1" attributes="//@entities.4/@variations.0/@features.5"/>
+      <features xsi:type="USchema:Attribute" name="shipping">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="tax">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+  </entities>
+  <entities name="Order_details_status" root="true">
+    <variations variationId="1" count="6" structuralFeatures="//@entities.5/@variations.0/@features.0 //@entities.5/@variations.0/@features.2" logicalFeatures="//@entities.5/@variations.0/@features.1">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.5/@variations.0/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.5/@variations.0/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="status_name">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+    </variations>
+  </entities>
+  <entities name="Detail">
+    <variations variationId="1" count="11" structuralFeatures="//@entities.6/@variations.0/@features.0 //@entities.6/@variations.0/@features.1 //@entities.6/@variations.0/@features.2 //@entities.6/@variations.0/@features.4 //@entities.6/@variations.0/@features.6 //@entities.6/@variations.0/@features.7 //@entities.6/@variations.0/@features.8" logicalFeatures="//@entities.6/@variations.0/@features.3 //@entities.6/@variations.0/@features.5">
+      <features xsi:type="USchema:Attribute" name="discount" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="inventory_id" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="product_id" references="//@entities.6/@variations.0/@features.3">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.11" lowerBound="1" upperBound="1" attributes="//@entities.6/@variations.0/@features.2"/>
+      <features xsi:type="USchema:Attribute" name="purchase_order_id" references="//@entities.6/@variations.0/@features.5" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.7" lowerBound="1" upperBound="1" attributes="//@entities.6/@variations.0/@features.4"/>
+      <features xsi:type="USchema:Attribute" name="quantity">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="status_id" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="unit_price" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+    <variations variationId="2" count="7" structuralFeatures="//@entities.6/@variations.1/@features.0 //@entities.6/@variations.1/@features.1 //@entities.6/@variations.1/@features.2 //@entities.6/@variations.1/@features.4 //@entities.6/@variations.1/@features.5 //@entities.6/@variations.1/@features.6" logicalFeatures="//@entities.6/@variations.1/@features.3">
+      <features xsi:type="USchema:Attribute" name="discount" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="inventory_id" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="product_id" references="//@entities.6/@variations.1/@features.3">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.11" lowerBound="1" upperBound="1" attributes="//@entities.6/@variations.1/@features.2"/>
+      <features xsi:type="USchema:Attribute" name="quantity">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="status_id" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="unit_price" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+    <variations variationId="3" count="1" structuralFeatures="//@entities.6/@variations.2/@features.0 //@entities.6/@variations.2/@features.1 //@entities.6/@variations.2/@features.3 //@entities.6/@variations.2/@features.4 //@entities.6/@variations.2/@features.5" logicalFeatures="//@entities.6/@variations.2/@features.2">
+      <features xsi:type="USchema:Attribute" name="discount" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="product_id" references="//@entities.6/@variations.2/@features.2">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.11" lowerBound="1" upperBound="1" attributes="//@entities.6/@variations.2/@features.1"/>
+      <features xsi:type="USchema:Attribute" name="quantity">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="status_id" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="unit_price" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+    <variations variationId="4" count="17" structuralFeatures="//@entities.6/@variations.3/@features.0 //@entities.6/@variations.3/@features.1 //@entities.6/@variations.3/@features.2 //@entities.6/@variations.3/@features.3 //@entities.6/@variations.3/@features.5 //@entities.6/@variations.3/@features.6" logicalFeatures="//@entities.6/@variations.3/@features.4">
+      <features xsi:type="USchema:Attribute" name="date_received" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="inventory_id" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="posted_to_inventory" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Boolean"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="product_id" references="//@entities.6/@variations.3/@features.4">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.11" lowerBound="1" upperBound="1" attributes="//@entities.6/@variations.3/@features.3"/>
+      <features xsi:type="USchema:Attribute" name="quantity">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="unit_cost" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+    <variations variationId="5" count="6" structuralFeatures="//@entities.6/@variations.4/@features.0 //@entities.6/@variations.4/@features.1 //@entities.6/@variations.4/@features.2 //@entities.6/@variations.4/@features.4 //@entities.6/@variations.4/@features.5" logicalFeatures="//@entities.6/@variations.4/@features.3">
+      <features xsi:type="USchema:Attribute" name="date_received" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Null"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="posted_to_inventory" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Boolean"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="product_id" references="//@entities.6/@variations.4/@features.3">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.11" lowerBound="1" upperBound="1" attributes="//@entities.6/@variations.4/@features.2"/>
+      <features xsi:type="USchema:Attribute" name="quantity">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="unit_cost" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+  </entities>
+  <entities name="Orders" root="true">
+    <variations variationId="1" count="1" structuralFeatures="//@entities.7/@variations.0/@features.0 //@entities.7/@variations.0/@features.2 //@entities.7/@variations.0/@features.4 //@entities.7/@variations.0/@features.5 //@entities.7/@variations.0/@features.7 //@entities.7/@variations.0/@features.9 //@entities.7/@variations.0/@features.10 //@entities.7/@variations.0/@features.11 //@entities.7/@variations.0/@features.12 //@entities.7/@variations.0/@features.13 //@entities.7/@variations.0/@features.14 //@entities.7/@variations.0/@features.15 //@entities.7/@variations.0/@features.16 //@entities.7/@variations.0/@features.17 //@entities.7/@variations.0/@features.18 //@entities.7/@variations.0/@features.20 //@entities.7/@variations.0/@features.21 //@entities.7/@variations.0/@features.22 //@entities.7/@variations.0/@features.23" logicalFeatures="//@entities.7/@variations.0/@features.1 //@entities.7/@variations.0/@features.3 //@entities.7/@variations.0/@features.6 //@entities.7/@variations.0/@features.8 //@entities.7/@variations.0/@features.19">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.7/@variations.0/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.7/@variations.0/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="customer_id" references="//@entities.7/@variations.0/@features.3">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.0" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.0/@features.2"/>
+      <features xsi:type="USchema:Aggregate" name="details" upperBound="-1" aggregates="//@entities.6/@variations.0 //@entities.6/@variations.1" optional="true"/>
+      <features xsi:type="USchema:Attribute" name="employee_id" references="//@entities.7/@variations.0/@features.6">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.1" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.0/@features.5"/>
+      <features xsi:type="USchema:Attribute" name="order_date" references="//@entities.7/@variations.0/@features.8">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.7" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.0/@features.7"/>
+      <features xsi:type="USchema:Attribute" name="paid_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="payment_type" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_address">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_city">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_country_region">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_name">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_state_province">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_zip_postal_code">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipped_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipper_id" references="//@entities.7/@variations.0/@features.19" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.16" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.0/@features.18"/>
+      <features xsi:type="USchema:Attribute" name="shipping_fee">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="status_id">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="tax_rate">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="taxes">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+    <variations variationId="2" count="7" structuralFeatures="//@entities.7/@variations.1/@features.0 //@entities.7/@variations.1/@features.2 //@entities.7/@variations.1/@features.4 //@entities.7/@variations.1/@features.5 //@entities.7/@variations.1/@features.7 //@entities.7/@variations.1/@features.9 //@entities.7/@variations.1/@features.10 //@entities.7/@variations.1/@features.11 //@entities.7/@variations.1/@features.12 //@entities.7/@variations.1/@features.13 //@entities.7/@variations.1/@features.14 //@entities.7/@variations.1/@features.15 //@entities.7/@variations.1/@features.16 //@entities.7/@variations.1/@features.17 //@entities.7/@variations.1/@features.18 //@entities.7/@variations.1/@features.20 //@entities.7/@variations.1/@features.21 //@entities.7/@variations.1/@features.22 //@entities.7/@variations.1/@features.23" logicalFeatures="//@entities.7/@variations.1/@features.1 //@entities.7/@variations.1/@features.3 //@entities.7/@variations.1/@features.6 //@entities.7/@variations.1/@features.8 //@entities.7/@variations.1/@features.19">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.7/@variations.1/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.7/@variations.1/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="customer_id" references="//@entities.7/@variations.1/@features.3">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.0" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.1/@features.2"/>
+      <features xsi:type="USchema:Aggregate" name="details" upperBound="-1" aggregates="//@entities.6/@variations.0" optional="true"/>
+      <features xsi:type="USchema:Attribute" name="employee_id" references="//@entities.7/@variations.1/@features.6">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.1" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.1/@features.5"/>
+      <features xsi:type="USchema:Attribute" name="order_date" references="//@entities.7/@variations.1/@features.8">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.7" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.1/@features.7"/>
+      <features xsi:type="USchema:Attribute" name="paid_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="payment_type" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_address">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_city">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_country_region">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_name">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_state_province">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_zip_postal_code">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipped_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipper_id" references="//@entities.7/@variations.1/@features.19" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.16" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.1/@features.18"/>
+      <features xsi:type="USchema:Attribute" name="shipping_fee">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="status_id">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="tax_rate">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="taxes">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+    <variations variationId="3" count="1" structuralFeatures="//@entities.7/@variations.2/@features.0 //@entities.7/@variations.2/@features.2 //@entities.7/@variations.2/@features.4 //@entities.7/@variations.2/@features.5 //@entities.7/@variations.2/@features.7 //@entities.7/@variations.2/@features.9 //@entities.7/@variations.2/@features.10 //@entities.7/@variations.2/@features.11 //@entities.7/@variations.2/@features.12 //@entities.7/@variations.2/@features.13 //@entities.7/@variations.2/@features.14 //@entities.7/@variations.2/@features.15 //@entities.7/@variations.2/@features.16 //@entities.7/@variations.2/@features.17 //@entities.7/@variations.2/@features.19 //@entities.7/@variations.2/@features.20 //@entities.7/@variations.2/@features.21 //@entities.7/@variations.2/@features.22" logicalFeatures="//@entities.7/@variations.2/@features.1 //@entities.7/@variations.2/@features.3 //@entities.7/@variations.2/@features.6 //@entities.7/@variations.2/@features.8 //@entities.7/@variations.2/@features.18">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.7/@variations.2/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.7/@variations.2/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="customer_id" references="//@entities.7/@variations.2/@features.3">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.0" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.2/@features.2"/>
+      <features xsi:type="USchema:Aggregate" name="details" upperBound="-1" aggregates="//@entities.6/@variations.1 //@entities.6/@variations.0" optional="true"/>
+      <features xsi:type="USchema:Attribute" name="employee_id" references="//@entities.7/@variations.2/@features.6">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.1" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.2/@features.5"/>
+      <features xsi:type="USchema:Attribute" name="order_date" references="//@entities.7/@variations.2/@features.8">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.7" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.2/@features.7"/>
+      <features xsi:type="USchema:Attribute" name="paid_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Null"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_address">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_city">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_country_region">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_name">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_state_province">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_zip_postal_code">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipped_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipper_id" references="//@entities.7/@variations.2/@features.18" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.16" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.2/@features.17"/>
+      <features xsi:type="USchema:Attribute" name="shipping_fee">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="status_id">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="tax_rate">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="taxes">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+    <variations variationId="4" count="1" structuralFeatures="//@entities.7/@variations.3/@features.0 //@entities.7/@variations.3/@features.2 //@entities.7/@variations.3/@features.4 //@entities.7/@variations.3/@features.5 //@entities.7/@variations.3/@features.7 //@entities.7/@variations.3/@features.9 //@entities.7/@variations.3/@features.10 //@entities.7/@variations.3/@features.11 //@entities.7/@variations.3/@features.12 //@entities.7/@variations.3/@features.13 //@entities.7/@variations.3/@features.14 //@entities.7/@variations.3/@features.15 //@entities.7/@variations.3/@features.16 //@entities.7/@variations.3/@features.17 //@entities.7/@variations.3/@features.19 //@entities.7/@variations.3/@features.20 //@entities.7/@variations.3/@features.21 //@entities.7/@variations.3/@features.22" logicalFeatures="//@entities.7/@variations.3/@features.1 //@entities.7/@variations.3/@features.3 //@entities.7/@variations.3/@features.6 //@entities.7/@variations.3/@features.8 //@entities.7/@variations.3/@features.18">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.7/@variations.3/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.7/@variations.3/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="customer_id" references="//@entities.7/@variations.3/@features.3">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.0" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.3/@features.2"/>
+      <features xsi:type="USchema:Aggregate" name="details" upperBound="-1" aggregates="//@entities.6/@variations.1" optional="true"/>
+      <features xsi:type="USchema:Attribute" name="employee_id" references="//@entities.7/@variations.3/@features.6">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.1" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.3/@features.5"/>
+      <features xsi:type="USchema:Attribute" name="order_date" references="//@entities.7/@variations.3/@features.8">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.7" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.3/@features.7"/>
+      <features xsi:type="USchema:Attribute" name="paid_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Null"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_address">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_city">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_country_region">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_name">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_state_province">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_zip_postal_code">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipped_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Null"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipper_id" references="//@entities.7/@variations.3/@features.18" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.16" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.3/@features.17"/>
+      <features xsi:type="USchema:Attribute" name="shipping_fee">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="status_id">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="tax_rate">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="taxes">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+    <variations variationId="5" count="1" structuralFeatures="//@entities.7/@variations.4/@features.0 //@entities.7/@variations.4/@features.2 //@entities.7/@variations.4/@features.4 //@entities.7/@variations.4/@features.5 //@entities.7/@variations.4/@features.7 //@entities.7/@variations.4/@features.9 //@entities.7/@variations.4/@features.10 //@entities.7/@variations.4/@features.11 //@entities.7/@variations.4/@features.12 //@entities.7/@variations.4/@features.13 //@entities.7/@variations.4/@features.14 //@entities.7/@variations.4/@features.15 //@entities.7/@variations.4/@features.16 //@entities.7/@variations.4/@features.17 //@entities.7/@variations.4/@features.18 //@entities.7/@variations.4/@features.19 //@entities.7/@variations.4/@features.20" logicalFeatures="//@entities.7/@variations.4/@features.1 //@entities.7/@variations.4/@features.3 //@entities.7/@variations.4/@features.6 //@entities.7/@variations.4/@features.8">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.7/@variations.4/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.7/@variations.4/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="customer_id" references="//@entities.7/@variations.4/@features.3">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.0" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.4/@features.2"/>
+      <features xsi:type="USchema:Aggregate" name="details" upperBound="-1" aggregates="//@entities.6/@variations.1" optional="true"/>
+      <features xsi:type="USchema:Attribute" name="employee_id" references="//@entities.7/@variations.4/@features.6">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.1" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.4/@features.5"/>
+      <features xsi:type="USchema:Attribute" name="order_date" references="//@entities.7/@variations.4/@features.8">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.7" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.4/@features.7"/>
+      <features xsi:type="USchema:Attribute" name="paid_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Null"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_address">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_city">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_country_region">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_name">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_state_province">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_zip_postal_code">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipped_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Null"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipping_fee">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="status_id">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="tax_rate">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="taxes">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+    <variations variationId="6" count="1" structuralFeatures="//@entities.7/@variations.5/@features.0 //@entities.7/@variations.5/@features.2 //@entities.7/@variations.5/@features.4 //@entities.7/@variations.5/@features.5 //@entities.7/@variations.5/@features.7 //@entities.7/@variations.5/@features.9 //@entities.7/@variations.5/@features.10 //@entities.7/@variations.5/@features.11 //@entities.7/@variations.5/@features.12 //@entities.7/@variations.5/@features.13 //@entities.7/@variations.5/@features.14 //@entities.7/@variations.5/@features.15 //@entities.7/@variations.5/@features.16 //@entities.7/@variations.5/@features.17 //@entities.7/@variations.5/@features.18 //@entities.7/@variations.5/@features.20 //@entities.7/@variations.5/@features.21 //@entities.7/@variations.5/@features.22 //@entities.7/@variations.5/@features.23" logicalFeatures="//@entities.7/@variations.5/@features.1 //@entities.7/@variations.5/@features.3 //@entities.7/@variations.5/@features.6 //@entities.7/@variations.5/@features.8 //@entities.7/@variations.5/@features.19">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.7/@variations.5/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.7/@variations.5/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="customer_id" references="//@entities.7/@variations.5/@features.3">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.0" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.5/@features.2"/>
+      <features xsi:type="USchema:Aggregate" name="details" upperBound="-1" aggregates="//@entities.6/@variations.1 //@entities.6/@variations.0" optional="true"/>
+      <features xsi:type="USchema:Attribute" name="employee_id" references="//@entities.7/@variations.5/@features.6">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.1" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.5/@features.5"/>
+      <features xsi:type="USchema:Attribute" name="order_date" references="//@entities.7/@variations.5/@features.8">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.7" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.5/@features.7"/>
+      <features xsi:type="USchema:Attribute" name="paid_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="payment_type" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_address">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_city">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_country_region">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_name">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_state_province">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_zip_postal_code">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipped_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipper_id" references="//@entities.7/@variations.5/@features.19" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.16" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.5/@features.18"/>
+      <features xsi:type="USchema:Attribute" name="shipping_fee">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="status_id">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="tax_rate">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="taxes">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+    <variations variationId="7" count="9" structuralFeatures="//@entities.7/@variations.6/@features.0 //@entities.7/@variations.6/@features.2 //@entities.7/@variations.6/@features.4 //@entities.7/@variations.6/@features.5 //@entities.7/@variations.6/@features.7 //@entities.7/@variations.6/@features.9 //@entities.7/@variations.6/@features.10 //@entities.7/@variations.6/@features.11 //@entities.7/@variations.6/@features.12 //@entities.7/@variations.6/@features.13 //@entities.7/@variations.6/@features.14 //@entities.7/@variations.6/@features.15 //@entities.7/@variations.6/@features.16 //@entities.7/@variations.6/@features.17 //@entities.7/@variations.6/@features.18 //@entities.7/@variations.6/@features.20 //@entities.7/@variations.6/@features.21 //@entities.7/@variations.6/@features.22 //@entities.7/@variations.6/@features.23" logicalFeatures="//@entities.7/@variations.6/@features.1 //@entities.7/@variations.6/@features.3 //@entities.7/@variations.6/@features.6 //@entities.7/@variations.6/@features.8 //@entities.7/@variations.6/@features.19">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.7/@variations.6/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.7/@variations.6/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="customer_id" references="//@entities.7/@variations.6/@features.3">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.0" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.6/@features.2"/>
+      <features xsi:type="USchema:Aggregate" name="details" upperBound="-1" aggregates="//@entities.6/@variations.1" optional="true"/>
+      <features xsi:type="USchema:Attribute" name="employee_id" references="//@entities.7/@variations.6/@features.6">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.1" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.6/@features.5"/>
+      <features xsi:type="USchema:Attribute" name="order_date" references="//@entities.7/@variations.6/@features.8">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.7" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.6/@features.7"/>
+      <features xsi:type="USchema:Attribute" name="paid_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="payment_type" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_address">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_city">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_country_region">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_name">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_state_province">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_zip_postal_code">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipped_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipper_id" references="//@entities.7/@variations.6/@features.19" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.16" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.6/@features.18"/>
+      <features xsi:type="USchema:Attribute" name="shipping_fee">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="status_id">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="tax_rate">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="taxes">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+    <variations variationId="8" count="2" structuralFeatures="//@entities.7/@variations.7/@features.0 //@entities.7/@variations.7/@features.2 //@entities.7/@variations.7/@features.4 //@entities.7/@variations.7/@features.5 //@entities.7/@variations.7/@features.7 //@entities.7/@variations.7/@features.9 //@entities.7/@variations.7/@features.10 //@entities.7/@variations.7/@features.11 //@entities.7/@variations.7/@features.12 //@entities.7/@variations.7/@features.13 //@entities.7/@variations.7/@features.14 //@entities.7/@variations.7/@features.15 //@entities.7/@variations.7/@features.16 //@entities.7/@variations.7/@features.17 //@entities.7/@variations.7/@features.18 //@entities.7/@variations.7/@features.19 //@entities.7/@variations.7/@features.20" logicalFeatures="//@entities.7/@variations.7/@features.1 //@entities.7/@variations.7/@features.3 //@entities.7/@variations.7/@features.6 //@entities.7/@variations.7/@features.8">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.7/@variations.7/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.7/@variations.7/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="customer_id" references="//@entities.7/@variations.7/@features.3">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.0" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.7/@features.2"/>
+      <features xsi:type="USchema:Aggregate" name="details" upperBound="-1" aggregates="//@entities.6/@variations.0" optional="true"/>
+      <features xsi:type="USchema:Attribute" name="employee_id" references="//@entities.7/@variations.7/@features.6">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.1" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.7/@features.5"/>
+      <features xsi:type="USchema:Attribute" name="order_date" references="//@entities.7/@variations.7/@features.8">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.7" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.7/@features.7"/>
+      <features xsi:type="USchema:Attribute" name="paid_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Null"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_address">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_city">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_country_region">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_name">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_state_province">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_zip_postal_code">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipped_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Null"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipping_fee">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="status_id">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="tax_rate">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="taxes">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+    <variations variationId="9" count="1" structuralFeatures="//@entities.7/@variations.8/@features.0 //@entities.7/@variations.8/@features.2 //@entities.7/@variations.8/@features.4 //@entities.7/@variations.8/@features.5 //@entities.7/@variations.8/@features.7 //@entities.7/@variations.8/@features.9 //@entities.7/@variations.8/@features.10 //@entities.7/@variations.8/@features.11 //@entities.7/@variations.8/@features.12 //@entities.7/@variations.8/@features.13 //@entities.7/@variations.8/@features.14 //@entities.7/@variations.8/@features.15 //@entities.7/@variations.8/@features.16 //@entities.7/@variations.8/@features.17 //@entities.7/@variations.8/@features.18 //@entities.7/@variations.8/@features.19 //@entities.7/@variations.8/@features.20" logicalFeatures="//@entities.7/@variations.8/@features.1 //@entities.7/@variations.8/@features.3 //@entities.7/@variations.8/@features.6 //@entities.7/@variations.8/@features.8">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.7/@variations.8/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.7/@variations.8/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="customer_id" references="//@entities.7/@variations.8/@features.3">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.0" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.8/@features.2"/>
+      <features xsi:type="USchema:Aggregate" name="details" upperBound="-1" aggregates="//@entities.6/@variations.2" optional="true"/>
+      <features xsi:type="USchema:Attribute" name="employee_id" references="//@entities.7/@variations.8/@features.6">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.1" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.8/@features.5"/>
+      <features xsi:type="USchema:Attribute" name="order_date" references="//@entities.7/@variations.8/@features.8">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.7" lowerBound="1" upperBound="1" attributes="//@entities.7/@variations.8/@features.7"/>
+      <features xsi:type="USchema:Attribute" name="paid_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Null"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_address">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_city">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_country_region">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_name">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_state_province">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="ship_zip_postal_code">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipped_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Null"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipping_fee">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="status_id">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="tax_rate">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="taxes">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+  </entities>
+  <entities name="Orders_status" root="true">
+    <variations variationId="1" count="4" structuralFeatures="//@entities.8/@variations.0/@features.0 //@entities.8/@variations.0/@features.2" logicalFeatures="//@entities.8/@variations.0/@features.1">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.8/@variations.0/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.8/@variations.0/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="status_name">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+    </variations>
+  </entities>
+  <entities name="Orders_tax_status" root="true">
+    <variations variationId="1" count="2" structuralFeatures="//@entities.9/@variations.0/@features.0 //@entities.9/@variations.0/@features.2" logicalFeatures="//@entities.9/@variations.0/@features.1">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.9/@variations.0/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.9/@variations.0/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="tax_status_name">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+    </variations>
+  </entities>
+  <entities name="Privileges" root="true">
+    <variations variationId="1" count="1" structuralFeatures="//@entities.10/@variations.0/@features.0 //@entities.10/@variations.0/@features.2" logicalFeatures="//@entities.10/@variations.0/@features.1 //@entities.10/@variations.0/@features.3">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.10/@variations.0/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.10/@variations.0/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="privilege_name" references="//@entities.10/@variations.0/@features.3">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.10" lowerBound="1" upperBound="1" attributes="//@entities.10/@variations.0/@features.2"/>
+    </variations>
+  </entities>
+  <entities name="Products" root="true">
+    <variations variationId="1" count="25" structuralFeatures="//@entities.11/@variations.0/@features.0 //@entities.11/@variations.0/@features.2 //@entities.11/@variations.0/@features.3 //@entities.11/@variations.0/@features.4 //@entities.11/@variations.0/@features.5 //@entities.11/@variations.0/@features.6 //@entities.11/@variations.0/@features.8 //@entities.11/@variations.0/@features.10 //@entities.11/@variations.0/@features.11 //@entities.11/@variations.0/@features.12 //@entities.11/@variations.0/@features.13 //@entities.11/@variations.0/@features.15" logicalFeatures="//@entities.11/@variations.0/@features.1 //@entities.11/@variations.0/@features.7 //@entities.11/@variations.0/@features.9 //@entities.11/@variations.0/@features.14">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.11/@variations.0/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.11/@variations.0/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="category">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="discontinued">
+        <type xsi:type="USchema:PrimitiveType" name="Boolean"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="list_price">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="minimum_reorder_quantity" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="product_code" references="//@entities.11/@variations.0/@features.7">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.11" lowerBound="1" upperBound="1" attributes="//@entities.11/@variations.0/@features.6"/>
+      <features xsi:type="USchema:Attribute" name="product_name" references="//@entities.11/@variations.0/@features.9">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.11" lowerBound="1" upperBound="1" attributes="//@entities.11/@variations.0/@features.8"/>
+      <features xsi:type="USchema:Attribute" name="quantity_per_unit" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="reorder_level">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="standard_cost">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="supplier_ids" references="//@entities.11/@variations.0/@features.14">
+        <type xsi:type="USchema:PList">
+          <elementType xsi:type="USchema:PrimitiveType" name="Number"/>
+        </type>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.18" upperBound="-1" attributes="//@entities.11/@variations.0/@features.13"/>
+      <features xsi:type="USchema:Attribute" name="target_level">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+    <variations variationId="2" count="5" structuralFeatures="//@entities.11/@variations.1/@features.0 //@entities.11/@variations.1/@features.2 //@entities.11/@variations.1/@features.3 //@entities.11/@variations.1/@features.4 //@entities.11/@variations.1/@features.5 //@entities.11/@variations.1/@features.7 //@entities.11/@variations.1/@features.9 //@entities.11/@variations.1/@features.10 //@entities.11/@variations.1/@features.11 //@entities.11/@variations.1/@features.13" logicalFeatures="//@entities.11/@variations.1/@features.1 //@entities.11/@variations.1/@features.6 //@entities.11/@variations.1/@features.8 //@entities.11/@variations.1/@features.12">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.11/@variations.1/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.11/@variations.1/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="category">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="discontinued">
+        <type xsi:type="USchema:PrimitiveType" name="Boolean"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="list_price">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="product_code" references="//@entities.11/@variations.1/@features.6">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.11" lowerBound="1" upperBound="1" attributes="//@entities.11/@variations.1/@features.5"/>
+      <features xsi:type="USchema:Attribute" name="product_name" references="//@entities.11/@variations.1/@features.8">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.11" lowerBound="1" upperBound="1" attributes="//@entities.11/@variations.1/@features.7"/>
+      <features xsi:type="USchema:Attribute" name="reorder_level">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="standard_cost">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="supplier_ids" references="//@entities.11/@variations.1/@features.12">
+        <type xsi:type="USchema:PList">
+          <elementType xsi:type="USchema:PrimitiveType" name="Number"/>
+        </type>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.18" upperBound="-1" attributes="//@entities.11/@variations.1/@features.11"/>
+      <features xsi:type="USchema:Attribute" name="target_level">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+    <variations variationId="3" count="10" structuralFeatures="//@entities.11/@variations.2/@features.0 //@entities.11/@variations.2/@features.2 //@entities.11/@variations.2/@features.3 //@entities.11/@variations.2/@features.4 //@entities.11/@variations.2/@features.5 //@entities.11/@variations.2/@features.7 //@entities.11/@variations.2/@features.9 //@entities.11/@variations.2/@features.10 //@entities.11/@variations.2/@features.11 //@entities.11/@variations.2/@features.12 //@entities.11/@variations.2/@features.14" logicalFeatures="//@entities.11/@variations.2/@features.1 //@entities.11/@variations.2/@features.6 //@entities.11/@variations.2/@features.8 //@entities.11/@variations.2/@features.13">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.11/@variations.2/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.11/@variations.2/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="category">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="discontinued">
+        <type xsi:type="USchema:PrimitiveType" name="Boolean"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="list_price">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="product_code" references="//@entities.11/@variations.2/@features.6">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.11" lowerBound="1" upperBound="1" attributes="//@entities.11/@variations.2/@features.5"/>
+      <features xsi:type="USchema:Attribute" name="product_name" references="//@entities.11/@variations.2/@features.8">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.11" lowerBound="1" upperBound="1" attributes="//@entities.11/@variations.2/@features.7"/>
+      <features xsi:type="USchema:Attribute" name="quantity_per_unit" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="reorder_level">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="standard_cost">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="supplier_ids" references="//@entities.11/@variations.2/@features.13">
+        <type xsi:type="USchema:PList">
+          <elementType xsi:type="USchema:PrimitiveType" name="Number"/>
+        </type>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.18" upperBound="-1" attributes="//@entities.11/@variations.2/@features.12"/>
+      <features xsi:type="USchema:Attribute" name="target_level">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+  </entities>
+  <entities name="Purchase_order_status" root="true">
+    <variations variationId="1" count="4" structuralFeatures="//@entities.12/@variations.0/@features.0 //@entities.12/@variations.0/@features.2" logicalFeatures="//@entities.12/@variations.0/@features.1">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.12/@variations.0/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.12/@variations.0/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="status">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+    </variations>
+  </entities>
+  <entities name="Purchase_orders" root="true">
+    <variations variationId="1" count="1" structuralFeatures="//@entities.13/@variations.0/@features.0 //@entities.13/@variations.0/@features.2 //@entities.13/@variations.0/@features.3 //@entities.13/@variations.0/@features.4 //@entities.13/@variations.0/@features.5 //@entities.13/@variations.0/@features.6 //@entities.13/@variations.0/@features.7 //@entities.13/@variations.0/@features.8 //@entities.13/@variations.0/@features.9 //@entities.13/@variations.0/@features.10 //@entities.13/@variations.0/@features.11 //@entities.13/@variations.0/@features.12 //@entities.13/@variations.0/@features.14" logicalFeatures="//@entities.13/@variations.0/@features.1 //@entities.13/@variations.0/@features.13">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.13/@variations.0/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.13/@variations.0/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="approved_by" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="approved_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="created_by" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="creation_date">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Aggregate" name="details" upperBound="-1" aggregates="//@entities.6/@variations.3 //@entities.6/@variations.4" optional="true"/>
+      <features xsi:type="USchema:Attribute" name="payment_amount">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipping_fee">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="status_id">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="submitted_by">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="submitted_date">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="supplier_id" references="//@entities.13/@variations.0/@features.13">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.18" lowerBound="1" upperBound="1" attributes="//@entities.13/@variations.0/@features.12"/>
+      <features xsi:type="USchema:Attribute" name="taxes">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+    <variations variationId="2" count="1" structuralFeatures="//@entities.13/@variations.1/@features.0 //@entities.13/@variations.1/@features.2 //@entities.13/@variations.1/@features.3 //@entities.13/@variations.1/@features.4 //@entities.13/@variations.1/@features.5 //@entities.13/@variations.1/@features.6 //@entities.13/@variations.1/@features.7 //@entities.13/@variations.1/@features.8 //@entities.13/@variations.1/@features.9 //@entities.13/@variations.1/@features.10 //@entities.13/@variations.1/@features.11 //@entities.13/@variations.1/@features.12 //@entities.13/@variations.1/@features.14" logicalFeatures="//@entities.13/@variations.1/@features.1 //@entities.13/@variations.1/@features.13">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.13/@variations.1/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.13/@variations.1/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="approved_by" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="approved_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="created_by" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="creation_date">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Aggregate" name="details" upperBound="-1" aggregates="//@entities.6/@variations.3" optional="true"/>
+      <features xsi:type="USchema:Attribute" name="payment_amount">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipping_fee">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="status_id">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="submitted_by">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="submitted_date">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="supplier_id" references="//@entities.13/@variations.1/@features.13">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.18" lowerBound="1" upperBound="1" attributes="//@entities.13/@variations.1/@features.12"/>
+      <features xsi:type="USchema:Attribute" name="taxes">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+    <variations variationId="3" count="14" structuralFeatures="//@entities.13/@variations.2/@features.0 //@entities.13/@variations.2/@features.2 //@entities.13/@variations.2/@features.3 //@entities.13/@variations.2/@features.4 //@entities.13/@variations.2/@features.5 //@entities.13/@variations.2/@features.6 //@entities.13/@variations.2/@features.7 //@entities.13/@variations.2/@features.8 //@entities.13/@variations.2/@features.9 //@entities.13/@variations.2/@features.10 //@entities.13/@variations.2/@features.11 //@entities.13/@variations.2/@features.12 //@entities.13/@variations.2/@features.13 //@entities.13/@variations.2/@features.15" logicalFeatures="//@entities.13/@variations.2/@features.1 //@entities.13/@variations.2/@features.14">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.13/@variations.2/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.13/@variations.2/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="approved_by" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="approved_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="created_by" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="creation_date">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Aggregate" name="details" upperBound="-1" aggregates="//@entities.6/@variations.3" optional="true"/>
+      <features xsi:type="USchema:Attribute" name="notes" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="payment_amount">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipping_fee">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="status_id">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="submitted_by">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="submitted_date">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="supplier_id" references="//@entities.13/@variations.2/@features.14">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.18" lowerBound="1" upperBound="1" attributes="//@entities.13/@variations.2/@features.13"/>
+      <features xsi:type="USchema:Attribute" name="taxes">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+    <variations variationId="4" count="1" structuralFeatures="//@entities.13/@variations.3/@features.0 //@entities.13/@variations.3/@features.2 //@entities.13/@variations.3/@features.3 //@entities.13/@variations.3/@features.4 //@entities.13/@variations.3/@features.5 //@entities.13/@variations.3/@features.6 //@entities.13/@variations.3/@features.7 //@entities.13/@variations.3/@features.8 //@entities.13/@variations.3/@features.9 //@entities.13/@variations.3/@features.10 //@entities.13/@variations.3/@features.11 //@entities.13/@variations.3/@features.12 //@entities.13/@variations.3/@features.13 //@entities.13/@variations.3/@features.15" logicalFeatures="//@entities.13/@variations.3/@features.1 //@entities.13/@variations.3/@features.14">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.13/@variations.3/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.13/@variations.3/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="approved_by" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="approved_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="created_by" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="creation_date">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Aggregate" name="details" upperBound="-1" aggregates="//@entities.6/@variations.4" optional="true"/>
+      <features xsi:type="USchema:Attribute" name="notes" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="payment_amount">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipping_fee">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="status_id">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="submitted_by">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="submitted_date">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="supplier_id" references="//@entities.13/@variations.3/@features.14">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.18" lowerBound="1" upperBound="1" attributes="//@entities.13/@variations.3/@features.13"/>
+      <features xsi:type="USchema:Attribute" name="taxes">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+    <variations variationId="5" count="1" structuralFeatures="//@entities.13/@variations.4/@features.0 //@entities.13/@variations.4/@features.2 //@entities.13/@variations.4/@features.3 //@entities.13/@variations.4/@features.4 //@entities.13/@variations.4/@features.5 //@entities.13/@variations.4/@features.6 //@entities.13/@variations.4/@features.7 //@entities.13/@variations.4/@features.8 //@entities.13/@variations.4/@features.9 //@entities.13/@variations.4/@features.10 //@entities.13/@variations.4/@features.11 //@entities.13/@variations.4/@features.12 //@entities.13/@variations.4/@features.13 //@entities.13/@variations.4/@features.14 //@entities.13/@variations.4/@features.16" logicalFeatures="//@entities.13/@variations.4/@features.1 //@entities.13/@variations.4/@features.15">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.13/@variations.4/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.13/@variations.4/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="approved_by" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="approved_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="created_by" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="creation_date">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Aggregate" name="details" upperBound="-1" aggregates="//@entities.6/@variations.3" optional="true"/>
+      <features xsi:type="USchema:Attribute" name="notes" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="payment_amount">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="payment_method" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipping_fee">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="status_id">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="submitted_by">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="submitted_date">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="supplier_id" references="//@entities.13/@variations.4/@features.15">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.18" lowerBound="1" upperBound="1" attributes="//@entities.13/@variations.4/@features.14"/>
+      <features xsi:type="USchema:Attribute" name="taxes">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+    <variations variationId="6" count="2" structuralFeatures="//@entities.13/@variations.5/@features.0 //@entities.13/@variations.5/@features.2 //@entities.13/@variations.5/@features.3 //@entities.13/@variations.5/@features.4 //@entities.13/@variations.5/@features.5 //@entities.13/@variations.5/@features.6 //@entities.13/@variations.5/@features.7 //@entities.13/@variations.5/@features.8 //@entities.13/@variations.5/@features.9 //@entities.13/@variations.5/@features.10 //@entities.13/@variations.5/@features.11 //@entities.13/@variations.5/@features.13" logicalFeatures="//@entities.13/@variations.5/@features.1 //@entities.13/@variations.5/@features.12">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.13/@variations.5/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.13/@variations.5/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="approved_by" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="approved_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="creation_date">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Aggregate" name="details" upperBound="-1" aggregates="//@entities.6/@variations.4" optional="true"/>
+      <features xsi:type="USchema:Attribute" name="payment_amount">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipping_fee">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="status_id">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="submitted_by">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="submitted_date">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="supplier_id" references="//@entities.13/@variations.5/@features.12">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.18" lowerBound="1" upperBound="1" attributes="//@entities.13/@variations.5/@features.11"/>
+      <features xsi:type="USchema:Attribute" name="taxes">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+    <variations variationId="7" count="1" structuralFeatures="//@entities.13/@variations.6/@features.0 //@entities.13/@variations.6/@features.2 //@entities.13/@variations.6/@features.3 //@entities.13/@variations.6/@features.4 //@entities.13/@variations.6/@features.5 //@entities.13/@variations.6/@features.6 //@entities.13/@variations.6/@features.7 //@entities.13/@variations.6/@features.8 //@entities.13/@variations.6/@features.9 //@entities.13/@variations.6/@features.10 //@entities.13/@variations.6/@features.11 //@entities.13/@variations.6/@features.12 //@entities.13/@variations.6/@features.14" logicalFeatures="//@entities.13/@variations.6/@features.1 //@entities.13/@variations.6/@features.13">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.13/@variations.6/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.13/@variations.6/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="approved_by" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="approved_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="creation_date">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Aggregate" name="details" upperBound="-1" aggregates="//@entities.6/@variations.4" optional="true"/>
+      <features xsi:type="USchema:Attribute" name="payment_amount">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="payment_method" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipping_fee">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="status_id">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="submitted_by">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="submitted_date">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="supplier_id" references="//@entities.13/@variations.6/@features.13">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.18" lowerBound="1" upperBound="1" attributes="//@entities.13/@variations.6/@features.12"/>
+      <features xsi:type="USchema:Attribute" name="taxes">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+    <variations variationId="8" count="1" structuralFeatures="//@entities.13/@variations.7/@features.0 //@entities.13/@variations.7/@features.2 //@entities.13/@variations.7/@features.3 //@entities.13/@variations.7/@features.4 //@entities.13/@variations.7/@features.5 //@entities.13/@variations.7/@features.6 //@entities.13/@variations.7/@features.7 //@entities.13/@variations.7/@features.8 //@entities.13/@variations.7/@features.9 //@entities.13/@variations.7/@features.10 //@entities.13/@variations.7/@features.11 //@entities.13/@variations.7/@features.13" logicalFeatures="//@entities.13/@variations.7/@features.1 //@entities.13/@variations.7/@features.12">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.13/@variations.7/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.13/@variations.7/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="approved_date" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Null"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="created_by" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="creation_date">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Aggregate" name="details" upperBound="-1" aggregates="//@entities.6/@variations.4" optional="true"/>
+      <features xsi:type="USchema:Attribute" name="payment_amount">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="shipping_fee">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="status_id">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="submitted_by">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="submitted_date">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="supplier_id" references="//@entities.13/@variations.7/@features.12">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.18" lowerBound="1" upperBound="1" attributes="//@entities.13/@variations.7/@features.11"/>
+      <features xsi:type="USchema:Attribute" name="taxes">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+  </entities>
+  <entities name="_id">
+    <variations variationId="1" count="67" firstTimestamp="1602513061" lastTimestamp="1602513062" structuralFeatures="//@entities.14/@variations.0/@features.0">
+      <features xsi:type="USchema:Attribute" name="$oid">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+    </variations>
+  </entities>
+  <entities name="Sales_reports" root="true">
+    <variations variationId="1" count="5" firstTimestamp="1602513061" lastTimestamp="1602513061" structuralFeatures="//@entities.15/@variations.0/@features.0 //@entities.15/@variations.0/@features.1 //@entities.15/@variations.0/@features.2 //@entities.15/@variations.0/@features.3 //@entities.15/@variations.0/@features.4 //@entities.15/@variations.0/@features.5">
+      <features xsi:type="USchema:Aggregate" name="_id" lowerBound="1" upperBound="1" aggregates="//@entities.14/@variations.0"/>
+      <features xsi:type="USchema:Attribute" name="default">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="display">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="filter_row_source">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="group_by">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="title">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+    </variations>
+  </entities>
+  <entities name="Shippers" root="true">
+    <variations variationId="1" count="3" structuralFeatures="//@entities.16/@variations.0/@features.0 //@entities.16/@variations.0/@features.2 //@entities.16/@variations.0/@features.3 //@entities.16/@variations.0/@features.4 //@entities.16/@variations.0/@features.5 //@entities.16/@variations.0/@features.6 //@entities.16/@variations.0/@features.7" logicalFeatures="//@entities.16/@variations.0/@features.1">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.16/@variations.0/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.16/@variations.0/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="address">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="city">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="company">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="country_region">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="state_province">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="zip_postal_code">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+  </entities>
+  <entities name="Strings" root="true">
+    <variations variationId="1" count="62" firstTimestamp="1602513062" lastTimestamp="1602513062" structuralFeatures="//@entities.17/@variations.0/@features.0 //@entities.17/@variations.0/@features.1 //@entities.17/@variations.0/@features.3" logicalFeatures="//@entities.17/@variations.0/@features.2 //@entities.17/@variations.0/@features.4">
+      <features xsi:type="USchema:Aggregate" name="_id" lowerBound="1" upperBound="1" aggregates="//@entities.14/@variations.0"/>
+      <features xsi:type="USchema:Attribute" name="string_data" references="//@entities.17/@variations.0/@features.2">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.17" lowerBound="1" upperBound="1" attributes="//@entities.17/@variations.0/@features.1"/>
+      <features xsi:type="USchema:Attribute" name="string_id" references="//@entities.17/@variations.0/@features.4">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.17" lowerBound="1" upperBound="1" attributes="//@entities.17/@variations.0/@features.3"/>
+    </variations>
+  </entities>
+  <entities name="Suppliers" root="true">
+    <variations variationId="1" count="10" structuralFeatures="//@entities.18/@variations.0/@features.0 //@entities.18/@variations.0/@features.2 //@entities.18/@variations.0/@features.3 //@entities.18/@variations.0/@features.4 //@entities.18/@variations.0/@features.5" logicalFeatures="//@entities.18/@variations.0/@features.1">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.18/@variations.0/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.18/@variations.0/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="company">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="first_name">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="job_title">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="last_name">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+    </variations>
+  </entities>
+</USchema:USchema>

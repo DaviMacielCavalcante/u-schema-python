@@ -13,6 +13,17 @@ concurrency:
 jobs:
   quality:
     runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:8.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.runCommand({ping: 1})'"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
     steps:
       - uses: actions/checkout@v5
 
@@ -34,6 +45,12 @@ jobs:
       - name: Type-check (mypy)
         run: uv run mypy .
 
+      - name: Java 21 (para os testes spark)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
       - name: Testes (pytest)
         run: uv run pytest
 
@@ -43,6 +60,17 @@ jobs:
   sonar:
     name: SonarQube Cloud
     runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:8.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.runCommand({ping: 1})'"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
     steps:
       - uses: actions/checkout@v5
         with:
@@ -56,6 +84,12 @@ jobs:
 
       - name: Sincronizar dependências (com dev)
         run: uv sync --dev
+
+      - name: Java 21 (para os testes spark)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
 
       - name: Cobertura (pytest -> coverage.xml)
         run: uv run pytest --cov=src --cov-report=xml

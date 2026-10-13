@@ -22,6 +22,7 @@ from uschema.extractors.mongo import (
     SIMPLE_DEFAULT_LONG,
     SIMPLE_DEFAULT_OBJECTID,
     TYPE_FIELD,
+    _reduce_with_position,
     build_triples,
     extract_database_triples,
     generate_document_pair,
@@ -213,6 +214,38 @@ def test_reduce_pairs_e_comutativo() -> None:
     assert reduce_pairs(a, b) == reduce_pairs(b, a)
 
 
+# --- _reduce_with_position (engine Spark, Fase 4.3) ------------------------
+# Puro, sem Spark: é só a função que o `reduceByKey` recebe.
+
+
+def test_reduce_with_position_combina_dados_e_fica_com_a_menor_posicao() -> None:
+    first = ((10, 20, 1), (2, 5))
+    second = ((5, 30, 2), (1, 7))
+
+    assert _reduce_with_position(first, second) == ((5, 30, 3), (1, 7))
+
+
+def test_reduce_with_position_e_comutativo() -> None:
+    # A menor posição vem de `a` e o menor timestamp vem de `b`: cada parte do
+    # valor é combinada por conta própria. O valor esperado fixo impede que dois
+    # resultados errados e iguais passem.
+    a = ((10, 20, 1), (0, 3))
+    b = ((5, 30, 2), (0, 8))
+
+    assert _reduce_with_position(a, b) == _reduce_with_position(b, a) == ((5, 30, 3), (0, 3))
+
+
+def test_reduce_with_position_compara_a_fatia_antes_do_documento() -> None:
+    # O documento 0 da fatia 3 vem depois do documento 900 da fatia 1: a posição
+    # compara como tupla, fatia primeiro.
+    cedo = ((0, 0, 1), (1, 900))
+    tarde = ((0, 0, 1), (3, 0))
+
+    [_, posicao] = _reduce_with_position(tarde, cedo)
+
+    assert posicao == (1, 900)
+
+
 # --- build_triples (MongoDB2USchema.java:73-83) -----------------------------
 
 
@@ -296,19 +329,37 @@ def test_build_triples_aceita_qualquer_iteravel_nao_so_lista() -> None:
 
 
 # --- extract_database_triples (MongoDB2USchema.java:48-58, :60-86) ----------
-# Sem banco real: um `Database`/`Collection` falso, só com `__getitem__` e
-# `.find()` — é toda a superfície que `extract_database_triples` usa. Cobre a
-# função sem precisar de `pymongo.MongoClient` real (isso fica pra
+# Sem banco real: um `Database`/`Collection`/cursor falso, só com `__getitem__`,
+# `.find()` e `.sort()` — é toda a superfície que `extract_database_triples` usa.
+# Cobre a função sem precisar de `pymongo.MongoClient` real (isso fica pra
 # `extract_triples`, não testado aqui por exigir um MongoDB de verdade —
 # ver `todolist_fase2.md`).
+#
+# Os documentos falsos têm `_id`, como todo documento do MongoDB: o `sort` do
+# cursor (Fase 4.3) ordena por ele.
+
+
+class _CursorFalso:
+    """Devolve os documentos na ordem em que foram dados (a ordem "física"),
+    até alguém pedir ``sort``."""
+
+    def __init__(self, documentos: list[dict[str, Any]]) -> None:
+        self._documentos = documentos
+
+    def sort(self, campo: str, direcao: int = 1) -> _CursorFalso:
+        ordenados = sorted(self._documentos, key=lambda d: d[campo], reverse=direcao == -1)
+        return _CursorFalso(ordenados)
+
+    def __iter__(self) -> Iterator[dict[str, Any]]:
+        return iter(self._documentos)
 
 
 class _ColecaoFalsa:
     def __init__(self, documentos: list[dict[str, Any]]) -> None:
         self._documentos = documentos
 
-    def find(self) -> Iterator[dict[str, Any]]:
-        yield from self._documentos
+    def find(self) -> _CursorFalso:
+        return _CursorFalso(self._documentos)
 
 
 class _BancoFalso:
@@ -320,11 +371,11 @@ class _BancoFalso:
 
 
 def test_extract_database_triples_le_uma_colecao() -> None:
-    banco = _BancoFalso({"pessoas": [{"nome": "a"}, {"nome": "b"}]})
+    banco = _BancoFalso({"pessoas": [{"_id": 1, "nome": "a"}, {"_id": 2, "nome": "b"}]})
 
     [linha] = extract_database_triples(banco, ["pessoas"])  # type: ignore[arg-type]
 
-    assert linha["schema"] == {"nome": "", TYPE_FIELD: "pessoas"}
+    assert linha["schema"] == {"_id": 0, "nome": "", TYPE_FIELD: "pessoas"}
     assert linha["count"] == 2
 
 
@@ -334,8 +385,8 @@ def test_extract_database_triples_concatena_varias_colecoes() -> None:
     # coleção continua com seu próprio agrupamento por esqueleto.
     banco = _BancoFalso(
         {
-            "pessoas": [{"nome": "a"}],
-            "produtos": [{"preco": 1.0}, {"preco": 2.0}],
+            "pessoas": [{"_id": 1, "nome": "a"}],
+            "produtos": [{"_id": 1, "preco": 1.0}, {"_id": 2, "preco": 2.0}],
         }
     )
 
@@ -349,3 +400,27 @@ def test_extract_database_triples_colecao_vazia_nao_gera_linha() -> None:
     banco = _BancoFalso({"vazio": []})
 
     assert extract_database_triples(banco, ["vazio"]) == []  # type: ignore[arg-type]
+
+
+def test_extract_database_triples_le_em_ordem_de_id_nao_na_ordem_fisica() -> None:
+    """Fase 4.3: a ordem das triplas é a de primeira aparição **em ordem de
+    ``_id``**, não a ordem em que os documentos estão gravados.
+
+    Por causa do #8, essa ordem decide qual ``count`` sobrevive na inferência, e
+    é a única que a engine Spark consegue reproduzir. Aqui a ordem física é a
+    inversa: lida sem ``sort``, o esqueleto com ``email`` viria primeiro.
+    """
+    banco = _BancoFalso(
+        {
+            "pessoas": [
+                {"_id": 3, "email": "c"},
+                {"_id": 2, "nome": "b"},
+                {"_id": 1, "nome": "a"},
+            ]
+        }
+    )
+
+    linhas = extract_database_triples(banco, ["pessoas"])  # type: ignore[arg-type]
+
+    assert ["nome" in linha["schema"] for linha in linhas] == [True, False]
+    assert [linha["count"] for linha in linhas] == [2, 1]

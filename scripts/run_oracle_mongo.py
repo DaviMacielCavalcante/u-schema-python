@@ -18,6 +18,13 @@ só sobre os 397 do Northwind (Fase 0.5). Comece pelos tamanhos menores.
 
     uv run python scripts/run_oracle_mongo.py --seed 23 --sizes small
     uv run python scripts/run_oracle_mongo.py --seed 23 --routes A --sizes small medium
+
+Engine do porte (Fases 4.3 e 4.4): ``--engine spark`` extrai pela engine
+Spark, com ``--slices`` fatias por coleção (padrão: uma por núcleo), e grava o
+boot da sessão em ``boot_time``. Uma corrida Spark por processo — uma rota e um
+tamanho por vez; ver `engines.py`:
+
+    uv run python scripts/run_oracle_mongo.py --seed 23 --engine spark --routes A --sizes small
 """
 
 import argparse
@@ -28,16 +35,25 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
+from engines import SINGLE_RUN, engine_session
 from pyecore.ecore import EObject, EPackage
 from pymongo import MongoClient
 
 from baseline import mongo_query_time
 from output import (
     DEFAULT_SEED,
+    ENGINES,
+    ORACLE_XMI_DIR,
     PORT,
+    PORT_XMI_DIR,
+    PYTHON,
+    RESULTS_DIR,
+    ROOT,
     SEEDED_ORACLE,
+    SPARK,
     Results,
     entity_name,
+    format_boot,
     format_query_time,
     format_seconds,
     fraction,
@@ -46,7 +62,7 @@ from output import (
     run_id,
 )
 from runs import MongoOracleRun
-from uschema.extractors.mongo import extract_database_triples
+from uschema.extractors.mongo import extract_triples
 from uschema.extractors.triple import triples_from_rows
 from uschema.inference.build_uschema import BuildUSchema
 from uschema.metamodel.registry import load_metamodel
@@ -56,10 +72,7 @@ from uschema.validation.equivalence import compare
 DEFAULT_SIZES = ["small", "medium", "large", "larger"]
 DEFAULT_ROUTES = ["A", "B"]
 
-ROOT = Path(__file__).resolve().parents[1]
 GENERATOR = ROOT / "scripts" / "gen_userprofiles.py"
-PORT_OUTPUT = ROOT / "out" / "porte"
-ORACLE_OUTPUT = ROOT / "out" / "oraculo"
 IMAGE = "extrator-uschema"
 
 
@@ -94,7 +107,7 @@ def generate(route: str, size: str, uri: str, seed: int) -> float:
     return time.perf_counter() - start
 
 
-def run_oracle(database: str, collections: list[str], uri: str, seed: int) -> Path:
+def run_oracle(database: str, collections: list[str], uri: str, target: Path) -> Path:
     """Roda o extrator Java no container sobre o banco já materializado.
 
     Diferente do caminho Neo4j, aqui o `--db` **é** o banco a conectar: o
@@ -113,15 +126,16 @@ def run_oracle(database: str, collections: list[str], uri: str, seed: int) -> Pa
         Coleções a ler, na ordem em que serão passadas ao Java.
     uri : str
         URI do MongoDB, alcançável de dentro do container (`--network=host`).
-    seed : int
-        Semente da instância medida; entra no nome do XMI preservado.
+    target : Path
+        Onde preservar o XMI do oráculo — nomeado pelo ``run_id`` da corrida,
+        para que a seguinte não sobrescreva a evidência desta.
 
     Returns
     -------
     Path
-        O XMI do oráculo, já renomeado por semente.
+        O XMI do oráculo, já em ``target``.
     """
-    ORACLE_OUTPUT.mkdir(parents=True, exist_ok=True)
+    ORACLE_XMI_DIR.mkdir(parents=True, exist_ok=True)
 
     subprocess.run(
         [
@@ -130,7 +144,7 @@ def run_oracle(database: str, collections: list[str], uri: str, seed: int) -> Pa
             "--rm",
             "--network=host",
             "-v",
-            f"{ORACLE_OUTPUT}:/output",
+            f"{ORACLE_XMI_DIR}:/output",
             "-e",
             f"MONGO_URL={uri}",
             "-e",
@@ -145,15 +159,28 @@ def run_oracle(database: str, collections: list[str], uri: str, seed: int) -> Pa
     )
 
     # O container escreve como root; renomear só exige permissão no diretório.
-    written = ORACLE_OUTPUT / f"{database}.xmi"
-    target = ORACLE_OUTPUT / f"mongo_{database}_seed{seed}.xmi"
+    written = ORACLE_XMI_DIR / f"{database}.xmi"
     written.replace(target)
 
     return target
 
 
-def measure(route: str, size: str, uri: str, seed: int, pkg: EPackage) -> MongoOracleRun:
-    """Roda porte e oráculo sobre o mesmo banco e compara os dois XMIs."""
+def measure(
+    route: str,
+    size: str,
+    uri: str,
+    pkg: EPackage,
+    key: str,
+    *,
+    engine: str = PYTHON,
+    slices: int | None = None,
+) -> MongoOracleRun:
+    """Roda porte e oráculo sobre o mesmo banco e compara os dois XMIs.
+
+    A sessão Spark abre e fecha em volta da extração do porte: o boot sai
+    cronometrado à parte, e a JVM do porte já caiu quando o container do oráculo
+    sobe. Os dois XMIs se chamam pelo ``key``.
+    """
     database = database_name(route, size)
 
     # Mapping, não dict: Database é invariante no parâmetro de tipo.
@@ -166,14 +193,17 @@ def measure(route: str, size: str, uri: str, seed: int, pkg: EPackage) -> MongoO
 
         actual = {name: db[name].count_documents({}) for name in collections}
 
-        start = time.perf_counter()
-
-        rows: list[dict[str, Any]] = extract_database_triples(db, collections)
-
-        t_extraction = time.perf_counter() - start
-
     finally:
         client.close()
+
+    with engine_session(engine) as (spark, t_boot):
+        start = time.perf_counter()
+
+        rows: list[dict[str, Any]] = extract_triples(
+            uri, database, collections, spark=spark, slices=slices
+        )
+
+        t_extraction = time.perf_counter() - start
 
     start = time.perf_counter()
 
@@ -183,13 +213,13 @@ def measure(route: str, size: str, uri: str, seed: int, pkg: EPackage) -> MongoO
 
     start = time.perf_counter()
 
-    save_model(port, PORT_OUTPUT / f"mongo_{database}_seed{seed}.xmi")
+    save_model(port, PORT_XMI_DIR / f"{key}.xmi")
 
     t_write = time.perf_counter() - start
 
     start = time.perf_counter()
 
-    oracle_xmi = run_oracle(database, collections, uri, seed)
+    oracle_xmi = run_oracle(database, collections, uri, ORACLE_XMI_DIR / f"{key}.xmi")
 
     t_oracle = time.perf_counter() - start
 
@@ -210,6 +240,8 @@ def measure(route: str, size: str, uri: str, seed: int, pkg: EPackage) -> MongoO
         t_extraction=t_extraction,
         t_inference=t_inference,
         t_write=t_write,
+        engine=engine,
+        t_boot=t_boot,
         t_oracle=t_oracle,
         t_query=t_query,
         counts=side_by_side(collections, actual, port, oracle),
@@ -238,14 +270,12 @@ def side_by_side(
     }
 
 
-def record(tables: Results, seed: int, run: MongoOracleRun) -> None:
+def record(tables: Results, key: str, run: MongoOracleRun) -> None:
     """Distribui a corrida pelas tabelas de resultado.
 
     O porte vai para `runs`, o oráculo para `oracle` — tabelas separadas porque
     o container devolve um número só, o relógio de parede do `docker run`.
     """
-    key = run_id("oracle_chain", "mongodb", run.database, seed=seed)
-
     tables.add_run(
         {
             "run_id": key,
@@ -255,10 +285,12 @@ def record(tables: Results, seed: int, run: MongoOracleRun) -> None:
             "route": run.route,
             "target": run.database,
             "origin": "database",
+            "engine": run.engine,
             "total_time": format_seconds(run.total),
             "extraction_time": format_seconds(run.t_extraction),
             "inference_time": format_seconds(run.t_inference),
             "write_time": format_seconds(run.t_write),
+            "boot_time": format_boot(run.t_boot),
             "query_time": format_query_time(run.t_query),
             "normalized": normalized(run.total, run.t_query),
         }
@@ -276,27 +308,46 @@ def main() -> None:
     ap.add_argument("--uri", default="mongodb://localhost:27017")
     ap.add_argument("--routes", nargs="+", choices=DEFAULT_ROUTES, default=DEFAULT_ROUTES)
     ap.add_argument("--sizes", nargs="+", choices=DEFAULT_SIZES, default=DEFAULT_SIZES)
-    ap.add_argument("--output-dir", type=Path, default=ROOT / "results")
+    ap.add_argument("--output-dir", type=Path, default=RESULTS_DIR)
+    ap.add_argument("--engine", choices=ENGINES, default=PYTHON)
+    ap.add_argument("--slices", type=int, default=None)
 
     args = ap.parse_args()
 
+    if args.engine == SPARK and len(args.routes) * len(args.sizes) > 1:
+        ap.error(SINGLE_RUN)
+
     pkg = load_metamodel()
 
-    PORT_OUTPUT.mkdir(parents=True, exist_ok=True)
+    PORT_XMI_DIR.mkdir(parents=True, exist_ok=True)
 
     with Results(args.output_dir) as tables:
         for route in args.routes:
             for size in args.sizes:
-                print(f"\n=== seed {args.seed} | rota {route} | {size} ===", flush=True)
+                print(
+                    f"\n=== seed {args.seed} | rota {route} | {size} | {args.engine} ===",
+                    flush=True,
+                )
 
                 # A geração é cronometrada só para o log: não é medida de
                 # produtor nenhum, e saiu do esquema dos CSVs.
                 t_generation = generate(route, size, args.uri, args.seed)
 
-                run = measure(route, size, args.uri, args.seed, pkg)
+                key = run_id(
+                    "oracle_chain",
+                    "mongodb",
+                    database_name(route, size),
+                    seed=args.seed,
+                    engine=args.engine,
+                )
+
+                run = measure(
+                    route, size, args.uri, pkg, key, engine=args.engine, slices=args.slices
+                )
 
                 print(
                     f"  geracao={t_generation:.2f}s"
+                    f"  boot={format_boot(run.t_boot) or '-'}"
                     f"  extracao={run.t_extraction:.2f}s"
                     f"  inferencia={run.t_inference:.2f}s"
                     f"  escrita={run.t_write:.2f}s"
@@ -316,7 +367,7 @@ def main() -> None:
                         f"  oraculo={in_oracle} ({fraction(in_oracle, actual)})"
                     )
 
-                record(tables, args.seed, run)
+                record(tables, key, run)
 
 
 if __name__ == "__main__":

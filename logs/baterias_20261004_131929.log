@@ -1,0 +1,954 @@
+semente  : 23
+engine   : python
+banco    : neo4j
+log      : logs/baterias_20261004_131929.log
+início   : 2026-10-04T13:19:29-03:00
+
+########## limpeza inicial  13:19:29 ##########
+Received notification from DBMS server: <GqlStatusObject gql_status='01N00', status_description='warn: feature deprecated. CALL subquery without a variable scope clause is deprecated. Use CALL (n) { ... }', position=<SummaryInputPosition line=1, column=11, offset=10>, raw_classification='DEPRECATION', classification=<NotificationClassification.DEPRECATION: 'DEPRECATION'>, raw_severity='WARNING', severity=<NotificationSeverity.WARNING: 'WARNING'>, diagnostic_record={'_classification': 'DEPRECATION', '_severity': 'WARNING', '_position': {'offset': 10, 'line': 1, 'column': 11}, 'OPERATION': '', 'OPERATION_CODE': '0', 'CURRENT_SCHEMA': '/'}> for query: 'MATCH (n) CALL { WITH n DETACH DELETE n } IN TRANSACTIONS OF 10000 ROWS'
+neo4j: grafo apagado (600000 nós)
+
+########## run_oracle_neo4j small (tentativa 1)  13:20:01 ##########
+
+=== seed 23 | tamanho small | python ===
+neo4j: grafo já estava vazio
+== size small | seed 23 | User=100000 Movie=50000 arestas~3/user ==
+  movies: 50000 criados em 1.1s
+  users:  100000 criados em 2.2s
+  arestas: WATCHED=169796 FAVORITE=72361 em 4.2s
+== concluído em 7.6s ==
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+26/10/04 16:20:25 WARN Utils: Your hostname, <HOSTNAME> resolves to a loopback address: 127.0.1.1; using <LAN_IP> instead (on interface wlp5s0)
+26/10/04 16:20:25 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+26/10/04 16:20:25 INFO SparkContext: Running Spark version 3.0.1
+26/10/04 16:20:25 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+26/10/04 16:20:26 INFO ResourceUtils: ==============================================================
+26/10/04 16:20:26 INFO ResourceUtils: Resources for spark.driver:
+
+26/10/04 16:20:26 INFO ResourceUtils: ==============================================================
+26/10/04 16:20:26 INFO SparkContext: Submitted application: Neo4j
+26/10/04 16:20:26 INFO SecurityManager: Changing view acls to: root
+26/10/04 16:20:26 INFO SecurityManager: Changing modify acls to: root
+26/10/04 16:20:26 INFO SecurityManager: Changing view acls groups to:
+26/10/04 16:20:26 INFO SecurityManager: Changing modify acls groups to:
+26/10/04 16:20:26 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(root); groups with view permissions: Set(); users  with modify permissions: Set(root); groups with modify permissions: Set()
+26/10/04 16:20:26 INFO Utils: Successfully started service 'sparkDriver' on port 33557.
+26/10/04 16:20:26 INFO SparkEnv: Registering MapOutputTracker
+26/10/04 16:20:26 INFO SparkEnv: Registering BlockManagerMaster
+26/10/04 16:20:26 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/10/04 16:20:26 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/10/04 16:20:26 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/10/04 16:20:26 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-68c33ce6-fe5c-4398-91f4-ff8ae2a73802
+26/10/04 16:20:26 INFO MemoryStore: MemoryStore started with capacity 8.2 GiB
+26/10/04 16:20:26 INFO SparkEnv: Registering OutputCommitCoordinator
+26/10/04 16:20:26 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/10/04 16:20:26 INFO SparkUI: Bound SparkUI to 0.0.0.0, and started at http://<LAN_IP>:4040
+26/10/04 16:20:26 INFO Executor: Starting executor ID driver on host <LAN_IP>
+26/10/04 16:20:26 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 41033.
+26/10/04 16:20:26 INFO NettyBlockTransferService: Server created on <LAN_IP>:41033
+26/10/04 16:20:26 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/10/04 16:20:26 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, <LAN_IP>, 41033, None)
+26/10/04 16:20:26 INFO BlockManagerMasterEndpoint: Registering block manager <LAN_IP>:41033 with 8.2 GiB RAM, BlockManagerId(driver, <LAN_IP>, 41033, None)
+26/10/04 16:20:26 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, <LAN_IP>, 41033, None)
+26/10/04 16:20:26 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, <LAN_IP>, 41033, None)
+26/10/04 16:20:26 INFO SparkContext: Starting job: collect at SparkProcess.java:120
+26/10/04 16:20:26 INFO DAGScheduler: Got job 0 (collect at SparkProcess.java:120) with 1 output partitions
+26/10/04 16:20:26 INFO DAGScheduler: Final stage: ResultStage 0 (collect at SparkProcess.java:120)
+26/10/04 16:20:26 INFO DAGScheduler: Parents of final stage: List()
+26/10/04 16:20:26 INFO DAGScheduler: Missing parents: List()
+26/10/04 16:20:26 INFO DAGScheduler: Submitting ResultStage 0 (Neo4jRDD partitions Partitions(1,9223372036854775807,9223372036854775807,None) MATCH (n) RETURN DISTINCT labels(n) using Map()), which has no missing parents
+26/10/04 16:20:26 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 2.4 KiB, free 8.2 GiB)
+26/10/04 16:20:26 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 1574.0 B, free 8.2 GiB)
+26/10/04 16:20:26 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on <LAN_IP>:41033 (size: 1574.0 B, free: 8.2 GiB)
+26/10/04 16:20:26 INFO SparkContext: Created broadcast 0 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:20:26 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 0 (Neo4jRDD partitions Partitions(1,9223372036854775807,9223372036854775807,None) MATCH (n) RETURN DISTINCT labels(n) using Map()) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:20:26 INFO TaskSchedulerImpl: Adding task set 0.0 with 1 tasks
+26/10/04 16:20:26 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, <LAN_IP>, executor driver, partition 0, PROCESS_LOCAL, 7389 bytes)
+26/10/04 16:20:26 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+26/10/04 16:20:27 INFO Driver: Direct driver instance 332306709 created for server address localhost:7687
+26/10/04 16:20:27 INFO Driver: Closing driver instance 332306709
+26/10/04 16:20:27 INFO ConnectionPool: Closing connection pool towards localhost:7687
+26/10/04 16:20:27 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 1968 bytes result sent to driver
+26/10/04 16:20:27 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 573 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:20:27 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool
+26/10/04 16:20:27 INFO DAGScheduler: ResultStage 0 (collect at SparkProcess.java:120) finished in 0.631 s
+26/10/04 16:20:27 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 16:20:27 INFO TaskSchedulerImpl: Killing all running tasks in stage 0: Stage finished
+26/10/04 16:20:27 INFO DAGScheduler: Job 0 finished: collect at SparkProcess.java:120, took 0.723666 s
+26/10/04 16:20:27 INFO SparkContext: Starting job: countByValue at SparkProcess.java:99
+26/10/04 16:20:27 INFO DAGScheduler: Registering RDD 2 (mapToPair at SparkProcess.java:96) as input to shuffle 1
+26/10/04 16:20:27 INFO DAGScheduler: Registering RDD 6 (countByValue at SparkProcess.java:99) as input to shuffle 0
+26/10/04 16:20:27 INFO DAGScheduler: Got job 1 (countByValue at SparkProcess.java:99) with 1 output partitions
+26/10/04 16:20:27 INFO DAGScheduler: Final stage: ResultStage 3 (countByValue at SparkProcess.java:99)
+26/10/04 16:20:27 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 2)
+26/10/04 16:20:27 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 2)
+26/10/04 16:20:27 INFO DAGScheduler: Submitting ShuffleMapStage 1 (MapPartitionsRDD[2] at mapToPair at SparkProcess.java:96), which has no missing parents
+26/10/04 16:20:27 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 5.5 KiB, free 8.2 GiB)
+26/10/04 16:20:27 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 3.2 KiB, free 8.2 GiB)
+26/10/04 16:20:27 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on <LAN_IP>:41033 (size: 3.2 KiB, free: 8.2 GiB)
+26/10/04 16:20:27 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:20:27 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 1 (MapPartitionsRDD[2] at mapToPair at SparkProcess.java:96) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:20:27 INFO TaskSchedulerImpl: Adding task set 1.0 with 1 tasks
+26/10/04 16:20:27 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 1, <LAN_IP>, executor driver, partition 0, PROCESS_LOCAL, 7378 bytes)
+26/10/04 16:20:27 INFO Executor: Running task 0.0 in stage 1.0 (TID 1)
+26/10/04 16:20:27 INFO Driver: Direct driver instance 963811841 created for server address localhost:7687
+26/10/04 16:20:27 INFO Driver: Closing driver instance 963811841
+26/10/04 16:20:27 INFO ConnectionPool: Closing connection pool towards localhost:7687
+26/10/04 16:20:28 INFO BlockManagerInfo: Removed broadcast_0_piece0 on <LAN_IP>:41033 in memory (size: 1574.0 B, free: 8.2 GiB)
+26/10/04 16:20:28 INFO Executor: Finished task 0.0 in stage 1.0 (TID 1). 1203 bytes result sent to driver
+26/10/04 16:20:28 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 1) in 700 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:20:28 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool
+26/10/04 16:20:28 INFO DAGScheduler: ShuffleMapStage 1 (mapToPair at SparkProcess.java:96) finished in 0.719 s
+26/10/04 16:20:28 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 16:20:28 INFO DAGScheduler: running: Set()
+26/10/04 16:20:28 INFO DAGScheduler: waiting: Set(ShuffleMapStage 2, ResultStage 3)
+26/10/04 16:20:28 INFO DAGScheduler: failed: Set()
+26/10/04 16:20:28 INFO DAGScheduler: Submitting ShuffleMapStage 2 (MapPartitionsRDD[6] at countByValue at SparkProcess.java:99), which has no missing parents
+26/10/04 16:20:28 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 6.2 KiB, free 8.2 GiB)
+26/10/04 16:20:28 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 3.4 KiB, free 8.2 GiB)
+26/10/04 16:20:28 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on <LAN_IP>:41033 (size: 3.4 KiB, free: 8.2 GiB)
+26/10/04 16:20:28 INFO SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:20:28 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 2 (MapPartitionsRDD[6] at countByValue at SparkProcess.java:99) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:20:28 INFO TaskSchedulerImpl: Adding task set 2.0 with 1 tasks
+26/10/04 16:20:28 INFO TaskSetManager: Starting task 0.0 in stage 2.0 (TID 2, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7132 bytes)
+26/10/04 16:20:28 INFO Executor: Running task 0.0 in stage 2.0 (TID 2)
+26/10/04 16:20:28 INFO ShuffleBlockFetcherIterator: Getting 1 (416.0 KiB) non-empty blocks including 1 (416.0 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:20:28 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 2 ms
+26/10/04 16:20:28 INFO Executor: Finished task 0.0 in stage 2.0 (TID 2). 1461 bytes result sent to driver
+26/10/04 16:20:28 INFO TaskSetManager: Finished task 0.0 in stage 2.0 (TID 2) in 299 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:20:28 INFO TaskSchedulerImpl: Removed TaskSet 2.0, whose tasks have all completed, from pool
+26/10/04 16:20:28 INFO DAGScheduler: ShuffleMapStage 2 (countByValue at SparkProcess.java:99) finished in 0.305 s
+26/10/04 16:20:28 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 16:20:28 INFO DAGScheduler: running: Set()
+26/10/04 16:20:28 INFO DAGScheduler: waiting: Set(ResultStage 3)
+26/10/04 16:20:28 INFO DAGScheduler: failed: Set()
+26/10/04 16:20:28 INFO DAGScheduler: Submitting ResultStage 3 (ShuffledRDD[7] at countByValue at SparkProcess.java:99), which has no missing parents
+26/10/04 16:20:28 INFO MemoryStore: Block broadcast_3 stored as values in memory (estimated size 4.0 KiB, free 8.2 GiB)
+26/10/04 16:20:28 INFO MemoryStore: Block broadcast_3_piece0 stored as bytes in memory (estimated size 2.3 KiB, free 8.2 GiB)
+26/10/04 16:20:28 INFO BlockManagerInfo: Added broadcast_3_piece0 in memory on <LAN_IP>:41033 (size: 2.3 KiB, free: 8.2 GiB)
+26/10/04 16:20:28 INFO SparkContext: Created broadcast 3 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:20:28 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 3 (ShuffledRDD[7] at countByValue at SparkProcess.java:99) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:20:28 INFO TaskSchedulerImpl: Adding task set 3.0 with 1 tasks
+26/10/04 16:20:28 INFO TaskSetManager: Starting task 0.0 in stage 3.0 (TID 3, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7143 bytes)
+26/10/04 16:20:28 INFO Executor: Running task 0.0 in stage 3.0 (TID 3)
+26/10/04 16:20:28 INFO ShuffleBlockFetcherIterator: Getting 1 (251.0 B) non-empty blocks including 1 (251.0 B) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:20:28 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 16:20:28 INFO Executor: Finished task 0.0 in stage 3.0 (TID 3). 1484 bytes result sent to driver
+26/10/04 16:20:28 INFO TaskSetManager: Finished task 0.0 in stage 3.0 (TID 3) in 4 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:20:28 INFO TaskSchedulerImpl: Removed TaskSet 3.0, whose tasks have all completed, from pool
+26/10/04 16:20:28 INFO DAGScheduler: ResultStage 3 (countByValue at SparkProcess.java:99) finished in 0.007 s
+26/10/04 16:20:28 INFO DAGScheduler: Job 1 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 16:20:28 INFO TaskSchedulerImpl: Killing all running tasks in stage 3: Stage finished
+26/10/04 16:20:28 INFO DAGScheduler: Job 1 finished: countByValue at SparkProcess.java:99, took 1.043798 s
+26/10/04 16:20:28 INFO SparkContext: Starting job: countByValue at SparkProcess.java:99
+26/10/04 16:20:28 INFO DAGScheduler: Registering RDD 9 (mapToPair at SparkProcess.java:96) as input to shuffle 3
+26/10/04 16:20:28 INFO DAGScheduler: Registering RDD 13 (countByValue at SparkProcess.java:99) as input to shuffle 2
+26/10/04 16:20:28 INFO DAGScheduler: Got job 2 (countByValue at SparkProcess.java:99) with 1 output partitions
+26/10/04 16:20:28 INFO DAGScheduler: Final stage: ResultStage 6 (countByValue at SparkProcess.java:99)
+26/10/04 16:20:28 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 5)
+26/10/04 16:20:28 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 5)
+26/10/04 16:20:28 INFO DAGScheduler: Submitting ShuffleMapStage 4 (MapPartitionsRDD[9] at mapToPair at SparkProcess.java:96), which has no missing parents
+26/10/04 16:20:28 INFO MemoryStore: Block broadcast_4 stored as values in memory (estimated size 5.5 KiB, free 8.2 GiB)
+26/10/04 16:20:28 INFO MemoryStore: Block broadcast_4_piece0 stored as bytes in memory (estimated size 3.3 KiB, free 8.2 GiB)
+26/10/04 16:20:28 INFO BlockManagerInfo: Added broadcast_4_piece0 in memory on <LAN_IP>:41033 (size: 3.3 KiB, free: 8.2 GiB)
+26/10/04 16:20:28 INFO SparkContext: Created broadcast 4 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:20:28 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 4 (MapPartitionsRDD[9] at mapToPair at SparkProcess.java:96) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:20:28 INFO TaskSchedulerImpl: Adding task set 4.0 with 1 tasks
+26/10/04 16:20:28 INFO TaskSetManager: Starting task 0.0 in stage 4.0 (TID 4, <LAN_IP>, executor driver, partition 0, PROCESS_LOCAL, 7378 bytes)
+26/10/04 16:20:28 INFO Executor: Running task 0.0 in stage 4.0 (TID 4)
+26/10/04 16:20:28 INFO Driver: Direct driver instance 506139989 created for server address localhost:7687
+26/10/04 16:20:28 INFO BlockManagerInfo: Removed broadcast_2_piece0 on <LAN_IP>:41033 in memory (size: 3.4 KiB, free: 8.2 GiB)
+26/10/04 16:20:28 INFO BlockManagerInfo: Removed broadcast_1_piece0 on <LAN_IP>:41033 in memory (size: 3.2 KiB, free: 8.2 GiB)
+26/10/04 16:20:28 INFO BlockManagerInfo: Removed broadcast_3_piece0 on <LAN_IP>:41033 in memory (size: 2.3 KiB, free: 8.2 GiB)
+26/10/04 16:20:29 INFO Driver: Closing driver instance 506139989
+26/10/04 16:20:29 INFO ConnectionPool: Closing connection pool towards localhost:7687
+26/10/04 16:20:29 INFO Executor: Finished task 0.0 in stage 4.0 (TID 4). 1160 bytes result sent to driver
+26/10/04 16:20:29 INFO TaskSetManager: Finished task 0.0 in stage 4.0 (TID 4) in 1284 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:20:29 INFO TaskSchedulerImpl: Removed TaskSet 4.0, whose tasks have all completed, from pool
+26/10/04 16:20:29 INFO DAGScheduler: ShuffleMapStage 4 (mapToPair at SparkProcess.java:96) finished in 1.287 s
+26/10/04 16:20:29 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 16:20:29 INFO DAGScheduler: running: Set()
+26/10/04 16:20:29 INFO DAGScheduler: waiting: Set(ShuffleMapStage 5, ResultStage 6)
+26/10/04 16:20:29 INFO DAGScheduler: failed: Set()
+26/10/04 16:20:29 INFO DAGScheduler: Submitting ShuffleMapStage 5 (MapPartitionsRDD[13] at countByValue at SparkProcess.java:99), which has no missing parents
+26/10/04 16:20:29 INFO MemoryStore: Block broadcast_5 stored as values in memory (estimated size 6.2 KiB, free 8.2 GiB)
+26/10/04 16:20:29 INFO MemoryStore: Block broadcast_5_piece0 stored as bytes in memory (estimated size 3.4 KiB, free 8.2 GiB)
+26/10/04 16:20:29 INFO BlockManagerInfo: Added broadcast_5_piece0 in memory on <LAN_IP>:41033 (size: 3.4 KiB, free: 8.2 GiB)
+26/10/04 16:20:29 INFO SparkContext: Created broadcast 5 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:20:29 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 5 (MapPartitionsRDD[13] at countByValue at SparkProcess.java:99) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:20:29 INFO TaskSchedulerImpl: Adding task set 5.0 with 1 tasks
+26/10/04 16:20:29 INFO TaskSetManager: Starting task 0.0 in stage 5.0 (TID 5, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7132 bytes)
+26/10/04 16:20:29 INFO Executor: Running task 0.0 in stage 5.0 (TID 5)
+26/10/04 16:20:29 INFO ShuffleBlockFetcherIterator: Getting 1 (1911.6 KiB) non-empty blocks including 1 (1911.6 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:20:29 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 16:20:30 INFO BlockManagerInfo: Removed broadcast_4_piece0 on <LAN_IP>:41033 in memory (size: 3.3 KiB, free: 8.2 GiB)
+26/10/04 16:20:30 INFO Executor: Finished task 0.0 in stage 5.0 (TID 5). 1504 bytes result sent to driver
+26/10/04 16:20:30 INFO TaskSetManager: Finished task 0.0 in stage 5.0 (TID 5) in 779 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:20:30 INFO TaskSchedulerImpl: Removed TaskSet 5.0, whose tasks have all completed, from pool
+26/10/04 16:20:30 INFO DAGScheduler: ShuffleMapStage 5 (countByValue at SparkProcess.java:99) finished in 0.782 s
+26/10/04 16:20:30 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 16:20:30 INFO DAGScheduler: running: Set()
+26/10/04 16:20:30 INFO DAGScheduler: waiting: Set(ResultStage 6)
+26/10/04 16:20:30 INFO DAGScheduler: failed: Set()
+26/10/04 16:20:30 INFO DAGScheduler: Submitting ResultStage 6 (ShuffledRDD[14] at countByValue at SparkProcess.java:99), which has no missing parents
+26/10/04 16:20:30 INFO MemoryStore: Block broadcast_6 stored as values in memory (estimated size 4.0 KiB, free 8.2 GiB)
+26/10/04 16:20:30 INFO MemoryStore: Block broadcast_6_piece0 stored as bytes in memory (estimated size 2.3 KiB, free 8.2 GiB)
+26/10/04 16:20:30 INFO BlockManagerInfo: Added broadcast_6_piece0 in memory on <LAN_IP>:41033 (size: 2.3 KiB, free: 8.2 GiB)
+26/10/04 16:20:30 INFO SparkContext: Created broadcast 6 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:20:30 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 6 (ShuffledRDD[14] at countByValue at SparkProcess.java:99) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:20:30 INFO TaskSchedulerImpl: Adding task set 6.0 with 1 tasks
+26/10/04 16:20:30 INFO TaskSetManager: Starting task 0.0 in stage 6.0 (TID 6, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7143 bytes)
+26/10/04 16:20:30 INFO Executor: Running task 0.0 in stage 6.0 (TID 6)
+26/10/04 16:20:30 INFO ShuffleBlockFetcherIterator: Getting 1 (490.0 B) non-empty blocks including 1 (490.0 B) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:20:30 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 16:20:30 INFO Executor: Finished task 0.0 in stage 6.0 (TID 6). 2940 bytes result sent to driver
+26/10/04 16:20:30 INFO TaskSetManager: Finished task 0.0 in stage 6.0 (TID 6) in 3 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:20:30 INFO TaskSchedulerImpl: Removed TaskSet 6.0, whose tasks have all completed, from pool
+26/10/04 16:20:30 INFO DAGScheduler: ResultStage 6 (countByValue at SparkProcess.java:99) finished in 0.005 s
+26/10/04 16:20:30 INFO DAGScheduler: Job 2 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 16:20:30 INFO TaskSchedulerImpl: Killing all running tasks in stage 6: Stage finished
+26/10/04 16:20:30 INFO DAGScheduler: Job 2 finished: countByValue at SparkProcess.java:99, took 2.079622 s
+26/10/04 16:20:30 INFO SparkUI: Stopped Spark web UI at http://<LAN_IP>:4040
+26/10/04 16:20:30 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+26/10/04 16:20:30 INFO MemoryStore: MemoryStore cleared
+26/10/04 16:20:30 INFO BlockManager: BlockManager stopped
+26/10/04 16:20:30 INFO BlockManagerMaster: BlockManagerMaster stopped
+26/10/04 16:20:30 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+26/10/04 16:20:30 INFO SparkContext: Successfully stopped SparkContext
+Total Time: 5556ms (0 min, 05 sec)
+Model generated at: ./outputs/
+java.lang.InterruptedException
+	at java.lang.Object.wait(Native Method)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:144)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:165)
+	at org.eclipse.emf.common.util.CommonUtil$1ReferenceClearingQueuePollingThread.run(CommonUtil.java:70)
+XMI gerado em /output/movies_min.xmi
+  limpeza=0.34s  geracao=7.83s  boot=-  extracao=13.35s  inferencia=0.00s  escrita=0.01s  porte=13.36s  oraculo=9.56s  query=0.14s  norm=95.22451888809692x
+    User: real=100000  porte=100000 (100.0%)  oraculo=100000 (100.0%)
+    Movie: real=50000  porte=50000 (100.0%)  oraculo=50000 (100.0%)
+    vs oráculo semeado: equivalente=True divergências=0
+    vs resources/:      equivalente=True divergências=7
+
+########## run_oracle_neo4j medium (tentativa 1)  13:20:33 ##########
+
+=== seed 23 | tamanho medium | python ===
+Received notification from DBMS server: <GqlStatusObject gql_status='01N00', status_description='warn: feature deprecated. CALL subquery without a variable scope clause is deprecated. Use CALL (n) { ... }', position=<SummaryInputPosition line=1, column=11, offset=10>, raw_classification='DEPRECATION', classification=<NotificationClassification.DEPRECATION: 'DEPRECATION'>, raw_severity='WARNING', severity=<NotificationSeverity.WARNING: 'WARNING'>, diagnostic_record={'_classification': 'DEPRECATION', '_severity': 'WARNING', '_position': {'offset': 10, 'line': 1, 'column': 11}, 'OPERATION': '', 'OPERATION_CODE': '0', 'CURRENT_SCHEMA': '/'}> for query: 'MATCH (n) CALL { WITH n DETACH DELETE n } IN TRANSACTIONS OF 10000 ROWS'
+neo4j: grafo apagado (150000 nós)
+== size medium | seed 23 | User=200000 Movie=100000 arestas~5/user ==
+  movies: 100000 criados em 1.5s
+  users:  200000 criados em 3.8s
+  arestas: WATCHED=508989 FAVORITE=216757 em 10.9s
+== concluído em 16.2s ==
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+26/10/04 16:21:30 WARN Utils: Your hostname, <HOSTNAME> resolves to a loopback address: 127.0.1.1; using <LAN_IP> instead (on interface wlp5s0)
+26/10/04 16:21:30 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+26/10/04 16:21:30 INFO SparkContext: Running Spark version 3.0.1
+26/10/04 16:21:30 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+26/10/04 16:21:30 INFO ResourceUtils: ==============================================================
+26/10/04 16:21:30 INFO ResourceUtils: Resources for spark.driver:
+
+26/10/04 16:21:30 INFO ResourceUtils: ==============================================================
+26/10/04 16:21:30 INFO SparkContext: Submitted application: Neo4j
+26/10/04 16:21:30 INFO SecurityManager: Changing view acls to: root
+26/10/04 16:21:30 INFO SecurityManager: Changing modify acls to: root
+26/10/04 16:21:30 INFO SecurityManager: Changing view acls groups to:
+26/10/04 16:21:30 INFO SecurityManager: Changing modify acls groups to:
+26/10/04 16:21:30 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(root); groups with view permissions: Set(); users  with modify permissions: Set(root); groups with modify permissions: Set()
+26/10/04 16:21:30 INFO Utils: Successfully started service 'sparkDriver' on port 33095.
+26/10/04 16:21:30 INFO SparkEnv: Registering MapOutputTracker
+26/10/04 16:21:30 INFO SparkEnv: Registering BlockManagerMaster
+26/10/04 16:21:30 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/10/04 16:21:30 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/10/04 16:21:30 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/10/04 16:21:30 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-9377955c-b72d-450e-8626-d8b49de20d6f
+26/10/04 16:21:30 INFO MemoryStore: MemoryStore started with capacity 8.2 GiB
+26/10/04 16:21:30 INFO SparkEnv: Registering OutputCommitCoordinator
+26/10/04 16:21:30 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/10/04 16:21:30 INFO SparkUI: Bound SparkUI to 0.0.0.0, and started at http://<LAN_IP>:4040
+26/10/04 16:21:30 INFO Executor: Starting executor ID driver on host <LAN_IP>
+26/10/04 16:21:30 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 45321.
+26/10/04 16:21:30 INFO NettyBlockTransferService: Server created on <LAN_IP>:45321
+26/10/04 16:21:30 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/10/04 16:21:30 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, <LAN_IP>, 45321, None)
+26/10/04 16:21:30 INFO BlockManagerMasterEndpoint: Registering block manager <LAN_IP>:45321 with 8.2 GiB RAM, BlockManagerId(driver, <LAN_IP>, 45321, None)
+26/10/04 16:21:30 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, <LAN_IP>, 45321, None)
+26/10/04 16:21:30 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, <LAN_IP>, 45321, None)
+26/10/04 16:21:30 INFO SparkContext: Starting job: collect at SparkProcess.java:120
+26/10/04 16:21:30 INFO DAGScheduler: Got job 0 (collect at SparkProcess.java:120) with 1 output partitions
+26/10/04 16:21:30 INFO DAGScheduler: Final stage: ResultStage 0 (collect at SparkProcess.java:120)
+26/10/04 16:21:30 INFO DAGScheduler: Parents of final stage: List()
+26/10/04 16:21:30 INFO DAGScheduler: Missing parents: List()
+26/10/04 16:21:30 INFO DAGScheduler: Submitting ResultStage 0 (Neo4jRDD partitions Partitions(1,9223372036854775807,9223372036854775807,None) MATCH (n) RETURN DISTINCT labels(n) using Map()), which has no missing parents
+26/10/04 16:21:30 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 2.4 KiB, free 8.2 GiB)
+26/10/04 16:21:30 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 1574.0 B, free 8.2 GiB)
+26/10/04 16:21:30 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on <LAN_IP>:45321 (size: 1574.0 B, free: 8.2 GiB)
+26/10/04 16:21:30 INFO SparkContext: Created broadcast 0 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:21:30 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 0 (Neo4jRDD partitions Partitions(1,9223372036854775807,9223372036854775807,None) MATCH (n) RETURN DISTINCT labels(n) using Map()) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:21:30 INFO TaskSchedulerImpl: Adding task set 0.0 with 1 tasks
+26/10/04 16:21:30 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, <LAN_IP>, executor driver, partition 0, PROCESS_LOCAL, 7389 bytes)
+26/10/04 16:21:30 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+26/10/04 16:21:31 INFO Driver: Direct driver instance 1130277235 created for server address localhost:7687
+26/10/04 16:21:31 INFO Driver: Closing driver instance 1130277235
+26/10/04 16:21:31 INFO ConnectionPool: Closing connection pool towards localhost:7687
+26/10/04 16:21:31 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 1968 bytes result sent to driver
+26/10/04 16:21:31 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 553 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:21:31 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool
+26/10/04 16:21:31 INFO DAGScheduler: ResultStage 0 (collect at SparkProcess.java:120) finished in 0.600 s
+26/10/04 16:21:31 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 16:21:31 INFO TaskSchedulerImpl: Killing all running tasks in stage 0: Stage finished
+26/10/04 16:21:31 INFO DAGScheduler: Job 0 finished: collect at SparkProcess.java:120, took 0.689763 s
+26/10/04 16:21:31 INFO SparkContext: Starting job: countByValue at SparkProcess.java:99
+26/10/04 16:21:31 INFO DAGScheduler: Registering RDD 2 (mapToPair at SparkProcess.java:96) as input to shuffle 1
+26/10/04 16:21:31 INFO DAGScheduler: Registering RDD 6 (countByValue at SparkProcess.java:99) as input to shuffle 0
+26/10/04 16:21:31 INFO DAGScheduler: Got job 1 (countByValue at SparkProcess.java:99) with 1 output partitions
+26/10/04 16:21:31 INFO DAGScheduler: Final stage: ResultStage 3 (countByValue at SparkProcess.java:99)
+26/10/04 16:21:31 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 2)
+26/10/04 16:21:31 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 2)
+26/10/04 16:21:31 INFO DAGScheduler: Submitting ShuffleMapStage 1 (MapPartitionsRDD[2] at mapToPair at SparkProcess.java:96), which has no missing parents
+26/10/04 16:21:31 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 5.5 KiB, free 8.2 GiB)
+26/10/04 16:21:31 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 3.2 KiB, free 8.2 GiB)
+26/10/04 16:21:31 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on <LAN_IP>:45321 (size: 3.2 KiB, free: 8.2 GiB)
+26/10/04 16:21:31 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:21:31 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 1 (MapPartitionsRDD[2] at mapToPair at SparkProcess.java:96) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:21:31 INFO TaskSchedulerImpl: Adding task set 1.0 with 1 tasks
+26/10/04 16:21:31 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 1, <LAN_IP>, executor driver, partition 0, PROCESS_LOCAL, 7378 bytes)
+26/10/04 16:21:31 INFO Executor: Running task 0.0 in stage 1.0 (TID 1)
+26/10/04 16:21:31 INFO Driver: Direct driver instance 1573408775 created for server address localhost:7687
+26/10/04 16:21:32 INFO BlockManagerInfo: Removed broadcast_0_piece0 on <LAN_IP>:45321 in memory (size: 1574.0 B, free: 8.2 GiB)
+26/10/04 16:21:32 INFO Driver: Closing driver instance 1573408775
+26/10/04 16:21:32 INFO ConnectionPool: Closing connection pool towards localhost:7687
+26/10/04 16:21:32 INFO Executor: Finished task 0.0 in stage 1.0 (TID 1). 1203 bytes result sent to driver
+26/10/04 16:21:32 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 1) in 936 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:21:32 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool
+26/10/04 16:21:32 INFO DAGScheduler: ShuffleMapStage 1 (mapToPair at SparkProcess.java:96) finished in 0.950 s
+26/10/04 16:21:32 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 16:21:32 INFO DAGScheduler: running: Set()
+26/10/04 16:21:32 INFO DAGScheduler: waiting: Set(ShuffleMapStage 2, ResultStage 3)
+26/10/04 16:21:32 INFO DAGScheduler: failed: Set()
+26/10/04 16:21:32 INFO DAGScheduler: Submitting ShuffleMapStage 2 (MapPartitionsRDD[6] at countByValue at SparkProcess.java:99), which has no missing parents
+26/10/04 16:21:32 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 6.2 KiB, free 8.2 GiB)
+26/10/04 16:21:32 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 3.4 KiB, free 8.2 GiB)
+26/10/04 16:21:32 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on <LAN_IP>:45321 (size: 3.4 KiB, free: 8.2 GiB)
+26/10/04 16:21:32 INFO SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:21:32 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 2 (MapPartitionsRDD[6] at countByValue at SparkProcess.java:99) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:21:32 INFO TaskSchedulerImpl: Adding task set 2.0 with 1 tasks
+26/10/04 16:21:32 INFO TaskSetManager: Starting task 0.0 in stage 2.0 (TID 2, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7132 bytes)
+26/10/04 16:21:32 INFO Executor: Running task 0.0 in stage 2.0 (TID 2)
+26/10/04 16:21:32 INFO ShuffleBlockFetcherIterator: Getting 1 (810.7 KiB) non-empty blocks including 1 (810.7 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:21:32 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 2 ms
+26/10/04 16:21:32 INFO BlockManagerInfo: Removed broadcast_1_piece0 on <LAN_IP>:45321 in memory (size: 3.2 KiB, free: 8.2 GiB)
+26/10/04 16:21:32 INFO Executor: Finished task 0.0 in stage 2.0 (TID 2). 1504 bytes result sent to driver
+26/10/04 16:21:32 INFO TaskSetManager: Finished task 0.0 in stage 2.0 (TID 2) in 432 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:21:32 INFO TaskSchedulerImpl: Removed TaskSet 2.0, whose tasks have all completed, from pool
+26/10/04 16:21:32 INFO DAGScheduler: ShuffleMapStage 2 (countByValue at SparkProcess.java:99) finished in 0.436 s
+26/10/04 16:21:32 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 16:21:32 INFO DAGScheduler: running: Set()
+26/10/04 16:21:32 INFO DAGScheduler: waiting: Set(ResultStage 3)
+26/10/04 16:21:32 INFO DAGScheduler: failed: Set()
+26/10/04 16:21:32 INFO DAGScheduler: Submitting ResultStage 3 (ShuffledRDD[7] at countByValue at SparkProcess.java:99), which has no missing parents
+26/10/04 16:21:32 INFO MemoryStore: Block broadcast_3 stored as values in memory (estimated size 4.0 KiB, free 8.2 GiB)
+26/10/04 16:21:32 INFO MemoryStore: Block broadcast_3_piece0 stored as bytes in memory (estimated size 2.3 KiB, free 8.2 GiB)
+26/10/04 16:21:32 INFO BlockManagerInfo: Added broadcast_3_piece0 in memory on <LAN_IP>:45321 (size: 2.3 KiB, free: 8.2 GiB)
+26/10/04 16:21:32 INFO SparkContext: Created broadcast 3 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:21:32 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 3 (ShuffledRDD[7] at countByValue at SparkProcess.java:99) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:21:32 INFO TaskSchedulerImpl: Adding task set 3.0 with 1 tasks
+26/10/04 16:21:32 INFO TaskSetManager: Starting task 0.0 in stage 3.0 (TID 3, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7143 bytes)
+26/10/04 16:21:32 INFO Executor: Running task 0.0 in stage 3.0 (TID 3)
+26/10/04 16:21:32 INFO ShuffleBlockFetcherIterator: Getting 1 (251.0 B) non-empty blocks including 1 (251.0 B) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:21:32 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 16:21:32 INFO Executor: Finished task 0.0 in stage 3.0 (TID 3). 1484 bytes result sent to driver
+26/10/04 16:21:32 INFO TaskSetManager: Finished task 0.0 in stage 3.0 (TID 3) in 4 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:21:32 INFO TaskSchedulerImpl: Removed TaskSet 3.0, whose tasks have all completed, from pool
+26/10/04 16:21:32 INFO DAGScheduler: ResultStage 3 (countByValue at SparkProcess.java:99) finished in 0.007 s
+26/10/04 16:21:32 INFO DAGScheduler: Job 1 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 16:21:32 INFO TaskSchedulerImpl: Killing all running tasks in stage 3: Stage finished
+26/10/04 16:21:32 INFO DAGScheduler: Job 1 finished: countByValue at SparkProcess.java:99, took 1.403004 s
+26/10/04 16:21:32 INFO SparkContext: Starting job: countByValue at SparkProcess.java:99
+26/10/04 16:21:32 INFO DAGScheduler: Registering RDD 9 (mapToPair at SparkProcess.java:96) as input to shuffle 3
+26/10/04 16:21:32 INFO DAGScheduler: Registering RDD 13 (countByValue at SparkProcess.java:99) as input to shuffle 2
+26/10/04 16:21:32 INFO DAGScheduler: Got job 2 (countByValue at SparkProcess.java:99) with 1 output partitions
+26/10/04 16:21:32 INFO DAGScheduler: Final stage: ResultStage 6 (countByValue at SparkProcess.java:99)
+26/10/04 16:21:32 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 5)
+26/10/04 16:21:32 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 5)
+26/10/04 16:21:32 INFO DAGScheduler: Submitting ShuffleMapStage 4 (MapPartitionsRDD[9] at mapToPair at SparkProcess.java:96), which has no missing parents
+26/10/04 16:21:32 INFO MemoryStore: Block broadcast_4 stored as values in memory (estimated size 5.5 KiB, free 8.2 GiB)
+26/10/04 16:21:32 INFO MemoryStore: Block broadcast_4_piece0 stored as bytes in memory (estimated size 3.3 KiB, free 8.2 GiB)
+26/10/04 16:21:32 INFO BlockManagerInfo: Added broadcast_4_piece0 in memory on <LAN_IP>:45321 (size: 3.3 KiB, free: 8.2 GiB)
+26/10/04 16:21:32 INFO SparkContext: Created broadcast 4 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:21:32 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 4 (MapPartitionsRDD[9] at mapToPair at SparkProcess.java:96) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:21:32 INFO TaskSchedulerImpl: Adding task set 4.0 with 1 tasks
+26/10/04 16:21:32 INFO TaskSetManager: Starting task 0.0 in stage 4.0 (TID 4, <LAN_IP>, executor driver, partition 0, PROCESS_LOCAL, 7378 bytes)
+26/10/04 16:21:32 INFO Executor: Running task 0.0 in stage 4.0 (TID 4)
+26/10/04 16:21:32 INFO Driver: Direct driver instance 296328635 created for server address localhost:7687
+26/10/04 16:21:33 INFO BlockManagerInfo: Removed broadcast_2_piece0 on <LAN_IP>:45321 in memory (size: 3.4 KiB, free: 8.2 GiB)
+26/10/04 16:21:33 INFO BlockManagerInfo: Removed broadcast_3_piece0 on <LAN_IP>:45321 in memory (size: 2.3 KiB, free: 8.2 GiB)
+26/10/04 16:21:34 INFO Driver: Closing driver instance 296328635
+26/10/04 16:21:34 INFO ConnectionPool: Closing connection pool towards localhost:7687
+26/10/04 16:21:35 INFO Executor: Finished task 0.0 in stage 4.0 (TID 4). 1160 bytes result sent to driver
+26/10/04 16:21:35 INFO TaskSetManager: Finished task 0.0 in stage 4.0 (TID 4) in 2552 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:21:35 INFO TaskSchedulerImpl: Removed TaskSet 4.0, whose tasks have all completed, from pool
+26/10/04 16:21:35 INFO DAGScheduler: ShuffleMapStage 4 (mapToPair at SparkProcess.java:96) finished in 2.554 s
+26/10/04 16:21:35 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 16:21:35 INFO DAGScheduler: running: Set()
+26/10/04 16:21:35 INFO DAGScheduler: waiting: Set(ShuffleMapStage 5, ResultStage 6)
+26/10/04 16:21:35 INFO DAGScheduler: failed: Set()
+26/10/04 16:21:35 INFO DAGScheduler: Submitting ShuffleMapStage 5 (MapPartitionsRDD[13] at countByValue at SparkProcess.java:99), which has no missing parents
+26/10/04 16:21:35 INFO MemoryStore: Block broadcast_5 stored as values in memory (estimated size 6.2 KiB, free 8.2 GiB)
+26/10/04 16:21:35 INFO MemoryStore: Block broadcast_5_piece0 stored as bytes in memory (estimated size 3.4 KiB, free 8.2 GiB)
+26/10/04 16:21:35 INFO BlockManagerInfo: Added broadcast_5_piece0 in memory on <LAN_IP>:45321 (size: 3.4 KiB, free: 8.2 GiB)
+26/10/04 16:21:35 INFO SparkContext: Created broadcast 5 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:21:35 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 5 (MapPartitionsRDD[13] at countByValue at SparkProcess.java:99) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:21:35 INFO TaskSchedulerImpl: Adding task set 5.0 with 1 tasks
+26/10/04 16:21:35 INFO TaskSetManager: Starting task 0.0 in stage 5.0 (TID 5, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7132 bytes)
+26/10/04 16:21:35 INFO Executor: Running task 0.0 in stage 5.0 (TID 5)
+26/10/04 16:21:35 INFO ShuffleBlockFetcherIterator: Getting 1 (3.6 MiB) non-empty blocks including 1 (3.6 MiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:21:35 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 16:21:37 INFO BlockManagerInfo: Removed broadcast_4_piece0 on <LAN_IP>:45321 in memory (size: 3.3 KiB, free: 8.2 GiB)
+26/10/04 16:21:37 INFO Executor: Finished task 0.0 in stage 5.0 (TID 5). 1504 bytes result sent to driver
+26/10/04 16:21:37 INFO TaskSetManager: Finished task 0.0 in stage 5.0 (TID 5) in 1924 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:21:37 INFO TaskSchedulerImpl: Removed TaskSet 5.0, whose tasks have all completed, from pool
+26/10/04 16:21:37 INFO DAGScheduler: ShuffleMapStage 5 (countByValue at SparkProcess.java:99) finished in 1.928 s
+26/10/04 16:21:37 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 16:21:37 INFO DAGScheduler: running: Set()
+26/10/04 16:21:37 INFO DAGScheduler: waiting: Set(ResultStage 6)
+26/10/04 16:21:37 INFO DAGScheduler: failed: Set()
+26/10/04 16:21:37 INFO DAGScheduler: Submitting ResultStage 6 (ShuffledRDD[14] at countByValue at SparkProcess.java:99), which has no missing parents
+26/10/04 16:21:37 INFO MemoryStore: Block broadcast_6 stored as values in memory (estimated size 4.0 KiB, free 8.2 GiB)
+26/10/04 16:21:37 INFO MemoryStore: Block broadcast_6_piece0 stored as bytes in memory (estimated size 2.3 KiB, free 8.2 GiB)
+26/10/04 16:21:37 INFO BlockManagerInfo: Added broadcast_6_piece0 in memory on <LAN_IP>:45321 (size: 2.3 KiB, free: 8.2 GiB)
+26/10/04 16:21:37 INFO SparkContext: Created broadcast 6 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:21:37 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 6 (ShuffledRDD[14] at countByValue at SparkProcess.java:99) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:21:37 INFO TaskSchedulerImpl: Adding task set 6.0 with 1 tasks
+26/10/04 16:21:37 INFO TaskSetManager: Starting task 0.0 in stage 6.0 (TID 6, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7143 bytes)
+26/10/04 16:21:37 INFO Executor: Running task 0.0 in stage 6.0 (TID 6)
+26/10/04 16:21:37 INFO ShuffleBlockFetcherIterator: Getting 1 (490.0 B) non-empty blocks including 1 (490.0 B) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:21:37 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 16:21:37 INFO Executor: Finished task 0.0 in stage 6.0 (TID 6). 2940 bytes result sent to driver
+26/10/04 16:21:37 INFO TaskSetManager: Finished task 0.0 in stage 6.0 (TID 6) in 3 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:21:37 INFO TaskSchedulerImpl: Removed TaskSet 6.0, whose tasks have all completed, from pool
+26/10/04 16:21:37 INFO DAGScheduler: ResultStage 6 (countByValue at SparkProcess.java:99) finished in 0.006 s
+26/10/04 16:21:37 INFO DAGScheduler: Job 2 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 16:21:37 INFO TaskSchedulerImpl: Killing all running tasks in stage 6: Stage finished
+26/10/04 16:21:37 INFO DAGScheduler: Job 2 finished: countByValue at SparkProcess.java:99, took 4.492545 s
+26/10/04 16:21:37 INFO SparkUI: Stopped Spark web UI at http://<LAN_IP>:4040
+26/10/04 16:21:37 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+26/10/04 16:21:37 INFO MemoryStore: MemoryStore cleared
+26/10/04 16:21:37 INFO BlockManager: BlockManager stopped
+26/10/04 16:21:37 INFO BlockManagerMaster: BlockManagerMaster stopped
+26/10/04 16:21:37 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+26/10/04 16:21:37 INFO SparkContext: Successfully stopped SparkContext
+Total Time: 7820ms (0 min, 07 sec)
+Model generated at: ./outputs/
+java.lang.InterruptedException
+	at java.lang.Object.wait(Native Method)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:144)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:165)
+	at org.eclipse.emf.common.util.CommonUtil$1ReferenceClearingQueuePollingThread.run(CommonUtil.java:70)
+XMI gerado em /output/up_medium.xmi
+  limpeza=3.28s  geracao=16.48s  boot=-  extracao=35.35s  inferencia=0.00s  escrita=0.00s  porte=35.35s  oraculo=11.07s  query=0.11s  norm=324.90808823529414x
+    User: real=200000  porte=200000 (100.0%)  oraculo=200000 (100.0%)
+    Movie: real=100000  porte=100000 (100.0%)  oraculo=100000 (100.0%)
+    vs oráculo semeado: equivalente=True divergências=0
+    vs resources/:      equivalente=True divergências=7
+
+########## run_oracle_neo4j large (tentativa 1)  13:21:40 ##########
+
+=== seed 23 | tamanho large | python ===
+Received notification from DBMS server: <GqlStatusObject gql_status='01N00', status_description='warn: feature deprecated. CALL subquery without a variable scope clause is deprecated. Use CALL (n) { ... }', position=<SummaryInputPosition line=1, column=11, offset=10>, raw_classification='DEPRECATION', classification=<NotificationClassification.DEPRECATION: 'DEPRECATION'>, raw_severity='WARNING', severity=<NotificationSeverity.WARNING: 'WARNING'>, diagnostic_record={'_classification': 'DEPRECATION', '_severity': 'WARNING', '_position': {'offset': 10, 'line': 1, 'column': 11}, 'OPERATION': '', 'OPERATION_CODE': '0', 'CURRENT_SCHEMA': '/'}> for query: 'MATCH (n) CALL { WITH n DETACH DELETE n } IN TRANSACTIONS OF 10000 ROWS'
+neo4j: grafo apagado (300000 nós)
+== size large | seed 23 | User=400000 Movie=200000 arestas~10/user ==
+  movies: 200000 criados em 2.4s
+  users:  400000 criados em 7.6s
+  arestas: WATCHED=1867188 FAVORITE=792823 em 39.5s
+== concluído em 49.6s ==
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+26/10/04 16:24:36 WARN Utils: Your hostname, <HOSTNAME> resolves to a loopback address: 127.0.1.1; using <LAN_IP> instead (on interface wlp5s0)
+26/10/04 16:24:36 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+26/10/04 16:24:36 INFO SparkContext: Running Spark version 3.0.1
+26/10/04 16:24:36 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+26/10/04 16:24:37 INFO ResourceUtils: ==============================================================
+26/10/04 16:24:37 INFO ResourceUtils: Resources for spark.driver:
+
+26/10/04 16:24:37 INFO ResourceUtils: ==============================================================
+26/10/04 16:24:37 INFO SparkContext: Submitted application: Neo4j
+26/10/04 16:24:37 INFO SecurityManager: Changing view acls to: root
+26/10/04 16:24:37 INFO SecurityManager: Changing modify acls to: root
+26/10/04 16:24:37 INFO SecurityManager: Changing view acls groups to:
+26/10/04 16:24:37 INFO SecurityManager: Changing modify acls groups to:
+26/10/04 16:24:37 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(root); groups with view permissions: Set(); users  with modify permissions: Set(root); groups with modify permissions: Set()
+26/10/04 16:24:37 INFO Utils: Successfully started service 'sparkDriver' on port 39365.
+26/10/04 16:24:37 INFO SparkEnv: Registering MapOutputTracker
+26/10/04 16:24:37 INFO SparkEnv: Registering BlockManagerMaster
+26/10/04 16:24:37 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/10/04 16:24:37 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/10/04 16:24:37 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/10/04 16:24:37 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-40ed8d6a-57fb-49bb-914d-90bd772714b2
+26/10/04 16:24:37 INFO MemoryStore: MemoryStore started with capacity 8.2 GiB
+26/10/04 16:24:37 INFO SparkEnv: Registering OutputCommitCoordinator
+26/10/04 16:24:37 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/10/04 16:24:37 INFO SparkUI: Bound SparkUI to 0.0.0.0, and started at http://<LAN_IP>:4040
+26/10/04 16:24:37 INFO Executor: Starting executor ID driver on host <LAN_IP>
+26/10/04 16:24:37 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 46879.
+26/10/04 16:24:37 INFO NettyBlockTransferService: Server created on <LAN_IP>:46879
+26/10/04 16:24:37 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/10/04 16:24:37 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, <LAN_IP>, 46879, None)
+26/10/04 16:24:37 INFO BlockManagerMasterEndpoint: Registering block manager <LAN_IP>:46879 with 8.2 GiB RAM, BlockManagerId(driver, <LAN_IP>, 46879, None)
+26/10/04 16:24:37 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, <LAN_IP>, 46879, None)
+26/10/04 16:24:37 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, <LAN_IP>, 46879, None)
+26/10/04 16:24:37 INFO SparkContext: Starting job: collect at SparkProcess.java:120
+26/10/04 16:24:37 INFO DAGScheduler: Got job 0 (collect at SparkProcess.java:120) with 1 output partitions
+26/10/04 16:24:37 INFO DAGScheduler: Final stage: ResultStage 0 (collect at SparkProcess.java:120)
+26/10/04 16:24:37 INFO DAGScheduler: Parents of final stage: List()
+26/10/04 16:24:37 INFO DAGScheduler: Missing parents: List()
+26/10/04 16:24:37 INFO DAGScheduler: Submitting ResultStage 0 (Neo4jRDD partitions Partitions(1,9223372036854775807,9223372036854775807,None) MATCH (n) RETURN DISTINCT labels(n) using Map()), which has no missing parents
+26/10/04 16:24:37 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 2.4 KiB, free 8.2 GiB)
+26/10/04 16:24:37 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 1574.0 B, free 8.2 GiB)
+26/10/04 16:24:37 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on <LAN_IP>:46879 (size: 1574.0 B, free: 8.2 GiB)
+26/10/04 16:24:37 INFO SparkContext: Created broadcast 0 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:24:37 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 0 (Neo4jRDD partitions Partitions(1,9223372036854775807,9223372036854775807,None) MATCH (n) RETURN DISTINCT labels(n) using Map()) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:24:37 INFO TaskSchedulerImpl: Adding task set 0.0 with 1 tasks
+26/10/04 16:24:37 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, <LAN_IP>, executor driver, partition 0, PROCESS_LOCAL, 7389 bytes)
+26/10/04 16:24:37 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+26/10/04 16:24:37 INFO Driver: Direct driver instance 1113457514 created for server address localhost:7687
+26/10/04 16:24:37 INFO Driver: Closing driver instance 1113457514
+26/10/04 16:24:37 INFO ConnectionPool: Closing connection pool towards localhost:7687
+26/10/04 16:24:38 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 1968 bytes result sent to driver
+26/10/04 16:24:38 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 554 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:24:38 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool
+26/10/04 16:24:38 INFO DAGScheduler: ResultStage 0 (collect at SparkProcess.java:120) finished in 0.602 s
+26/10/04 16:24:38 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 16:24:38 INFO TaskSchedulerImpl: Killing all running tasks in stage 0: Stage finished
+26/10/04 16:24:38 INFO DAGScheduler: Job 0 finished: collect at SparkProcess.java:120, took 0.695856 s
+26/10/04 16:24:38 INFO SparkContext: Starting job: countByValue at SparkProcess.java:99
+26/10/04 16:24:38 INFO DAGScheduler: Registering RDD 2 (mapToPair at SparkProcess.java:96) as input to shuffle 1
+26/10/04 16:24:38 INFO DAGScheduler: Registering RDD 6 (countByValue at SparkProcess.java:99) as input to shuffle 0
+26/10/04 16:24:38 INFO DAGScheduler: Got job 1 (countByValue at SparkProcess.java:99) with 1 output partitions
+26/10/04 16:24:38 INFO DAGScheduler: Final stage: ResultStage 3 (countByValue at SparkProcess.java:99)
+26/10/04 16:24:38 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 2)
+26/10/04 16:24:38 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 2)
+26/10/04 16:24:38 INFO DAGScheduler: Submitting ShuffleMapStage 1 (MapPartitionsRDD[2] at mapToPair at SparkProcess.java:96), which has no missing parents
+26/10/04 16:24:38 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 5.5 KiB, free 8.2 GiB)
+26/10/04 16:24:38 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 3.2 KiB, free 8.2 GiB)
+26/10/04 16:24:38 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on <LAN_IP>:46879 (size: 3.2 KiB, free: 8.2 GiB)
+26/10/04 16:24:38 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:24:38 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 1 (MapPartitionsRDD[2] at mapToPair at SparkProcess.java:96) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:24:38 INFO TaskSchedulerImpl: Adding task set 1.0 with 1 tasks
+26/10/04 16:24:38 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 1, <LAN_IP>, executor driver, partition 0, PROCESS_LOCAL, 7378 bytes)
+26/10/04 16:24:38 INFO Executor: Running task 0.0 in stage 1.0 (TID 1)
+26/10/04 16:24:38 INFO Driver: Direct driver instance 962144180 created for server address localhost:7687
+26/10/04 16:24:38 INFO BlockManagerInfo: Removed broadcast_0_piece0 on <LAN_IP>:46879 in memory (size: 1574.0 B, free: 8.2 GiB)
+26/10/04 16:24:39 INFO Driver: Closing driver instance 962144180
+26/10/04 16:24:39 INFO ConnectionPool: Closing connection pool towards localhost:7687
+26/10/04 16:24:39 INFO Executor: Finished task 0.0 in stage 1.0 (TID 1). 1203 bytes result sent to driver
+26/10/04 16:24:39 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 1) in 1368 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:24:39 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool
+26/10/04 16:24:39 INFO DAGScheduler: ShuffleMapStage 1 (mapToPair at SparkProcess.java:96) finished in 1.383 s
+26/10/04 16:24:39 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 16:24:39 INFO DAGScheduler: running: Set()
+26/10/04 16:24:39 INFO DAGScheduler: waiting: Set(ShuffleMapStage 2, ResultStage 3)
+26/10/04 16:24:39 INFO DAGScheduler: failed: Set()
+26/10/04 16:24:39 INFO DAGScheduler: Submitting ShuffleMapStage 2 (MapPartitionsRDD[6] at countByValue at SparkProcess.java:99), which has no missing parents
+26/10/04 16:24:39 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 6.2 KiB, free 8.2 GiB)
+26/10/04 16:24:39 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 3.4 KiB, free 8.2 GiB)
+26/10/04 16:24:39 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on <LAN_IP>:46879 (size: 3.4 KiB, free: 8.2 GiB)
+26/10/04 16:24:39 INFO SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:24:39 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 2 (MapPartitionsRDD[6] at countByValue at SparkProcess.java:99) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:24:39 INFO TaskSchedulerImpl: Adding task set 2.0 with 1 tasks
+26/10/04 16:24:39 INFO TaskSetManager: Starting task 0.0 in stage 2.0 (TID 2, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7132 bytes)
+26/10/04 16:24:39 INFO Executor: Running task 0.0 in stage 2.0 (TID 2)
+26/10/04 16:24:39 INFO ShuffleBlockFetcherIterator: Getting 1 (1579.8 KiB) non-empty blocks including 1 (1579.8 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:24:39 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 2 ms
+26/10/04 16:24:39 INFO BlockManagerInfo: Removed broadcast_1_piece0 on <LAN_IP>:46879 in memory (size: 3.2 KiB, free: 8.2 GiB)
+26/10/04 16:24:40 INFO Executor: Finished task 0.0 in stage 2.0 (TID 2). 1504 bytes result sent to driver
+26/10/04 16:24:40 INFO TaskSetManager: Finished task 0.0 in stage 2.0 (TID 2) in 707 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:24:40 INFO TaskSchedulerImpl: Removed TaskSet 2.0, whose tasks have all completed, from pool
+26/10/04 16:24:40 INFO DAGScheduler: ShuffleMapStage 2 (countByValue at SparkProcess.java:99) finished in 0.712 s
+26/10/04 16:24:40 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 16:24:40 INFO DAGScheduler: running: Set()
+26/10/04 16:24:40 INFO DAGScheduler: waiting: Set(ResultStage 3)
+26/10/04 16:24:40 INFO DAGScheduler: failed: Set()
+26/10/04 16:24:40 INFO DAGScheduler: Submitting ResultStage 3 (ShuffledRDD[7] at countByValue at SparkProcess.java:99), which has no missing parents
+26/10/04 16:24:40 INFO MemoryStore: Block broadcast_3 stored as values in memory (estimated size 4.0 KiB, free 8.2 GiB)
+26/10/04 16:24:40 INFO MemoryStore: Block broadcast_3_piece0 stored as bytes in memory (estimated size 2.3 KiB, free 8.2 GiB)
+26/10/04 16:24:40 INFO BlockManagerInfo: Added broadcast_3_piece0 in memory on <LAN_IP>:46879 (size: 2.3 KiB, free: 8.2 GiB)
+26/10/04 16:24:40 INFO SparkContext: Created broadcast 3 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:24:40 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 3 (ShuffledRDD[7] at countByValue at SparkProcess.java:99) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:24:40 INFO TaskSchedulerImpl: Adding task set 3.0 with 1 tasks
+26/10/04 16:24:40 INFO TaskSetManager: Starting task 0.0 in stage 3.0 (TID 3, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7143 bytes)
+26/10/04 16:24:40 INFO Executor: Running task 0.0 in stage 3.0 (TID 3)
+26/10/04 16:24:40 INFO ShuffleBlockFetcherIterator: Getting 1 (251.0 B) non-empty blocks including 1 (251.0 B) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:24:40 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 16:24:40 INFO Executor: Finished task 0.0 in stage 3.0 (TID 3). 1527 bytes result sent to driver
+26/10/04 16:24:40 INFO TaskSetManager: Finished task 0.0 in stage 3.0 (TID 3) in 4 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:24:40 INFO TaskSchedulerImpl: Removed TaskSet 3.0, whose tasks have all completed, from pool
+26/10/04 16:24:40 INFO DAGScheduler: ResultStage 3 (countByValue at SparkProcess.java:99) finished in 0.006 s
+26/10/04 16:24:40 INFO DAGScheduler: Job 1 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 16:24:40 INFO TaskSchedulerImpl: Killing all running tasks in stage 3: Stage finished
+26/10/04 16:24:40 INFO DAGScheduler: Job 1 finished: countByValue at SparkProcess.java:99, took 2.111490 s
+26/10/04 16:24:40 INFO SparkContext: Starting job: countByValue at SparkProcess.java:99
+26/10/04 16:24:40 INFO DAGScheduler: Registering RDD 9 (mapToPair at SparkProcess.java:96) as input to shuffle 3
+26/10/04 16:24:40 INFO DAGScheduler: Registering RDD 13 (countByValue at SparkProcess.java:99) as input to shuffle 2
+26/10/04 16:24:40 INFO DAGScheduler: Got job 2 (countByValue at SparkProcess.java:99) with 1 output partitions
+26/10/04 16:24:40 INFO DAGScheduler: Final stage: ResultStage 6 (countByValue at SparkProcess.java:99)
+26/10/04 16:24:40 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 5)
+26/10/04 16:24:40 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 5)
+26/10/04 16:24:40 INFO DAGScheduler: Submitting ShuffleMapStage 4 (MapPartitionsRDD[9] at mapToPair at SparkProcess.java:96), which has no missing parents
+26/10/04 16:24:40 INFO MemoryStore: Block broadcast_4 stored as values in memory (estimated size 5.5 KiB, free 8.2 GiB)
+26/10/04 16:24:40 INFO MemoryStore: Block broadcast_4_piece0 stored as bytes in memory (estimated size 3.3 KiB, free 8.2 GiB)
+26/10/04 16:24:40 INFO BlockManagerInfo: Added broadcast_4_piece0 in memory on <LAN_IP>:46879 (size: 3.3 KiB, free: 8.2 GiB)
+26/10/04 16:24:40 INFO SparkContext: Created broadcast 4 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:24:40 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 4 (MapPartitionsRDD[9] at mapToPair at SparkProcess.java:96) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:24:40 INFO TaskSchedulerImpl: Adding task set 4.0 with 1 tasks
+26/10/04 16:24:40 INFO TaskSetManager: Starting task 0.0 in stage 4.0 (TID 4, <LAN_IP>, executor driver, partition 0, PROCESS_LOCAL, 7378 bytes)
+26/10/04 16:24:40 INFO Executor: Running task 0.0 in stage 4.0 (TID 4)
+26/10/04 16:24:40 INFO Driver: Direct driver instance 716683351 created for server address localhost:7687
+26/10/04 16:24:40 INFO BlockManagerInfo: Removed broadcast_3_piece0 on <LAN_IP>:46879 in memory (size: 2.3 KiB, free: 8.2 GiB)
+26/10/04 16:24:40 INFO BlockManagerInfo: Removed broadcast_2_piece0 on <LAN_IP>:46879 in memory (size: 3.4 KiB, free: 8.2 GiB)
+26/10/04 16:24:46 INFO Driver: Closing driver instance 716683351
+26/10/04 16:24:46 INFO ConnectionPool: Closing connection pool towards localhost:7687
+26/10/04 16:24:47 INFO Executor: Finished task 0.0 in stage 4.0 (TID 4). 1160 bytes result sent to driver
+26/10/04 16:24:47 INFO TaskSetManager: Finished task 0.0 in stage 4.0 (TID 4) in 7561 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:24:47 INFO TaskSchedulerImpl: Removed TaskSet 4.0, whose tasks have all completed, from pool
+26/10/04 16:24:47 INFO DAGScheduler: ShuffleMapStage 4 (mapToPair at SparkProcess.java:96) finished in 7.565 s
+26/10/04 16:24:47 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 16:24:47 INFO DAGScheduler: running: Set()
+26/10/04 16:24:47 INFO DAGScheduler: waiting: Set(ShuffleMapStage 5, ResultStage 6)
+26/10/04 16:24:47 INFO DAGScheduler: failed: Set()
+26/10/04 16:24:47 INFO DAGScheduler: Submitting ShuffleMapStage 5 (MapPartitionsRDD[13] at countByValue at SparkProcess.java:99), which has no missing parents
+26/10/04 16:24:47 INFO MemoryStore: Block broadcast_5 stored as values in memory (estimated size 6.2 KiB, free 8.2 GiB)
+26/10/04 16:24:47 INFO MemoryStore: Block broadcast_5_piece0 stored as bytes in memory (estimated size 3.4 KiB, free 8.2 GiB)
+26/10/04 16:24:47 INFO BlockManagerInfo: Added broadcast_5_piece0 in memory on <LAN_IP>:46879 (size: 3.4 KiB, free: 8.2 GiB)
+26/10/04 16:24:47 INFO SparkContext: Created broadcast 5 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:24:47 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 5 (MapPartitionsRDD[13] at countByValue at SparkProcess.java:99) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:24:47 INFO TaskSchedulerImpl: Adding task set 5.0 with 1 tasks
+26/10/04 16:24:47 INFO TaskSetManager: Starting task 0.0 in stage 5.0 (TID 5, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7132 bytes)
+26/10/04 16:24:47 INFO Executor: Running task 0.0 in stage 5.0 (TID 5)
+26/10/04 16:24:47 INFO ShuffleBlockFetcherIterator: Getting 1 (7.8 MiB) non-empty blocks including 1 (7.8 MiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:24:47 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 16:24:50 INFO Executor: Finished task 0.0 in stage 5.0 (TID 5). 1504 bytes result sent to driver
+26/10/04 16:24:50 INFO TaskSetManager: Finished task 0.0 in stage 5.0 (TID 5) in 2679 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:24:50 INFO TaskSchedulerImpl: Removed TaskSet 5.0, whose tasks have all completed, from pool
+26/10/04 16:24:50 INFO DAGScheduler: ShuffleMapStage 5 (countByValue at SparkProcess.java:99) finished in 2.682 s
+26/10/04 16:24:50 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 16:24:50 INFO DAGScheduler: running: Set()
+26/10/04 16:24:50 INFO DAGScheduler: waiting: Set(ResultStage 6)
+26/10/04 16:24:50 INFO DAGScheduler: failed: Set()
+26/10/04 16:24:50 INFO DAGScheduler: Submitting ResultStage 6 (ShuffledRDD[14] at countByValue at SparkProcess.java:99), which has no missing parents
+26/10/04 16:24:50 INFO MemoryStore: Block broadcast_6 stored as values in memory (estimated size 4.0 KiB, free 8.2 GiB)
+26/10/04 16:24:50 INFO MemoryStore: Block broadcast_6_piece0 stored as bytes in memory (estimated size 2.3 KiB, free 8.2 GiB)
+26/10/04 16:24:50 INFO BlockManagerInfo: Added broadcast_6_piece0 in memory on <LAN_IP>:46879 (size: 2.3 KiB, free: 8.2 GiB)
+26/10/04 16:24:50 INFO SparkContext: Created broadcast 6 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:24:50 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 6 (ShuffledRDD[14] at countByValue at SparkProcess.java:99) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:24:50 INFO TaskSchedulerImpl: Adding task set 6.0 with 1 tasks
+26/10/04 16:24:50 INFO TaskSetManager: Starting task 0.0 in stage 6.0 (TID 6, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7143 bytes)
+26/10/04 16:24:50 INFO Executor: Running task 0.0 in stage 6.0 (TID 6)
+26/10/04 16:24:50 INFO ShuffleBlockFetcherIterator: Getting 1 (490.0 B) non-empty blocks including 1 (490.0 B) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:24:50 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 16:24:50 INFO Executor: Finished task 0.0 in stage 6.0 (TID 6). 2940 bytes result sent to driver
+26/10/04 16:24:50 INFO TaskSetManager: Finished task 0.0 in stage 6.0 (TID 6) in 3 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:24:50 INFO TaskSchedulerImpl: Removed TaskSet 6.0, whose tasks have all completed, from pool
+26/10/04 16:24:50 INFO DAGScheduler: ResultStage 6 (countByValue at SparkProcess.java:99) finished in 0.005 s
+26/10/04 16:24:50 INFO DAGScheduler: Job 2 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 16:24:50 INFO TaskSchedulerImpl: Killing all running tasks in stage 6: Stage finished
+26/10/04 16:24:50 INFO DAGScheduler: Job 2 finished: countByValue at SparkProcess.java:99, took 10.255874 s
+26/10/04 16:24:50 INFO SparkUI: Stopped Spark web UI at http://<LAN_IP>:4040
+26/10/04 16:24:50 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+26/10/04 16:24:50 INFO MemoryStore: MemoryStore cleared
+26/10/04 16:24:50 INFO BlockManager: BlockManager stopped
+26/10/04 16:24:50 INFO BlockManagerMaster: BlockManagerMaster stopped
+26/10/04 16:24:50 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+26/10/04 16:24:50 INFO SparkContext: Successfully stopped SparkContext
+Total Time: 14301ms (0 min, 14 sec)
+Model generated at: ./outputs/
+java.lang.InterruptedException
+	at java.lang.Object.wait(Native Method)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:144)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:165)
+	at org.eclipse.emf.common.util.CommonUtil$1ReferenceClearingQueuePollingThread.run(CommonUtil.java:70)
+XMI gerado em /output/up_large.xmi
+  limpeza=6.97s  geracao=49.81s  boot=-  extracao=117.71s  inferencia=0.00s  escrita=0.00s  porte=117.71s  oraculo=17.58s  query=0.30s  norm=387.9696769940672x
+    User: real=400000  porte=400000 (100.0%)  oraculo=400000 (100.0%)
+    Movie: real=200000  porte=200000 (100.0%)  oraculo=200000 (100.0%)
+    vs oráculo semeado: equivalente=True divergências=0
+    vs resources/:      equivalente=True divergências=7
+
+########## run_oracle_neo4j larger (tentativa 1)  13:24:54 ##########
+
+=== seed 23 | tamanho larger | python ===
+Received notification from DBMS server: <GqlStatusObject gql_status='01N00', status_description='warn: feature deprecated. CALL subquery without a variable scope clause is deprecated. Use CALL (n) { ... }', position=<SummaryInputPosition line=1, column=11, offset=10>, raw_classification='DEPRECATION', classification=<NotificationClassification.DEPRECATION: 'DEPRECATION'>, raw_severity='WARNING', severity=<NotificationSeverity.WARNING: 'WARNING'>, diagnostic_record={'_classification': 'DEPRECATION', '_severity': 'WARNING', '_position': {'offset': 10, 'line': 1, 'column': 11}, 'OPERATION': '', 'OPERATION_CODE': '0', 'CURRENT_SCHEMA': '/'}> for query: 'MATCH (n) CALL { WITH n DETACH DELETE n } IN TRANSACTIONS OF 10000 ROWS'
+neo4j: grafo apagado (600000 nós)
+== size larger | seed 23 | User=800000 Movie=400000 arestas~20/user ==
+  movies: 400000 criados em 4.9s
+  users:  800000 criados em 15.0s
+  arestas: WATCHED=7134070 FAVORITE=3040207 em 153.9s
+== concluído em 173.8s ==
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+26/10/04 16:35:18 WARN Utils: Your hostname, <HOSTNAME> resolves to a loopback address: 127.0.1.1; using <LAN_IP> instead (on interface wlp5s0)
+26/10/04 16:35:18 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+26/10/04 16:35:18 INFO SparkContext: Running Spark version 3.0.1
+26/10/04 16:35:18 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+26/10/04 16:35:18 INFO ResourceUtils: ==============================================================
+26/10/04 16:35:18 INFO ResourceUtils: Resources for spark.driver:
+
+26/10/04 16:35:18 INFO ResourceUtils: ==============================================================
+26/10/04 16:35:18 INFO SparkContext: Submitted application: Neo4j
+26/10/04 16:35:18 INFO SecurityManager: Changing view acls to: root
+26/10/04 16:35:18 INFO SecurityManager: Changing modify acls to: root
+26/10/04 16:35:18 INFO SecurityManager: Changing view acls groups to:
+26/10/04 16:35:18 INFO SecurityManager: Changing modify acls groups to:
+26/10/04 16:35:18 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(root); groups with view permissions: Set(); users  with modify permissions: Set(root); groups with modify permissions: Set()
+26/10/04 16:35:18 INFO Utils: Successfully started service 'sparkDriver' on port 34753.
+26/10/04 16:35:18 INFO SparkEnv: Registering MapOutputTracker
+26/10/04 16:35:18 INFO SparkEnv: Registering BlockManagerMaster
+26/10/04 16:35:18 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/10/04 16:35:18 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/10/04 16:35:18 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/10/04 16:35:18 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-0ed8ad1a-76e8-4c56-a651-80d0d235e8f1
+26/10/04 16:35:18 INFO MemoryStore: MemoryStore started with capacity 8.2 GiB
+26/10/04 16:35:18 INFO SparkEnv: Registering OutputCommitCoordinator
+26/10/04 16:35:18 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/10/04 16:35:18 INFO SparkUI: Bound SparkUI to 0.0.0.0, and started at http://<LAN_IP>:4040
+26/10/04 16:35:19 INFO Executor: Starting executor ID driver on host <LAN_IP>
+26/10/04 16:35:19 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 42289.
+26/10/04 16:35:19 INFO NettyBlockTransferService: Server created on <LAN_IP>:42289
+26/10/04 16:35:19 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/10/04 16:35:19 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, <LAN_IP>, 42289, None)
+26/10/04 16:35:19 INFO BlockManagerMasterEndpoint: Registering block manager <LAN_IP>:42289 with 8.2 GiB RAM, BlockManagerId(driver, <LAN_IP>, 42289, None)
+26/10/04 16:35:19 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, <LAN_IP>, 42289, None)
+26/10/04 16:35:19 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, <LAN_IP>, 42289, None)
+26/10/04 16:35:19 INFO SparkContext: Starting job: collect at SparkProcess.java:120
+26/10/04 16:35:19 INFO DAGScheduler: Got job 0 (collect at SparkProcess.java:120) with 1 output partitions
+26/10/04 16:35:19 INFO DAGScheduler: Final stage: ResultStage 0 (collect at SparkProcess.java:120)
+26/10/04 16:35:19 INFO DAGScheduler: Parents of final stage: List()
+26/10/04 16:35:19 INFO DAGScheduler: Missing parents: List()
+26/10/04 16:35:19 INFO DAGScheduler: Submitting ResultStage 0 (Neo4jRDD partitions Partitions(1,9223372036854775807,9223372036854775807,None) MATCH (n) RETURN DISTINCT labels(n) using Map()), which has no missing parents
+26/10/04 16:35:19 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 2.4 KiB, free 8.2 GiB)
+26/10/04 16:35:19 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 1574.0 B, free 8.2 GiB)
+26/10/04 16:35:19 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on <LAN_IP>:42289 (size: 1574.0 B, free: 8.2 GiB)
+26/10/04 16:35:19 INFO SparkContext: Created broadcast 0 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:35:19 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 0 (Neo4jRDD partitions Partitions(1,9223372036854775807,9223372036854775807,None) MATCH (n) RETURN DISTINCT labels(n) using Map()) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:35:19 INFO TaskSchedulerImpl: Adding task set 0.0 with 1 tasks
+26/10/04 16:35:19 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, <LAN_IP>, executor driver, partition 0, PROCESS_LOCAL, 7389 bytes)
+26/10/04 16:35:19 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+26/10/04 16:35:19 INFO Driver: Direct driver instance 1476972799 created for server address localhost:7687
+26/10/04 16:35:19 INFO Driver: Closing driver instance 1476972799
+26/10/04 16:35:19 INFO ConnectionPool: Closing connection pool towards localhost:7687
+26/10/04 16:35:19 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 1968 bytes result sent to driver
+26/10/04 16:35:19 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 616 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:35:19 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool
+26/10/04 16:35:19 INFO DAGScheduler: ResultStage 0 (collect at SparkProcess.java:120) finished in 0.664 s
+26/10/04 16:35:19 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 16:35:19 INFO TaskSchedulerImpl: Killing all running tasks in stage 0: Stage finished
+26/10/04 16:35:19 INFO DAGScheduler: Job 0 finished: collect at SparkProcess.java:120, took 0.748198 s
+26/10/04 16:35:20 INFO SparkContext: Starting job: countByValue at SparkProcess.java:99
+26/10/04 16:35:20 INFO DAGScheduler: Registering RDD 2 (mapToPair at SparkProcess.java:96) as input to shuffle 1
+26/10/04 16:35:20 INFO DAGScheduler: Registering RDD 6 (countByValue at SparkProcess.java:99) as input to shuffle 0
+26/10/04 16:35:20 INFO DAGScheduler: Got job 1 (countByValue at SparkProcess.java:99) with 1 output partitions
+26/10/04 16:35:20 INFO DAGScheduler: Final stage: ResultStage 3 (countByValue at SparkProcess.java:99)
+26/10/04 16:35:20 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 2)
+26/10/04 16:35:20 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 2)
+26/10/04 16:35:20 INFO DAGScheduler: Submitting ShuffleMapStage 1 (MapPartitionsRDD[2] at mapToPair at SparkProcess.java:96), which has no missing parents
+26/10/04 16:35:20 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 5.5 KiB, free 8.2 GiB)
+26/10/04 16:35:20 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 3.2 KiB, free 8.2 GiB)
+26/10/04 16:35:20 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on <LAN_IP>:42289 (size: 3.2 KiB, free: 8.2 GiB)
+26/10/04 16:35:20 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:35:20 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 1 (MapPartitionsRDD[2] at mapToPair at SparkProcess.java:96) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:35:20 INFO TaskSchedulerImpl: Adding task set 1.0 with 1 tasks
+26/10/04 16:35:20 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 1, <LAN_IP>, executor driver, partition 0, PROCESS_LOCAL, 7378 bytes)
+26/10/04 16:35:20 INFO Executor: Running task 0.0 in stage 1.0 (TID 1)
+26/10/04 16:35:20 INFO Driver: Direct driver instance 187045910 created for server address localhost:7687
+26/10/04 16:35:20 INFO BlockManagerInfo: Removed broadcast_0_piece0 on <LAN_IP>:42289 in memory (size: 1574.0 B, free: 8.2 GiB)
+26/10/04 16:35:22 INFO Driver: Closing driver instance 187045910
+26/10/04 16:35:22 INFO ConnectionPool: Closing connection pool towards localhost:7687
+26/10/04 16:35:23 INFO Executor: Finished task 0.0 in stage 1.0 (TID 1). 1203 bytes result sent to driver
+26/10/04 16:35:23 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 1) in 3185 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:35:23 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool
+26/10/04 16:35:23 INFO DAGScheduler: ShuffleMapStage 1 (mapToPair at SparkProcess.java:96) finished in 3.199 s
+26/10/04 16:35:23 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 16:35:23 INFO DAGScheduler: running: Set()
+26/10/04 16:35:23 INFO DAGScheduler: waiting: Set(ShuffleMapStage 2, ResultStage 3)
+26/10/04 16:35:23 INFO DAGScheduler: failed: Set()
+26/10/04 16:35:23 INFO DAGScheduler: Submitting ShuffleMapStage 2 (MapPartitionsRDD[6] at countByValue at SparkProcess.java:99), which has no missing parents
+26/10/04 16:35:23 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 6.2 KiB, free 8.2 GiB)
+26/10/04 16:35:23 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 3.4 KiB, free 8.2 GiB)
+26/10/04 16:35:23 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on <LAN_IP>:42289 (size: 3.4 KiB, free: 8.2 GiB)
+26/10/04 16:35:23 INFO SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:35:23 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 2 (MapPartitionsRDD[6] at countByValue at SparkProcess.java:99) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:35:23 INFO TaskSchedulerImpl: Adding task set 2.0 with 1 tasks
+26/10/04 16:35:23 INFO TaskSetManager: Starting task 0.0 in stage 2.0 (TID 2, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7132 bytes)
+26/10/04 16:35:23 INFO Executor: Running task 0.0 in stage 2.0 (TID 2)
+26/10/04 16:35:23 INFO ShuffleBlockFetcherIterator: Getting 1 (3.0 MiB) non-empty blocks including 1 (3.0 MiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:35:23 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 2 ms
+26/10/04 16:35:23 INFO BlockManagerInfo: Removed broadcast_1_piece0 on <LAN_IP>:42289 in memory (size: 3.2 KiB, free: 8.2 GiB)
+26/10/04 16:35:24 INFO Executor: Finished task 0.0 in stage 2.0 (TID 2). 1504 bytes result sent to driver
+26/10/04 16:35:24 INFO TaskSetManager: Finished task 0.0 in stage 2.0 (TID 2) in 1288 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:35:24 INFO TaskSchedulerImpl: Removed TaskSet 2.0, whose tasks have all completed, from pool
+26/10/04 16:35:24 INFO DAGScheduler: ShuffleMapStage 2 (countByValue at SparkProcess.java:99) finished in 1.293 s
+26/10/04 16:35:24 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 16:35:24 INFO DAGScheduler: running: Set()
+26/10/04 16:35:24 INFO DAGScheduler: waiting: Set(ResultStage 3)
+26/10/04 16:35:24 INFO DAGScheduler: failed: Set()
+26/10/04 16:35:24 INFO DAGScheduler: Submitting ResultStage 3 (ShuffledRDD[7] at countByValue at SparkProcess.java:99), which has no missing parents
+26/10/04 16:35:24 INFO MemoryStore: Block broadcast_3 stored as values in memory (estimated size 4.0 KiB, free 8.2 GiB)
+26/10/04 16:35:24 INFO MemoryStore: Block broadcast_3_piece0 stored as bytes in memory (estimated size 2.3 KiB, free 8.2 GiB)
+26/10/04 16:35:24 INFO BlockManagerInfo: Added broadcast_3_piece0 in memory on <LAN_IP>:42289 (size: 2.3 KiB, free: 8.2 GiB)
+26/10/04 16:35:24 INFO SparkContext: Created broadcast 3 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:35:24 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 3 (ShuffledRDD[7] at countByValue at SparkProcess.java:99) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:35:24 INFO TaskSchedulerImpl: Adding task set 3.0 with 1 tasks
+26/10/04 16:35:24 INFO TaskSetManager: Starting task 0.0 in stage 3.0 (TID 3, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7143 bytes)
+26/10/04 16:35:24 INFO Executor: Running task 0.0 in stage 3.0 (TID 3)
+26/10/04 16:35:24 INFO ShuffleBlockFetcherIterator: Getting 1 (251.0 B) non-empty blocks including 1 (251.0 B) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:35:24 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 16:35:24 INFO Executor: Finished task 0.0 in stage 3.0 (TID 3). 1484 bytes result sent to driver
+26/10/04 16:35:24 INFO TaskSetManager: Finished task 0.0 in stage 3.0 (TID 3) in 3 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:35:24 INFO TaskSchedulerImpl: Removed TaskSet 3.0, whose tasks have all completed, from pool
+26/10/04 16:35:24 INFO DAGScheduler: ResultStage 3 (countByValue at SparkProcess.java:99) finished in 0.006 s
+26/10/04 16:35:24 INFO DAGScheduler: Job 1 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 16:35:24 INFO TaskSchedulerImpl: Killing all running tasks in stage 3: Stage finished
+26/10/04 16:35:24 INFO DAGScheduler: Job 1 finished: countByValue at SparkProcess.java:99, took 4.509685 s
+26/10/04 16:35:24 INFO SparkContext: Starting job: countByValue at SparkProcess.java:99
+26/10/04 16:35:24 INFO DAGScheduler: Registering RDD 9 (mapToPair at SparkProcess.java:96) as input to shuffle 3
+26/10/04 16:35:24 INFO DAGScheduler: Registering RDD 13 (countByValue at SparkProcess.java:99) as input to shuffle 2
+26/10/04 16:35:24 INFO DAGScheduler: Got job 2 (countByValue at SparkProcess.java:99) with 1 output partitions
+26/10/04 16:35:24 INFO DAGScheduler: Final stage: ResultStage 6 (countByValue at SparkProcess.java:99)
+26/10/04 16:35:24 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 5)
+26/10/04 16:35:24 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 5)
+26/10/04 16:35:24 INFO DAGScheduler: Submitting ShuffleMapStage 4 (MapPartitionsRDD[9] at mapToPair at SparkProcess.java:96), which has no missing parents
+26/10/04 16:35:24 INFO MemoryStore: Block broadcast_4 stored as values in memory (estimated size 5.5 KiB, free 8.2 GiB)
+26/10/04 16:35:24 INFO MemoryStore: Block broadcast_4_piece0 stored as bytes in memory (estimated size 3.3 KiB, free 8.2 GiB)
+26/10/04 16:35:24 INFO BlockManagerInfo: Added broadcast_4_piece0 in memory on <LAN_IP>:42289 (size: 3.3 KiB, free: 8.2 GiB)
+26/10/04 16:35:24 INFO SparkContext: Created broadcast 4 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:35:24 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 4 (MapPartitionsRDD[9] at mapToPair at SparkProcess.java:96) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:35:24 INFO TaskSchedulerImpl: Adding task set 4.0 with 1 tasks
+26/10/04 16:35:24 INFO TaskSetManager: Starting task 0.0 in stage 4.0 (TID 4, <LAN_IP>, executor driver, partition 0, PROCESS_LOCAL, 7378 bytes)
+26/10/04 16:35:24 INFO Executor: Running task 0.0 in stage 4.0 (TID 4)
+26/10/04 16:35:24 INFO Driver: Direct driver instance 255450365 created for server address localhost:7687
+26/10/04 16:35:24 INFO BlockManagerInfo: Removed broadcast_3_piece0 on <LAN_IP>:42289 in memory (size: 2.3 KiB, free: 8.2 GiB)
+26/10/04 16:35:35 INFO BlockManagerInfo: Removed broadcast_2_piece0 on <LAN_IP>:42289 in memory (size: 3.4 KiB, free: 8.2 GiB)
+26/10/04 16:35:45 INFO Driver: Closing driver instance 255450365
+26/10/04 16:35:45 INFO ConnectionPool: Closing connection pool towards localhost:7687
+26/10/04 16:35:48 INFO Executor: Finished task 0.0 in stage 4.0 (TID 4). 1160 bytes result sent to driver
+26/10/04 16:35:48 INFO TaskSetManager: Finished task 0.0 in stage 4.0 (TID 4) in 23583 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:35:48 INFO TaskSchedulerImpl: Removed TaskSet 4.0, whose tasks have all completed, from pool
+26/10/04 16:35:48 INFO DAGScheduler: ShuffleMapStage 4 (mapToPair at SparkProcess.java:96) finished in 23.585 s
+26/10/04 16:35:48 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 16:35:48 INFO DAGScheduler: running: Set()
+26/10/04 16:35:48 INFO DAGScheduler: waiting: Set(ShuffleMapStage 5, ResultStage 6)
+26/10/04 16:35:48 INFO DAGScheduler: failed: Set()
+26/10/04 16:35:48 INFO DAGScheduler: Submitting ShuffleMapStage 5 (MapPartitionsRDD[13] at countByValue at SparkProcess.java:99), which has no missing parents
+26/10/04 16:35:48 INFO MemoryStore: Block broadcast_5 stored as values in memory (estimated size 6.2 KiB, free 8.2 GiB)
+26/10/04 16:35:48 INFO MemoryStore: Block broadcast_5_piece0 stored as bytes in memory (estimated size 3.4 KiB, free 8.2 GiB)
+26/10/04 16:35:48 INFO BlockManagerInfo: Added broadcast_5_piece0 in memory on <LAN_IP>:42289 (size: 3.4 KiB, free: 8.2 GiB)
+26/10/04 16:35:48 INFO SparkContext: Created broadcast 5 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:35:48 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 5 (MapPartitionsRDD[13] at countByValue at SparkProcess.java:99) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:35:48 INFO TaskSchedulerImpl: Adding task set 5.0 with 1 tasks
+26/10/04 16:35:48 INFO TaskSetManager: Starting task 0.0 in stage 5.0 (TID 5, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7132 bytes)
+26/10/04 16:35:48 INFO Executor: Running task 0.0 in stage 5.0 (TID 5)
+26/10/04 16:35:48 INFO ShuffleBlockFetcherIterator: Getting 1 (15.2 MiB) non-empty blocks including 1 (15.2 MiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:35:48 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 16:35:50 INFO BlockManagerInfo: Removed broadcast_4_piece0 on <LAN_IP>:42289 in memory (size: 3.3 KiB, free: 8.2 GiB)
+26/10/04 16:35:54 INFO Executor: Finished task 0.0 in stage 5.0 (TID 5). 1461 bytes result sent to driver
+26/10/04 16:35:54 INFO TaskSetManager: Finished task 0.0 in stage 5.0 (TID 5) in 5987 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:35:54 INFO TaskSchedulerImpl: Removed TaskSet 5.0, whose tasks have all completed, from pool
+26/10/04 16:35:54 INFO DAGScheduler: ShuffleMapStage 5 (countByValue at SparkProcess.java:99) finished in 5.992 s
+26/10/04 16:35:54 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 16:35:54 INFO DAGScheduler: running: Set()
+26/10/04 16:35:54 INFO DAGScheduler: waiting: Set(ResultStage 6)
+26/10/04 16:35:54 INFO DAGScheduler: failed: Set()
+26/10/04 16:35:54 INFO DAGScheduler: Submitting ResultStage 6 (ShuffledRDD[14] at countByValue at SparkProcess.java:99), which has no missing parents
+26/10/04 16:35:54 INFO MemoryStore: Block broadcast_6 stored as values in memory (estimated size 4.0 KiB, free 8.2 GiB)
+26/10/04 16:35:54 INFO MemoryStore: Block broadcast_6_piece0 stored as bytes in memory (estimated size 2.3 KiB, free 8.2 GiB)
+26/10/04 16:35:54 INFO BlockManagerInfo: Added broadcast_6_piece0 in memory on <LAN_IP>:42289 (size: 2.3 KiB, free: 8.2 GiB)
+26/10/04 16:35:54 INFO SparkContext: Created broadcast 6 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:35:54 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 6 (ShuffledRDD[14] at countByValue at SparkProcess.java:99) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:35:54 INFO TaskSchedulerImpl: Adding task set 6.0 with 1 tasks
+26/10/04 16:35:54 INFO TaskSetManager: Starting task 0.0 in stage 6.0 (TID 6, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7143 bytes)
+26/10/04 16:35:54 INFO Executor: Running task 0.0 in stage 6.0 (TID 6)
+26/10/04 16:35:54 INFO ShuffleBlockFetcherIterator: Getting 1 (490.0 B) non-empty blocks including 1 (490.0 B) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:35:54 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 16:35:54 INFO Executor: Finished task 0.0 in stage 6.0 (TID 6). 2940 bytes result sent to driver
+26/10/04 16:35:54 INFO TaskSetManager: Finished task 0.0 in stage 6.0 (TID 6) in 2 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:35:54 INFO TaskSchedulerImpl: Removed TaskSet 6.0, whose tasks have all completed, from pool
+26/10/04 16:35:54 INFO DAGScheduler: ResultStage 6 (countByValue at SparkProcess.java:99) finished in 0.006 s
+26/10/04 16:35:54 INFO DAGScheduler: Job 2 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 16:35:54 INFO TaskSchedulerImpl: Killing all running tasks in stage 6: Stage finished
+26/10/04 16:35:54 INFO DAGScheduler: Job 2 finished: countByValue at SparkProcess.java:99, took 29.585697 s
+26/10/04 16:35:54 INFO SparkUI: Stopped Spark web UI at http://<LAN_IP>:4040
+26/10/04 16:35:54 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+26/10/04 16:35:54 INFO MemoryStore: MemoryStore cleared
+26/10/04 16:35:54 INFO BlockManager: BlockManager stopped
+26/10/04 16:35:54 INFO BlockManagerMaster: BlockManagerMaster stopped
+26/10/04 16:35:54 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+26/10/04 16:35:54 INFO SparkContext: Successfully stopped SparkContext
+Total Time: 36009ms (0 min, 36 sec)
+Model generated at: ./outputs/
+java.lang.InterruptedException
+	at java.lang.Object.wait(Native Method)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:144)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:165)
+	at org.eclipse.emf.common.util.CommonUtil$1ReferenceClearingQueuePollingThread.run(CommonUtil.java:70)
+XMI gerado em /output/up_larger.xmi
+  limpeza=25.34s  geracao=174.08s  boot=-  extracao=422.68s  inferencia=0.00s  escrita=0.00s  porte=422.69s  oraculo=39.25s  query=0.94s  norm=448.90611724723874x
+    User: real=800000  porte=800000 (100.0%)  oraculo=800000 (100.0%)
+    Movie: real=400000  porte=400000 (100.0%)  oraculo=400000 (100.0%)
+    vs oráculo semeado: equivalente=True divergências=0
+    vs resources/:      equivalente=True divergências=7
+
+########## run_size_neo4j small (tentativa 1)  13:36:02 ##########
+
+=== seed 23 | tamanho small | python ===
+Received notification from DBMS server: <GqlStatusObject gql_status='01N00', status_description='warn: feature deprecated. CALL subquery without a variable scope clause is deprecated. Use CALL (n) { ... }', position=<SummaryInputPosition line=1, column=11, offset=10>, raw_classification='DEPRECATION', classification=<NotificationClassification.DEPRECATION: 'DEPRECATION'>, raw_severity='WARNING', severity=<NotificationSeverity.WARNING: 'WARNING'>, diagnostic_record={'_classification': 'DEPRECATION', '_severity': 'WARNING', '_position': {'offset': 10, 'line': 1, 'column': 11}, 'OPERATION': '', 'OPERATION_CODE': '0', 'CURRENT_SCHEMA': '/'}> for query: 'MATCH (n) CALL { WITH n DETACH DELETE n } IN TRANSACTIONS OF 10000 ROWS'
+neo4j: grafo apagado (1200000 nós)
+== size small | seed 23 | User=100000 Movie=50000 arestas~3/user ==
+  movies: 50000 criados em 1.0s
+  users:  100000 criados em 2.2s
+  arestas: WATCHED=169796 FAVORITE=72361 em 4.2s
+== concluído em 7.3s ==
+  limpeza=109.97s  geracao=7.59s  boot=-  extracao=13.30s  inferencia=0.00s  escrita=0.00s  total=13.31s  query=0.09s  norm=141.29511677282377x  equivalente=True  divergencias=7
+    User: real=100000 modelo=100000 (100.0%)
+    Movie: real=50000 modelo=50000 (100.0%)
+
+########## run_size_neo4j medium (tentativa 1)  13:38:13 ##########
+
+=== seed 23 | tamanho medium | python ===
+Received notification from DBMS server: <GqlStatusObject gql_status='01N00', status_description='warn: feature deprecated. CALL subquery without a variable scope clause is deprecated. Use CALL (n) { ... }', position=<SummaryInputPosition line=1, column=11, offset=10>, raw_classification='DEPRECATION', classification=<NotificationClassification.DEPRECATION: 'DEPRECATION'>, raw_severity='WARNING', severity=<NotificationSeverity.WARNING: 'WARNING'>, diagnostic_record={'_classification': 'DEPRECATION', '_severity': 'WARNING', '_position': {'offset': 10, 'line': 1, 'column': 11}, 'OPERATION': '', 'OPERATION_CODE': '0', 'CURRENT_SCHEMA': '/'}> for query: 'MATCH (n) CALL { WITH n DETACH DELETE n } IN TRANSACTIONS OF 10000 ROWS'
+neo4j: grafo apagado (150000 nós)
+== size medium | seed 23 | User=200000 Movie=100000 arestas~5/user ==
+  movies: 100000 criados em 1.5s
+  users:  200000 criados em 4.1s
+  arestas: WATCHED=508989 FAVORITE=216757 em 11.9s
+== concluído em 17.6s ==
+  limpeza=2.88s  geracao=17.86s  boot=-  extracao=36.41s  inferencia=0.00s  escrita=0.00s  total=36.41s  query=0.11s  norm=316.8842471714534x  equivalente=True  divergencias=7
+    User: real=200000 modelo=200000 (100.0%)
+    Movie: real=100000 modelo=100000 (100.0%)
+
+########## run_size_neo4j large (tentativa 1)  13:39:11 ##########
+
+=== seed 23 | tamanho large | python ===
+Received notification from DBMS server: <GqlStatusObject gql_status='01N00', status_description='warn: feature deprecated. CALL subquery without a variable scope clause is deprecated. Use CALL (n) { ... }', position=<SummaryInputPosition line=1, column=11, offset=10>, raw_classification='DEPRECATION', classification=<NotificationClassification.DEPRECATION: 'DEPRECATION'>, raw_severity='WARNING', severity=<NotificationSeverity.WARNING: 'WARNING'>, diagnostic_record={'_classification': 'DEPRECATION', '_severity': 'WARNING', '_position': {'offset': 10, 'line': 1, 'column': 11}, 'OPERATION': '', 'OPERATION_CODE': '0', 'CURRENT_SCHEMA': '/'}> for query: 'MATCH (n) CALL { WITH n DETACH DELETE n } IN TRANSACTIONS OF 10000 ROWS'
+neo4j: grafo apagado (300000 nós)
+== size large | seed 23 | User=400000 Movie=200000 arestas~10/user ==
+  movies: 200000 criados em 2.6s
+  users:  400000 criados em 8.1s
+  arestas: WATCHED=1867188 FAVORITE=792823 em 43.5s
+== concluído em 54.1s ==
+  limpeza=7.86s  geracao=54.36s  boot=-  extracao=121.23s  inferencia=0.00s  escrita=0.00s  total=121.23s  query=0.29s  norm=422.9937194696441x  equivalente=True  divergencias=7
+    User: real=400000 modelo=400000 (100.0%)
+    Movie: real=200000 modelo=200000 (100.0%)
+
+########## run_size_neo4j larger (tentativa 1)  13:42:17 ##########
+
+=== seed 23 | tamanho larger | python ===
+Received notification from DBMS server: <GqlStatusObject gql_status='01N00', status_description='warn: feature deprecated. CALL subquery without a variable scope clause is deprecated. Use CALL (n) { ... }', position=<SummaryInputPosition line=1, column=11, offset=10>, raw_classification='DEPRECATION', classification=<NotificationClassification.DEPRECATION: 'DEPRECATION'>, raw_severity='WARNING', severity=<NotificationSeverity.WARNING: 'WARNING'>, diagnostic_record={'_classification': 'DEPRECATION', '_severity': 'WARNING', '_position': {'offset': 10, 'line': 1, 'column': 11}, 'OPERATION': '', 'OPERATION_CODE': '0', 'CURRENT_SCHEMA': '/'}> for query: 'MATCH (n) CALL { WITH n DETACH DELETE n } IN TRANSACTIONS OF 10000 ROWS'
+neo4j: grafo apagado (600000 nós)
+== size larger | seed 23 | User=800000 Movie=400000 arestas~20/user ==
+  movies: 400000 criados em 5.0s
+  users:  800000 criados em 15.9s
+  arestas: WATCHED=7134070 FAVORITE=3040207 em 156.2s
+== concluído em 177.1s ==
+  limpeza=27.25s  geracao=177.36s  boot=-  extracao=422.77s  inferencia=0.00s  escrita=0.00s  total=422.78s  query=0.87s  norm=486.45725463122767x  equivalente=True  divergencias=7
+    User: real=800000 modelo=800000 (100.0%)
+    Movie: real=400000 modelo=400000 (100.0%)
+
+fim      : 2026-10-04T13:52:51-03:00
+tabelas  : results/fase4/{runs,oracle,comparisons,divergences}.csv

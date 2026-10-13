@@ -14,6 +14,10 @@
   // checagem oficial do projeto é `uv run mypy .`, no pre-commit e no CI.
   "python.pyrefly.disableTypeErrors": true,
   "python.pyrefly.disableLanguageServices": true,
+  // Pylance explícito. Com o padrão ("Default"), a extensão Python vê o Pyrefly
+  // instalado e liga o servidor de idiomas em "None" — e como o Pyrefly está
+  // com os serviços desligados acima, o editor fica sem autocomplete nenhum.
+  "python.languageServer": "Pylance",
   "python.testing.pytestEnabled": true,
   "python.testing.pytestArgs": ["tests"]
 }

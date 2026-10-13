@@ -1,0 +1,2015 @@
+semente  : 23
+engine   : python
+banco    : mongodb
+log      : logs/baterias_20261004_125459.log
+início   : 2026-10-04T12:54:59-03:00
+
+########## limpeza inicial  12:54:59 ##########
+mongo: 8 banco(s) dropado(s): up_a_small, up_a_medium, up_a_large, up_a_larger, up_b_small, up_b_medium, up_b_large, up_b_larger
+
+########## northwind  12:54:59 ##########
+dataset: <HOME>/Documents/GitHub/arco-do-tc-2/resources/datasets/northwind
+sha256:  3700157bd0bcca944b5a869dbfdd2065ae180bc538ec1e816a94e0f86c7271ae
+
+=== origem: file ===
+  extracao=0.01s  inferencia=17.50s  escrita=0.01s  total=17.52s
+  equivalente=True  divergências=15
+  coleções fechando a contagem: 14/17
+    Orders: real=48 modelo=24
+    Products: real=45 modelo=40
+    Purchase_orders: real=28 modelo=22
+
+=== origem: database ===
+  extracao=0.00s  inferencia=17.18s  escrita=0.01s  total=17.20s
+  equivalente=True  divergências=15
+  coleções fechando a contagem: 14/17
+    Orders: real=48 modelo=24
+    Products: real=45 modelo=40
+    Purchase_orders: real=28 modelo=22
+
+########## run_oracle_mongo A small (tentativa 1)  12:55:34 ##########
+
+=== seed 23 | rota A | small | python ===
+== Rota A | size small | db up_a_small | seed 23 | User=100000 Movie=50000 rels~3/user ==
+  movies: 50000 inseridos em 0.2s
+  users: 100000 inseridos em 0.7s
+== concluído em 0.9s ==
+Oct 04, 2026 3:55:39 PM com.google.inject.internal.InternalFlags getSystemOption
+WARNING: CHILD is not a valid flag value for guice_custom_class_loading.  Values must be one of [OFF, BRIDGE]
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+26/10/04 15:55:39 WARN Utils: Your hostname, <HOSTNAME> resolves to a loopback address: 127.0.1.1; using <LAN_IP> instead (on interface wlp5s0)
+26/10/04 15:55:39 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+26/10/04 15:55:39 INFO SparkContext: Running Spark version 3.0.1
+26/10/04 15:55:39 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+26/10/04 15:55:39 INFO ResourceUtils: ==============================================================
+26/10/04 15:55:39 INFO ResourceUtils: Resources for spark.driver:
+
+26/10/04 15:55:39 INFO ResourceUtils: ==============================================================
+26/10/04 15:55:39 INFO SparkContext: Submitted application: MongoDB
+26/10/04 15:55:39 INFO SecurityManager: Changing view acls to: root
+26/10/04 15:55:39 INFO SecurityManager: Changing modify acls to: root
+26/10/04 15:55:39 INFO SecurityManager: Changing view acls groups to:
+26/10/04 15:55:39 INFO SecurityManager: Changing modify acls groups to:
+26/10/04 15:55:39 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(root); groups with view permissions: Set(); users  with modify permissions: Set(root); groups with modify permissions: Set()
+26/10/04 15:55:39 INFO Utils: Successfully started service 'sparkDriver' on port 44595.
+26/10/04 15:55:39 INFO SparkEnv: Registering MapOutputTracker
+26/10/04 15:55:39 INFO SparkEnv: Registering BlockManagerMaster
+26/10/04 15:55:39 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/10/04 15:55:39 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/10/04 15:55:39 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/10/04 15:55:39 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-7dc12fef-c3a8-40a4-ac9a-9d18cffb0dc8
+26/10/04 15:55:39 INFO MemoryStore: MemoryStore started with capacity 8.2 GiB
+26/10/04 15:55:39 INFO SparkEnv: Registering OutputCommitCoordinator
+26/10/04 15:55:40 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/10/04 15:55:40 INFO SparkUI: Bound SparkUI to 0.0.0.0, and started at http://<LAN_IP>:4040
+26/10/04 15:55:40 INFO Executor: Starting executor ID driver on host <LAN_IP>
+26/10/04 15:55:40 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 37859.
+26/10/04 15:55:40 INFO NettyBlockTransferService: Server created on <LAN_IP>:37859
+26/10/04 15:55:40 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/10/04 15:55:40 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, <LAN_IP>, 37859, None)
+26/10/04 15:55:40 INFO BlockManagerMasterEndpoint: Registering block manager <LAN_IP>:37859 with 8.2 GiB RAM, BlockManagerId(driver, <LAN_IP>, 37859, None)
+26/10/04 15:55:40 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, <LAN_IP>, 37859, None)
+26/10/04 15:55:40 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, <LAN_IP>, 37859, None)
+26/10/04 15:55:40 WARN SparkContext: Using an existing SparkContext; some configuration may not take effect.
+26/10/04 15:55:40 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 208.0 B, free 8.2 GiB)
+26/10/04 15:55:40 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 392.0 B, free 8.2 GiB)
+26/10/04 15:55:40 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on <LAN_IP>:37859 (size: 392.0 B, free: 8.2 GiB)
+26/10/04 15:55:40 INFO SparkContext: Created broadcast 0 from broadcast at MongoSpark.scala:530
+26/10/04 15:55:40 INFO cluster: Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms'}
+26/10/04 15:55:40 INFO MongoClientCache: Creating MongoClient: [localhost:27017]
+26/10/04 15:55:40 INFO cluster: Cluster description not yet available. Waiting for 30000 ms before timing out
+26/10/04 15:55:40 INFO connection: Opened connection [connectionId{localValue:1, serverValue:1927}] to localhost:27017
+26/10/04 15:55:40 INFO cluster: Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=25, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=1651169}
+26/10/04 15:55:40 INFO connection: Opened connection [connectionId{localValue:2, serverValue:1928}] to localhost:27017
+26/10/04 15:55:40 INFO SparkContext: Starting job: collect at MongoDB2USchema.java:80
+26/10/04 15:55:40 INFO DAGScheduler: Registering RDD 1 (mapToPair at MongoDB2USchema.java:77) as input to shuffle 0
+26/10/04 15:55:40 INFO DAGScheduler: Got job 0 (collect at MongoDB2USchema.java:80) with 1 output partitions
+26/10/04 15:55:40 INFO DAGScheduler: Final stage: ResultStage 1 (collect at MongoDB2USchema.java:80)
+26/10/04 15:55:40 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 0)
+26/10/04 15:55:40 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 0)
+26/10/04 15:55:40 INFO DAGScheduler: Submitting ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77), which has no missing parents
+26/10/04 15:55:40 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 7.5 KiB, free 8.2 GiB)
+26/10/04 15:55:40 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 4.1 KiB, free 8.2 GiB)
+26/10/04 15:55:40 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on <LAN_IP>:37859 (size: 4.1 KiB, free: 8.2 GiB)
+26/10/04 15:55:40 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:55:40 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77) (first 15 tasks are for partitions Vector(0))
+26/10/04 15:55:40 INFO TaskSchedulerImpl: Adding task set 0.0 with 1 tasks
+26/10/04 15:55:40 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, <LAN_IP>, executor driver, partition 0, ANY, 7471 bytes)
+26/10/04 15:55:40 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+26/10/04 15:55:40 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 1160 bytes result sent to driver
+26/10/04 15:55:40 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 181 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 15:55:40 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool
+26/10/04 15:55:40 INFO DAGScheduler: ShuffleMapStage 0 (mapToPair at MongoDB2USchema.java:77) finished in 0.220 s
+26/10/04 15:55:40 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 15:55:40 INFO DAGScheduler: running: Set()
+26/10/04 15:55:40 INFO DAGScheduler: waiting: Set(ResultStage 1)
+26/10/04 15:55:40 INFO DAGScheduler: failed: Set()
+26/10/04 15:55:40 INFO DAGScheduler: Submitting ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78), which has no missing parents
+26/10/04 15:55:40 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 4.3 KiB, free 8.2 GiB)
+26/10/04 15:55:40 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 2.4 KiB, free 8.2 GiB)
+26/10/04 15:55:40 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on <LAN_IP>:37859 (size: 2.4 KiB, free: 8.2 GiB)
+26/10/04 15:55:40 INFO SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:55:40 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78) (first 15 tasks are for partitions Vector(0))
+26/10/04 15:55:40 INFO TaskSchedulerImpl: Adding task set 1.0 with 1 tasks
+26/10/04 15:55:40 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 1, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7143 bytes)
+26/10/04 15:55:40 INFO Executor: Running task 0.0 in stage 1.0 (TID 1)
+26/10/04 15:55:40 INFO ShuffleBlockFetcherIterator: Getting 1 (539.0 B) non-empty blocks including 1 (539.0 B) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:55:40 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 2 ms
+26/10/04 15:55:40 INFO Executor: Finished task 0.0 in stage 1.0 (TID 1). 1894 bytes result sent to driver
+26/10/04 15:55:40 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 1) in 38 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 15:55:40 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool
+26/10/04 15:55:40 INFO DAGScheduler: ResultStage 1 (collect at MongoDB2USchema.java:80) finished in 0.042 s
+26/10/04 15:55:40 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 15:55:40 INFO TaskSchedulerImpl: Killing all running tasks in stage 1: Stage finished
+26/10/04 15:55:40 INFO DAGScheduler: Job 0 finished: collect at MongoDB2USchema.java:80, took 0.280921 s
+26/10/04 15:55:40 INFO SparkUI: Stopped Spark web UI at http://<LAN_IP>:4040
+26/10/04 15:55:40 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+26/10/04 15:55:40 INFO MemoryStore: MemoryStore cleared
+26/10/04 15:55:40 INFO BlockManager: BlockManager stopped
+26/10/04 15:55:40 INFO BlockManagerMaster: BlockManagerMaster stopped
+26/10/04 15:55:40 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+26/10/04 15:55:40 INFO SparkContext: Successfully stopped SparkContext
+26/10/04 15:55:40 INFO SparkContext: Running Spark version 3.0.1
+26/10/04 15:55:40 INFO ResourceUtils: ==============================================================
+26/10/04 15:55:40 INFO ResourceUtils: Resources for spark.driver:
+
+26/10/04 15:55:40 INFO ResourceUtils: ==============================================================
+26/10/04 15:55:40 INFO SparkContext: Submitted application: MongoDB
+26/10/04 15:55:40 INFO SecurityManager: Changing view acls to: root
+26/10/04 15:55:40 INFO SecurityManager: Changing modify acls to: root
+26/10/04 15:55:40 INFO SecurityManager: Changing view acls groups to:
+26/10/04 15:55:40 INFO SecurityManager: Changing modify acls groups to:
+26/10/04 15:55:40 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(root); groups with view permissions: Set(); users  with modify permissions: Set(root); groups with modify permissions: Set()
+26/10/04 15:55:40 INFO Utils: Successfully started service 'sparkDriver' on port 38571.
+26/10/04 15:55:40 INFO SparkEnv: Registering MapOutputTracker
+26/10/04 15:55:40 INFO SparkEnv: Registering BlockManagerMaster
+26/10/04 15:55:40 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/10/04 15:55:40 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/10/04 15:55:40 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/10/04 15:55:40 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-5e29a807-1fa3-4802-a849-5bffe31eb606
+26/10/04 15:55:40 INFO MemoryStore: MemoryStore started with capacity 8.2 GiB
+26/10/04 15:55:40 INFO SparkEnv: Registering OutputCommitCoordinator
+26/10/04 15:55:40 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/10/04 15:55:40 INFO SparkUI: Bound SparkUI to 0.0.0.0, and started at http://<LAN_IP>:4040
+26/10/04 15:55:40 INFO Executor: Starting executor ID driver on host <LAN_IP>
+26/10/04 15:55:40 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 37775.
+26/10/04 15:55:40 INFO NettyBlockTransferService: Server created on <LAN_IP>:37775
+26/10/04 15:55:40 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/10/04 15:55:40 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, <LAN_IP>, 37775, None)
+26/10/04 15:55:40 INFO BlockManagerMasterEndpoint: Registering block manager <LAN_IP>:37775 with 8.2 GiB RAM, BlockManagerId(driver, <LAN_IP>, 37775, None)
+26/10/04 15:55:40 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, <LAN_IP>, 37775, None)
+26/10/04 15:55:40 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, <LAN_IP>, 37775, None)
+26/10/04 15:55:40 WARN SparkContext: Using an existing SparkContext; some configuration may not take effect.
+26/10/04 15:55:40 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 208.0 B, free 8.2 GiB)
+26/10/04 15:55:40 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 392.0 B, free 8.2 GiB)
+26/10/04 15:55:40 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on <LAN_IP>:37775 (size: 392.0 B, free: 8.2 GiB)
+26/10/04 15:55:40 INFO SparkContext: Created broadcast 0 from broadcast at MongoSpark.scala:530
+26/10/04 15:55:40 INFO SparkContext: Starting job: collect at MongoDB2USchema.java:80
+26/10/04 15:55:40 INFO DAGScheduler: Registering RDD 1 (mapToPair at MongoDB2USchema.java:77) as input to shuffle 0
+26/10/04 15:55:40 INFO DAGScheduler: Got job 0 (collect at MongoDB2USchema.java:80) with 1 output partitions
+26/10/04 15:55:40 INFO DAGScheduler: Final stage: ResultStage 1 (collect at MongoDB2USchema.java:80)
+26/10/04 15:55:40 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 0)
+26/10/04 15:55:40 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 0)
+26/10/04 15:55:40 INFO DAGScheduler: Submitting ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77), which has no missing parents
+26/10/04 15:55:40 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 7.5 KiB, free 8.2 GiB)
+26/10/04 15:55:40 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 4.1 KiB, free 8.2 GiB)
+26/10/04 15:55:40 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on <LAN_IP>:37775 (size: 4.1 KiB, free: 8.2 GiB)
+26/10/04 15:55:40 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:55:40 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77) (first 15 tasks are for partitions Vector(0))
+26/10/04 15:55:40 INFO TaskSchedulerImpl: Adding task set 0.0 with 1 tasks
+26/10/04 15:55:40 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, <LAN_IP>, executor driver, partition 0, ANY, 7471 bytes)
+26/10/04 15:55:40 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+26/10/04 15:55:41 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 1203 bytes result sent to driver
+26/10/04 15:55:41 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 297 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 15:55:41 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool
+26/10/04 15:55:41 INFO DAGScheduler: ShuffleMapStage 0 (mapToPair at MongoDB2USchema.java:77) finished in 0.303 s
+26/10/04 15:55:41 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 15:55:41 INFO DAGScheduler: running: Set()
+26/10/04 15:55:41 INFO DAGScheduler: waiting: Set(ResultStage 1)
+26/10/04 15:55:41 INFO DAGScheduler: failed: Set()
+26/10/04 15:55:41 INFO DAGScheduler: Submitting ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78), which has no missing parents
+26/10/04 15:55:41 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 4.3 KiB, free 8.2 GiB)
+26/10/04 15:55:41 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 2.4 KiB, free 8.2 GiB)
+26/10/04 15:55:41 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on <LAN_IP>:37775 (size: 2.4 KiB, free: 8.2 GiB)
+26/10/04 15:55:41 INFO SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:55:41 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78) (first 15 tasks are for partitions Vector(0))
+26/10/04 15:55:41 INFO TaskSchedulerImpl: Adding task set 1.0 with 1 tasks
+26/10/04 15:55:41 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 1, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7143 bytes)
+26/10/04 15:55:41 INFO Executor: Running task 0.0 in stage 1.0 (TID 1)
+26/10/04 15:55:41 INFO ShuffleBlockFetcherIterator: Getting 1 (1156.0 B) non-empty blocks including 1 (1156.0 B) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:55:41 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 15:55:41 INFO Executor: Finished task 0.0 in stage 1.0 (TID 1). 6717 bytes result sent to driver
+26/10/04 15:55:41 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 1) in 6 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 15:55:41 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool
+26/10/04 15:55:41 INFO DAGScheduler: ResultStage 1 (collect at MongoDB2USchema.java:80) finished in 0.011 s
+26/10/04 15:55:41 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 15:55:41 INFO TaskSchedulerImpl: Killing all running tasks in stage 1: Stage finished
+26/10/04 15:55:41 INFO DAGScheduler: Job 0 finished: collect at MongoDB2USchema.java:80, took 0.315950 s
+26/10/04 15:55:41 INFO SparkUI: Stopped Spark web UI at http://<LAN_IP>:4040
+26/10/04 15:55:41 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+26/10/04 15:55:41 INFO MemoryStore: MemoryStore cleared
+26/10/04 15:55:41 INFO BlockManager: BlockManager stopped
+26/10/04 15:55:41 INFO BlockManagerMaster: BlockManagerMaster stopped
+26/10/04 15:55:41 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+26/10/04 15:55:41 INFO SparkContext: Successfully stopped SparkContext
+java.lang.InterruptedException
+	at java.lang.Object.wait(Native Method)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:144)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:165)
+	at org.eclipse.emf.common.util.CommonUtil$1ReferenceClearingQueuePollingThread.run(CommonUtil.java:70)
+26/10/04 15:55:46 INFO MongoClientCache: Closing MongoClient: [localhost:27017]
+26/10/04 15:55:46 INFO connection: Closed connection [connectionId{localValue:2, serverValue:1928}] to localhost:27017 because the pool has been closed.
+XMI gerado em /output/up_a_small.xmi
+  geracao=1.09s  boot=-  extracao=1.74s  inferencia=0.01s  escrita=0.00s  porte=1.76s  oraculo=18.27s  query=0.06s  norm=27.32919254658385x  equivalente=True  divergencias=7
+    Movie: real=50000  porte=50000 (100.0%)  oraculo=50000 (100.0%)
+    User: real=100000  porte=22377 (22.4%)  oraculo=22382 (22.4%)
+
+########## run_oracle_mongo A medium (tentativa 1)  12:55:56 ##########
+
+=== seed 23 | rota A | medium | python ===
+== Rota A | size medium | db up_a_medium | seed 23 | User=200000 Movie=100000 rels~5/user ==
+  movies: 100000 inseridos em 0.3s
+    users: 100000/200000 (1s)
+  users: 200000 inseridos em 1.6s
+== concluído em 2.0s ==
+Oct 04, 2026 3:56:04 PM com.google.inject.internal.InternalFlags getSystemOption
+WARNING: CHILD is not a valid flag value for guice_custom_class_loading.  Values must be one of [OFF, BRIDGE]
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+26/10/04 15:56:04 WARN Utils: Your hostname, <HOSTNAME> resolves to a loopback address: 127.0.1.1; using <LAN_IP> instead (on interface wlp5s0)
+26/10/04 15:56:04 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+26/10/04 15:56:05 INFO SparkContext: Running Spark version 3.0.1
+26/10/04 15:56:05 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+26/10/04 15:56:05 INFO ResourceUtils: ==============================================================
+26/10/04 15:56:05 INFO ResourceUtils: Resources for spark.driver:
+
+26/10/04 15:56:05 INFO ResourceUtils: ==============================================================
+26/10/04 15:56:05 INFO SparkContext: Submitted application: MongoDB
+26/10/04 15:56:05 INFO SecurityManager: Changing view acls to: root
+26/10/04 15:56:05 INFO SecurityManager: Changing modify acls to: root
+26/10/04 15:56:05 INFO SecurityManager: Changing view acls groups to:
+26/10/04 15:56:05 INFO SecurityManager: Changing modify acls groups to:
+26/10/04 15:56:05 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(root); groups with view permissions: Set(); users  with modify permissions: Set(root); groups with modify permissions: Set()
+26/10/04 15:56:05 INFO Utils: Successfully started service 'sparkDriver' on port 39781.
+26/10/04 15:56:05 INFO SparkEnv: Registering MapOutputTracker
+26/10/04 15:56:05 INFO SparkEnv: Registering BlockManagerMaster
+26/10/04 15:56:05 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/10/04 15:56:05 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/10/04 15:56:05 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/10/04 15:56:05 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-92e709a0-135a-44d7-b391-61eed33869e5
+26/10/04 15:56:05 INFO MemoryStore: MemoryStore started with capacity 8.2 GiB
+26/10/04 15:56:05 INFO SparkEnv: Registering OutputCommitCoordinator
+26/10/04 15:56:05 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/10/04 15:56:05 INFO SparkUI: Bound SparkUI to 0.0.0.0, and started at http://<LAN_IP>:4040
+26/10/04 15:56:05 INFO Executor: Starting executor ID driver on host <LAN_IP>
+26/10/04 15:56:05 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 36789.
+26/10/04 15:56:05 INFO NettyBlockTransferService: Server created on <LAN_IP>:36789
+26/10/04 15:56:05 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/10/04 15:56:05 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, <LAN_IP>, 36789, None)
+26/10/04 15:56:05 INFO BlockManagerMasterEndpoint: Registering block manager <LAN_IP>:36789 with 8.2 GiB RAM, BlockManagerId(driver, <LAN_IP>, 36789, None)
+26/10/04 15:56:05 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, <LAN_IP>, 36789, None)
+26/10/04 15:56:05 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, <LAN_IP>, 36789, None)
+26/10/04 15:56:05 WARN SparkContext: Using an existing SparkContext; some configuration may not take effect.
+26/10/04 15:56:05 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 208.0 B, free 8.2 GiB)
+26/10/04 15:56:05 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 392.0 B, free 8.2 GiB)
+26/10/04 15:56:05 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on <LAN_IP>:36789 (size: 392.0 B, free: 8.2 GiB)
+26/10/04 15:56:05 INFO SparkContext: Created broadcast 0 from broadcast at MongoSpark.scala:530
+26/10/04 15:56:05 INFO cluster: Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms'}
+26/10/04 15:56:05 INFO MongoClientCache: Creating MongoClient: [localhost:27017]
+26/10/04 15:56:05 INFO cluster: Cluster description not yet available. Waiting for 30000 ms before timing out
+26/10/04 15:56:05 INFO connection: Opened connection [connectionId{localValue:1, serverValue:1941}] to localhost:27017
+26/10/04 15:56:05 INFO cluster: Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=25, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=1091266}
+26/10/04 15:56:05 INFO connection: Opened connection [connectionId{localValue:2, serverValue:1942}] to localhost:27017
+26/10/04 15:56:05 INFO SparkContext: Starting job: collect at MongoDB2USchema.java:80
+26/10/04 15:56:05 INFO DAGScheduler: Registering RDD 1 (mapToPair at MongoDB2USchema.java:77) as input to shuffle 0
+26/10/04 15:56:05 INFO DAGScheduler: Got job 0 (collect at MongoDB2USchema.java:80) with 1 output partitions
+26/10/04 15:56:05 INFO DAGScheduler: Final stage: ResultStage 1 (collect at MongoDB2USchema.java:80)
+26/10/04 15:56:05 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 0)
+26/10/04 15:56:05 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 0)
+26/10/04 15:56:05 INFO DAGScheduler: Submitting ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77), which has no missing parents
+26/10/04 15:56:05 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 7.5 KiB, free 8.2 GiB)
+26/10/04 15:56:05 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 4.1 KiB, free 8.2 GiB)
+26/10/04 15:56:05 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on <LAN_IP>:36789 (size: 4.1 KiB, free: 8.2 GiB)
+26/10/04 15:56:05 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:56:05 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77) (first 15 tasks are for partitions Vector(0))
+26/10/04 15:56:05 INFO TaskSchedulerImpl: Adding task set 0.0 with 1 tasks
+26/10/04 15:56:05 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, <LAN_IP>, executor driver, partition 0, ANY, 7471 bytes)
+26/10/04 15:56:05 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+26/10/04 15:56:06 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 1160 bytes result sent to driver
+26/10/04 15:56:06 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 220 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 15:56:06 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool
+26/10/04 15:56:06 INFO DAGScheduler: ShuffleMapStage 0 (mapToPair at MongoDB2USchema.java:77) finished in 0.262 s
+26/10/04 15:56:06 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 15:56:06 INFO DAGScheduler: running: Set()
+26/10/04 15:56:06 INFO DAGScheduler: waiting: Set(ResultStage 1)
+26/10/04 15:56:06 INFO DAGScheduler: failed: Set()
+26/10/04 15:56:06 INFO DAGScheduler: Submitting ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78), which has no missing parents
+26/10/04 15:56:06 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 4.3 KiB, free 8.2 GiB)
+26/10/04 15:56:06 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 2.4 KiB, free 8.2 GiB)
+26/10/04 15:56:06 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on <LAN_IP>:36789 (size: 2.4 KiB, free: 8.2 GiB)
+26/10/04 15:56:06 INFO SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:56:06 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78) (first 15 tasks are for partitions Vector(0))
+26/10/04 15:56:06 INFO TaskSchedulerImpl: Adding task set 1.0 with 1 tasks
+26/10/04 15:56:06 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 1, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7143 bytes)
+26/10/04 15:56:06 INFO Executor: Running task 0.0 in stage 1.0 (TID 1)
+26/10/04 15:56:06 INFO ShuffleBlockFetcherIterator: Getting 1 (539.0 B) non-empty blocks including 1 (539.0 B) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:56:06 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 2 ms
+26/10/04 15:56:06 INFO Executor: Finished task 0.0 in stage 1.0 (TID 1). 1894 bytes result sent to driver
+26/10/04 15:56:06 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 1) in 41 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 15:56:06 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool
+26/10/04 15:56:06 INFO DAGScheduler: ResultStage 1 (collect at MongoDB2USchema.java:80) finished in 0.046 s
+26/10/04 15:56:06 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 15:56:06 INFO TaskSchedulerImpl: Killing all running tasks in stage 1: Stage finished
+26/10/04 15:56:06 INFO DAGScheduler: Job 0 finished: collect at MongoDB2USchema.java:80, took 0.327633 s
+26/10/04 15:56:06 INFO SparkUI: Stopped Spark web UI at http://<LAN_IP>:4040
+26/10/04 15:56:06 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+26/10/04 15:56:06 INFO MemoryStore: MemoryStore cleared
+26/10/04 15:56:06 INFO BlockManager: BlockManager stopped
+26/10/04 15:56:06 INFO BlockManagerMaster: BlockManagerMaster stopped
+26/10/04 15:56:06 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+26/10/04 15:56:06 INFO SparkContext: Successfully stopped SparkContext
+26/10/04 15:56:06 INFO SparkContext: Running Spark version 3.0.1
+26/10/04 15:56:06 INFO ResourceUtils: ==============================================================
+26/10/04 15:56:06 INFO ResourceUtils: Resources for spark.driver:
+
+26/10/04 15:56:06 INFO ResourceUtils: ==============================================================
+26/10/04 15:56:06 INFO SparkContext: Submitted application: MongoDB
+26/10/04 15:56:06 INFO SecurityManager: Changing view acls to: root
+26/10/04 15:56:06 INFO SecurityManager: Changing modify acls to: root
+26/10/04 15:56:06 INFO SecurityManager: Changing view acls groups to:
+26/10/04 15:56:06 INFO SecurityManager: Changing modify acls groups to:
+26/10/04 15:56:06 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(root); groups with view permissions: Set(); users  with modify permissions: Set(root); groups with modify permissions: Set()
+26/10/04 15:56:06 INFO Utils: Successfully started service 'sparkDriver' on port 37651.
+26/10/04 15:56:06 INFO SparkEnv: Registering MapOutputTracker
+26/10/04 15:56:06 INFO SparkEnv: Registering BlockManagerMaster
+26/10/04 15:56:06 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/10/04 15:56:06 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/10/04 15:56:06 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/10/04 15:56:06 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-dca92d7d-35d0-4348-adfd-912613437374
+26/10/04 15:56:06 INFO MemoryStore: MemoryStore started with capacity 8.2 GiB
+26/10/04 15:56:06 INFO SparkEnv: Registering OutputCommitCoordinator
+26/10/04 15:56:06 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/10/04 15:56:06 INFO SparkUI: Bound SparkUI to 0.0.0.0, and started at http://<LAN_IP>:4040
+26/10/04 15:56:06 INFO Executor: Starting executor ID driver on host <LAN_IP>
+26/10/04 15:56:06 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 36717.
+26/10/04 15:56:06 INFO NettyBlockTransferService: Server created on <LAN_IP>:36717
+26/10/04 15:56:06 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/10/04 15:56:06 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, <LAN_IP>, 36717, None)
+26/10/04 15:56:06 INFO BlockManagerMasterEndpoint: Registering block manager <LAN_IP>:36717 with 8.2 GiB RAM, BlockManagerId(driver, <LAN_IP>, 36717, None)
+26/10/04 15:56:06 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, <LAN_IP>, 36717, None)
+26/10/04 15:56:06 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, <LAN_IP>, 36717, None)
+26/10/04 15:56:06 WARN SparkContext: Using an existing SparkContext; some configuration may not take effect.
+26/10/04 15:56:06 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 208.0 B, free 8.2 GiB)
+26/10/04 15:56:06 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 392.0 B, free 8.2 GiB)
+26/10/04 15:56:06 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on <LAN_IP>:36717 (size: 392.0 B, free: 8.2 GiB)
+26/10/04 15:56:06 INFO SparkContext: Created broadcast 0 from broadcast at MongoSpark.scala:530
+26/10/04 15:56:06 INFO SparkContext: Starting job: collect at MongoDB2USchema.java:80
+26/10/04 15:56:06 INFO DAGScheduler: Registering RDD 1 (mapToPair at MongoDB2USchema.java:77) as input to shuffle 0
+26/10/04 15:56:06 INFO DAGScheduler: Got job 0 (collect at MongoDB2USchema.java:80) with 2 output partitions
+26/10/04 15:56:06 INFO DAGScheduler: Final stage: ResultStage 1 (collect at MongoDB2USchema.java:80)
+26/10/04 15:56:06 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 0)
+26/10/04 15:56:06 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 0)
+26/10/04 15:56:06 INFO DAGScheduler: Submitting ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77), which has no missing parents
+26/10/04 15:56:06 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 7.5 KiB, free 8.2 GiB)
+26/10/04 15:56:06 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 4.1 KiB, free 8.2 GiB)
+26/10/04 15:56:06 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on <LAN_IP>:36717 (size: 4.1 KiB, free: 8.2 GiB)
+26/10/04 15:56:06 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:56:06 INFO DAGScheduler: Submitting 2 missing tasks from ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77) (first 15 tasks are for partitions Vector(0, 1))
+26/10/04 15:56:06 INFO TaskSchedulerImpl: Adding task set 0.0 with 2 tasks
+26/10/04 15:56:06 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, <LAN_IP>, executor driver, partition 0, ANY, 7498 bytes)
+26/10/04 15:56:06 INFO TaskSetManager: Starting task 1.0 in stage 0.0 (TID 1, <LAN_IP>, executor driver, partition 1, ANY, 7499 bytes)
+26/10/04 15:56:06 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+26/10/04 15:56:06 INFO Executor: Running task 1.0 in stage 0.0 (TID 1)
+26/10/04 15:56:06 INFO connection: Opened connection [connectionId{localValue:3, serverValue:1943}] to localhost:27017
+26/10/04 15:56:06 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 1204 bytes result sent to driver
+26/10/04 15:56:06 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 220 ms on <LAN_IP> (executor driver) (1/2)
+26/10/04 15:56:06 INFO Executor: Finished task 1.0 in stage 0.0 (TID 1). 1204 bytes result sent to driver
+26/10/04 15:56:06 INFO TaskSetManager: Finished task 1.0 in stage 0.0 (TID 1) in 554 ms on <LAN_IP> (executor driver) (2/2)
+26/10/04 15:56:06 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool
+26/10/04 15:56:06 INFO DAGScheduler: ShuffleMapStage 0 (mapToPair at MongoDB2USchema.java:77) finished in 0.559 s
+26/10/04 15:56:06 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 15:56:06 INFO DAGScheduler: running: Set()
+26/10/04 15:56:06 INFO DAGScheduler: waiting: Set(ResultStage 1)
+26/10/04 15:56:06 INFO DAGScheduler: failed: Set()
+26/10/04 15:56:06 INFO DAGScheduler: Submitting ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78), which has no missing parents
+26/10/04 15:56:06 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 4.3 KiB, free 8.2 GiB)
+26/10/04 15:56:06 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 2.4 KiB, free 8.2 GiB)
+26/10/04 15:56:06 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on <LAN_IP>:36717 (size: 2.4 KiB, free: 8.2 GiB)
+26/10/04 15:56:06 INFO SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:56:06 INFO DAGScheduler: Submitting 2 missing tasks from ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78) (first 15 tasks are for partitions Vector(0, 1))
+26/10/04 15:56:06 INFO TaskSchedulerImpl: Adding task set 1.0 with 2 tasks
+26/10/04 15:56:06 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 2, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7143 bytes)
+26/10/04 15:56:06 INFO TaskSetManager: Starting task 1.0 in stage 1.0 (TID 3, <LAN_IP>, executor driver, partition 1, NODE_LOCAL, 7143 bytes)
+26/10/04 15:56:06 INFO Executor: Running task 0.0 in stage 1.0 (TID 2)
+26/10/04 15:56:06 INFO Executor: Running task 1.0 in stage 1.0 (TID 3)
+26/10/04 15:56:06 INFO ShuffleBlockFetcherIterator: Getting 2 (2.5 KiB) non-empty blocks including 2 (2.5 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:56:06 INFO ShuffleBlockFetcherIterator: Getting 2 (2.3 KiB) non-empty blocks including 2 (2.3 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:56:06 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 15:56:06 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 15:56:06 INFO Executor: Finished task 0.0 in stage 1.0 (TID 2). 7619 bytes result sent to driver
+26/10/04 15:56:06 INFO Executor: Finished task 1.0 in stage 1.0 (TID 3). 10530 bytes result sent to driver
+26/10/04 15:56:06 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 2) in 7 ms on <LAN_IP> (executor driver) (1/2)
+26/10/04 15:56:06 INFO TaskSetManager: Finished task 1.0 in stage 1.0 (TID 3) in 8 ms on <LAN_IP> (executor driver) (2/2)
+26/10/04 15:56:06 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool
+26/10/04 15:56:06 INFO DAGScheduler: ResultStage 1 (collect at MongoDB2USchema.java:80) finished in 0.012 s
+26/10/04 15:56:06 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 15:56:06 INFO TaskSchedulerImpl: Killing all running tasks in stage 1: Stage finished
+26/10/04 15:56:06 INFO DAGScheduler: Job 0 finished: collect at MongoDB2USchema.java:80, took 0.575129 s
+26/10/04 15:56:06 INFO SparkUI: Stopped Spark web UI at http://<LAN_IP>:4040
+26/10/04 15:56:06 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+26/10/04 15:56:06 INFO MemoryStore: MemoryStore cleared
+26/10/04 15:56:06 INFO BlockManager: BlockManager stopped
+26/10/04 15:56:06 INFO BlockManagerMaster: BlockManagerMaster stopped
+26/10/04 15:56:06 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+26/10/04 15:56:06 INFO SparkContext: Successfully stopped SparkContext
+java.lang.InterruptedException
+	at java.lang.Object.wait(Native Method)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:144)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:165)
+	at org.eclipse.emf.common.util.CommonUtil$1ReferenceClearingQueuePollingThread.run(CommonUtil.java:70)
+26/10/04 15:56:11 INFO MongoClientCache: Closing MongoClient: [localhost:27017]
+26/10/04 15:56:11 INFO connection: Closed connection [connectionId{localValue:3, serverValue:1943}] to localhost:27017 because the pool has been closed.
+26/10/04 15:56:11 INFO connection: Closed connection [connectionId{localValue:2, serverValue:1942}] to localhost:27017 because the pool has been closed.
+XMI gerado em /output/up_a_medium.xmi
+  geracao=2.10s  boot=-  extracao=3.88s  inferencia=0.01s  escrita=0.00s  porte=3.90s  oraculo=18.75s  query=0.10s  norm=37.60848601735776x  equivalente=True  divergencias=7
+    Movie: real=100000  porte=100000 (100.0%)  oraculo=100000 (100.0%)
+    User: real=200000  porte=24252 (12.1%)  oraculo=24017 (12.0%)
+
+########## run_oracle_mongo A large (tentativa 1)  12:56:22 ##########
+
+=== seed 23 | rota A | large | python ===
+== Rota A | size large | db up_a_large | seed 23 | User=400000 Movie=200000 rels~10/user ==
+  movies: 200000 inseridos em 0.7s
+    users: 100000/400000 (1s)
+    users: 200000/400000 (2s)
+    users: 300000/400000 (4s)
+  users: 400000 inseridos em 4.8s
+== concluído em 5.5s ==
+Oct 04, 2026 3:56:40 PM com.google.inject.internal.InternalFlags getSystemOption
+WARNING: CHILD is not a valid flag value for guice_custom_class_loading.  Values must be one of [OFF, BRIDGE]
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+26/10/04 15:56:40 WARN Utils: Your hostname, <HOSTNAME> resolves to a loopback address: 127.0.1.1; using <LAN_IP> instead (on interface wlp5s0)
+26/10/04 15:56:40 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+26/10/04 15:56:40 INFO SparkContext: Running Spark version 3.0.1
+26/10/04 15:56:40 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+26/10/04 15:56:40 INFO ResourceUtils: ==============================================================
+26/10/04 15:56:40 INFO ResourceUtils: Resources for spark.driver:
+
+26/10/04 15:56:40 INFO ResourceUtils: ==============================================================
+26/10/04 15:56:40 INFO SparkContext: Submitted application: MongoDB
+26/10/04 15:56:40 INFO SecurityManager: Changing view acls to: root
+26/10/04 15:56:40 INFO SecurityManager: Changing modify acls to: root
+26/10/04 15:56:40 INFO SecurityManager: Changing view acls groups to:
+26/10/04 15:56:40 INFO SecurityManager: Changing modify acls groups to:
+26/10/04 15:56:40 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(root); groups with view permissions: Set(); users  with modify permissions: Set(root); groups with modify permissions: Set()
+26/10/04 15:56:41 INFO Utils: Successfully started service 'sparkDriver' on port 45199.
+26/10/04 15:56:41 INFO SparkEnv: Registering MapOutputTracker
+26/10/04 15:56:41 INFO SparkEnv: Registering BlockManagerMaster
+26/10/04 15:56:41 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/10/04 15:56:41 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/10/04 15:56:41 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/10/04 15:56:41 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-a9ea489a-3e77-436c-a4db-73ab2e9d4098
+26/10/04 15:56:41 INFO MemoryStore: MemoryStore started with capacity 8.2 GiB
+26/10/04 15:56:41 INFO SparkEnv: Registering OutputCommitCoordinator
+26/10/04 15:56:41 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/10/04 15:56:41 INFO SparkUI: Bound SparkUI to 0.0.0.0, and started at http://<LAN_IP>:4040
+26/10/04 15:56:41 INFO Executor: Starting executor ID driver on host <LAN_IP>
+26/10/04 15:56:41 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 38853.
+26/10/04 15:56:41 INFO NettyBlockTransferService: Server created on <LAN_IP>:38853
+26/10/04 15:56:41 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/10/04 15:56:41 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, <LAN_IP>, 38853, None)
+26/10/04 15:56:41 INFO BlockManagerMasterEndpoint: Registering block manager <LAN_IP>:38853 with 8.2 GiB RAM, BlockManagerId(driver, <LAN_IP>, 38853, None)
+26/10/04 15:56:41 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, <LAN_IP>, 38853, None)
+26/10/04 15:56:41 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, <LAN_IP>, 38853, None)
+26/10/04 15:56:41 WARN SparkContext: Using an existing SparkContext; some configuration may not take effect.
+26/10/04 15:56:41 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 208.0 B, free 8.2 GiB)
+26/10/04 15:56:41 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 392.0 B, free 8.2 GiB)
+26/10/04 15:56:41 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on <LAN_IP>:38853 (size: 392.0 B, free: 8.2 GiB)
+26/10/04 15:56:41 INFO SparkContext: Created broadcast 0 from broadcast at MongoSpark.scala:530
+26/10/04 15:56:41 INFO cluster: Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms'}
+26/10/04 15:56:41 INFO MongoClientCache: Creating MongoClient: [localhost:27017]
+26/10/04 15:56:41 INFO cluster: Cluster description not yet available. Waiting for 30000 ms before timing out
+26/10/04 15:56:41 INFO connection: Opened connection [connectionId{localValue:1, serverValue:1956}] to localhost:27017
+26/10/04 15:56:41 INFO cluster: Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=25, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=1174430}
+26/10/04 15:56:41 INFO connection: Opened connection [connectionId{localValue:2, serverValue:1957}] to localhost:27017
+26/10/04 15:56:41 INFO SparkContext: Starting job: collect at MongoDB2USchema.java:80
+26/10/04 15:56:41 INFO DAGScheduler: Registering RDD 1 (mapToPair at MongoDB2USchema.java:77) as input to shuffle 0
+26/10/04 15:56:41 INFO DAGScheduler: Got job 0 (collect at MongoDB2USchema.java:80) with 1 output partitions
+26/10/04 15:56:41 INFO DAGScheduler: Final stage: ResultStage 1 (collect at MongoDB2USchema.java:80)
+26/10/04 15:56:41 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 0)
+26/10/04 15:56:41 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 0)
+26/10/04 15:56:41 INFO DAGScheduler: Submitting ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77), which has no missing parents
+26/10/04 15:56:41 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 7.5 KiB, free 8.2 GiB)
+26/10/04 15:56:41 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 4.1 KiB, free 8.2 GiB)
+26/10/04 15:56:41 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on <LAN_IP>:38853 (size: 4.1 KiB, free: 8.2 GiB)
+26/10/04 15:56:41 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:56:41 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77) (first 15 tasks are for partitions Vector(0))
+26/10/04 15:56:41 INFO TaskSchedulerImpl: Adding task set 0.0 with 1 tasks
+26/10/04 15:56:41 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, <LAN_IP>, executor driver, partition 0, ANY, 7471 bytes)
+26/10/04 15:56:41 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+26/10/04 15:56:42 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 1203 bytes result sent to driver
+26/10/04 15:56:42 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 326 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 15:56:42 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool
+26/10/04 15:56:42 INFO DAGScheduler: ShuffleMapStage 0 (mapToPair at MongoDB2USchema.java:77) finished in 0.367 s
+26/10/04 15:56:42 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 15:56:42 INFO DAGScheduler: running: Set()
+26/10/04 15:56:42 INFO DAGScheduler: waiting: Set(ResultStage 1)
+26/10/04 15:56:42 INFO DAGScheduler: failed: Set()
+26/10/04 15:56:42 INFO DAGScheduler: Submitting ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78), which has no missing parents
+26/10/04 15:56:42 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 4.3 KiB, free 8.2 GiB)
+26/10/04 15:56:42 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 2.4 KiB, free 8.2 GiB)
+26/10/04 15:56:42 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on <LAN_IP>:38853 (size: 2.4 KiB, free: 8.2 GiB)
+26/10/04 15:56:42 INFO SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:56:42 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78) (first 15 tasks are for partitions Vector(0))
+26/10/04 15:56:42 INFO TaskSchedulerImpl: Adding task set 1.0 with 1 tasks
+26/10/04 15:56:42 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 1, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7143 bytes)
+26/10/04 15:56:42 INFO Executor: Running task 0.0 in stage 1.0 (TID 1)
+26/10/04 15:56:42 INFO ShuffleBlockFetcherIterator: Getting 1 (539.0 B) non-empty blocks including 1 (539.0 B) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:56:42 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 2 ms
+26/10/04 15:56:42 INFO Executor: Finished task 0.0 in stage 1.0 (TID 1). 1894 bytes result sent to driver
+26/10/04 15:56:42 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 1) in 32 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 15:56:42 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool
+26/10/04 15:56:42 INFO DAGScheduler: ResultStage 1 (collect at MongoDB2USchema.java:80) finished in 0.035 s
+26/10/04 15:56:42 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 15:56:42 INFO TaskSchedulerImpl: Killing all running tasks in stage 1: Stage finished
+26/10/04 15:56:42 INFO DAGScheduler: Job 0 finished: collect at MongoDB2USchema.java:80, took 0.425429 s
+26/10/04 15:56:42 INFO SparkUI: Stopped Spark web UI at http://<LAN_IP>:4040
+26/10/04 15:56:42 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+26/10/04 15:56:42 INFO MemoryStore: MemoryStore cleared
+26/10/04 15:56:42 INFO BlockManager: BlockManager stopped
+26/10/04 15:56:42 INFO BlockManagerMaster: BlockManagerMaster stopped
+26/10/04 15:56:42 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+26/10/04 15:56:42 INFO SparkContext: Successfully stopped SparkContext
+26/10/04 15:56:42 INFO SparkContext: Running Spark version 3.0.1
+26/10/04 15:56:42 INFO ResourceUtils: ==============================================================
+26/10/04 15:56:42 INFO ResourceUtils: Resources for spark.driver:
+
+26/10/04 15:56:42 INFO ResourceUtils: ==============================================================
+26/10/04 15:56:42 INFO SparkContext: Submitted application: MongoDB
+26/10/04 15:56:42 INFO SecurityManager: Changing view acls to: root
+26/10/04 15:56:42 INFO SecurityManager: Changing modify acls to: root
+26/10/04 15:56:42 INFO SecurityManager: Changing view acls groups to:
+26/10/04 15:56:42 INFO SecurityManager: Changing modify acls groups to:
+26/10/04 15:56:42 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(root); groups with view permissions: Set(); users  with modify permissions: Set(root); groups with modify permissions: Set()
+26/10/04 15:56:42 INFO Utils: Successfully started service 'sparkDriver' on port 37383.
+26/10/04 15:56:42 INFO SparkEnv: Registering MapOutputTracker
+26/10/04 15:56:42 INFO SparkEnv: Registering BlockManagerMaster
+26/10/04 15:56:42 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/10/04 15:56:42 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/10/04 15:56:42 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/10/04 15:56:42 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-88f92986-55d8-4ad3-8e07-45b74fd779f6
+26/10/04 15:56:42 INFO MemoryStore: MemoryStore started with capacity 8.2 GiB
+26/10/04 15:56:42 INFO SparkEnv: Registering OutputCommitCoordinator
+26/10/04 15:56:42 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/10/04 15:56:42 INFO SparkUI: Bound SparkUI to 0.0.0.0, and started at http://<LAN_IP>:4040
+26/10/04 15:56:42 INFO Executor: Starting executor ID driver on host <LAN_IP>
+26/10/04 15:56:42 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 40405.
+26/10/04 15:56:42 INFO NettyBlockTransferService: Server created on <LAN_IP>:40405
+26/10/04 15:56:42 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/10/04 15:56:42 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, <LAN_IP>, 40405, None)
+26/10/04 15:56:42 INFO BlockManagerMasterEndpoint: Registering block manager <LAN_IP>:40405 with 8.2 GiB RAM, BlockManagerId(driver, <LAN_IP>, 40405, None)
+26/10/04 15:56:42 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, <LAN_IP>, 40405, None)
+26/10/04 15:56:42 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, <LAN_IP>, 40405, None)
+26/10/04 15:56:42 WARN SparkContext: Using an existing SparkContext; some configuration may not take effect.
+26/10/04 15:56:42 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 208.0 B, free 8.2 GiB)
+26/10/04 15:56:42 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 392.0 B, free 8.2 GiB)
+26/10/04 15:56:42 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on <LAN_IP>:40405 (size: 392.0 B, free: 8.2 GiB)
+26/10/04 15:56:42 INFO SparkContext: Created broadcast 0 from broadcast at MongoSpark.scala:530
+26/10/04 15:56:42 INFO SparkContext: Starting job: collect at MongoDB2USchema.java:80
+26/10/04 15:56:42 INFO DAGScheduler: Registering RDD 1 (mapToPair at MongoDB2USchema.java:77) as input to shuffle 0
+26/10/04 15:56:42 INFO DAGScheduler: Got job 0 (collect at MongoDB2USchema.java:80) with 4 output partitions
+26/10/04 15:56:42 INFO DAGScheduler: Final stage: ResultStage 1 (collect at MongoDB2USchema.java:80)
+26/10/04 15:56:42 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 0)
+26/10/04 15:56:42 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 0)
+26/10/04 15:56:42 INFO DAGScheduler: Submitting ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77), which has no missing parents
+26/10/04 15:56:42 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 7.5 KiB, free 8.2 GiB)
+26/10/04 15:56:42 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 4.1 KiB, free 8.2 GiB)
+26/10/04 15:56:42 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on <LAN_IP>:40405 (size: 4.1 KiB, free: 8.2 GiB)
+26/10/04 15:56:42 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:56:42 INFO DAGScheduler: Submitting 4 missing tasks from ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77) (first 15 tasks are for partitions Vector(0, 1, 2, 3))
+26/10/04 15:56:42 INFO TaskSchedulerImpl: Adding task set 0.0 with 4 tasks
+26/10/04 15:56:42 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, <LAN_IP>, executor driver, partition 0, ANY, 7498 bytes)
+26/10/04 15:56:42 INFO TaskSetManager: Starting task 1.0 in stage 0.0 (TID 1, <LAN_IP>, executor driver, partition 1, ANY, 7516 bytes)
+26/10/04 15:56:42 INFO TaskSetManager: Starting task 2.0 in stage 0.0 (TID 2, <LAN_IP>, executor driver, partition 2, ANY, 7516 bytes)
+26/10/04 15:56:42 INFO TaskSetManager: Starting task 3.0 in stage 0.0 (TID 3, <LAN_IP>, executor driver, partition 3, ANY, 7499 bytes)
+26/10/04 15:56:42 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+26/10/04 15:56:42 INFO Executor: Running task 1.0 in stage 0.0 (TID 1)
+26/10/04 15:56:42 INFO Executor: Running task 2.0 in stage 0.0 (TID 2)
+26/10/04 15:56:42 INFO Executor: Running task 3.0 in stage 0.0 (TID 3)
+26/10/04 15:56:42 INFO connection: Opened connection [connectionId{localValue:3, serverValue:1958}] to localhost:27017
+26/10/04 15:56:42 INFO connection: Opened connection [connectionId{localValue:4, serverValue:1959}] to localhost:27017
+26/10/04 15:56:42 INFO connection: Opened connection [connectionId{localValue:5, serverValue:1960}] to localhost:27017
+26/10/04 15:56:42 INFO Executor: Finished task 1.0 in stage 0.0 (TID 1). 1206 bytes result sent to driver
+26/10/04 15:56:42 INFO TaskSetManager: Finished task 1.0 in stage 0.0 (TID 1) in 237 ms on <LAN_IP> (executor driver) (1/4)
+26/10/04 15:56:42 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 1206 bytes result sent to driver
+26/10/04 15:56:42 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 374 ms on <LAN_IP> (executor driver) (2/4)
+26/10/04 15:56:42 INFO Executor: Finished task 2.0 in stage 0.0 (TID 2). 1206 bytes result sent to driver
+26/10/04 15:56:42 INFO TaskSetManager: Finished task 2.0 in stage 0.0 (TID 2) in 641 ms on <LAN_IP> (executor driver) (3/4)
+26/10/04 15:56:43 INFO Executor: Finished task 3.0 in stage 0.0 (TID 3). 1206 bytes result sent to driver
+26/10/04 15:56:43 INFO TaskSetManager: Finished task 3.0 in stage 0.0 (TID 3) in 1305 ms on <LAN_IP> (executor driver) (4/4)
+26/10/04 15:56:43 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool
+26/10/04 15:56:43 INFO DAGScheduler: ShuffleMapStage 0 (mapToPair at MongoDB2USchema.java:77) finished in 1.311 s
+26/10/04 15:56:43 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 15:56:43 INFO DAGScheduler: running: Set()
+26/10/04 15:56:43 INFO DAGScheduler: waiting: Set(ResultStage 1)
+26/10/04 15:56:43 INFO DAGScheduler: failed: Set()
+26/10/04 15:56:43 INFO DAGScheduler: Submitting ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78), which has no missing parents
+26/10/04 15:56:43 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 4.3 KiB, free 8.2 GiB)
+26/10/04 15:56:43 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 2.4 KiB, free 8.2 GiB)
+26/10/04 15:56:43 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on <LAN_IP>:40405 (size: 2.4 KiB, free: 8.2 GiB)
+26/10/04 15:56:43 INFO SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:56:43 INFO DAGScheduler: Submitting 4 missing tasks from ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78) (first 15 tasks are for partitions Vector(0, 1, 2, 3))
+26/10/04 15:56:43 INFO TaskSchedulerImpl: Adding task set 1.0 with 4 tasks
+26/10/04 15:56:43 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 4, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7143 bytes)
+26/10/04 15:56:43 INFO TaskSetManager: Starting task 1.0 in stage 1.0 (TID 5, <LAN_IP>, executor driver, partition 1, NODE_LOCAL, 7143 bytes)
+26/10/04 15:56:43 INFO TaskSetManager: Starting task 2.0 in stage 1.0 (TID 6, <LAN_IP>, executor driver, partition 2, NODE_LOCAL, 7143 bytes)
+26/10/04 15:56:43 INFO TaskSetManager: Starting task 3.0 in stage 1.0 (TID 7, <LAN_IP>, executor driver, partition 3, NODE_LOCAL, 7143 bytes)
+26/10/04 15:56:43 INFO Executor: Running task 0.0 in stage 1.0 (TID 4)
+26/10/04 15:56:43 INFO Executor: Running task 1.0 in stage 1.0 (TID 5)
+26/10/04 15:56:43 INFO Executor: Running task 2.0 in stage 1.0 (TID 6)
+26/10/04 15:56:43 INFO Executor: Running task 3.0 in stage 1.0 (TID 7)
+26/10/04 15:56:43 INFO ShuffleBlockFetcherIterator: Getting 4 (6.3 KiB) non-empty blocks including 4 (6.3 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:56:43 INFO ShuffleBlockFetcherIterator: Getting 4 (5.6 KiB) non-empty blocks including 4 (5.6 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:56:43 INFO ShuffleBlockFetcherIterator: Getting 4 (5.1 KiB) non-empty blocks including 4 (5.1 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:56:43 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 15:56:43 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 15:56:43 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 15:56:43 INFO ShuffleBlockFetcherIterator: Getting 4 (5.6 KiB) non-empty blocks including 4 (5.6 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:56:43 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 15:56:43 INFO Executor: Finished task 1.0 in stage 1.0 (TID 5). 17702 bytes result sent to driver
+26/10/04 15:56:43 INFO Executor: Finished task 3.0 in stage 1.0 (TID 7). 20280 bytes result sent to driver
+26/10/04 15:56:43 INFO TaskSetManager: Finished task 1.0 in stage 1.0 (TID 5) in 16 ms on <LAN_IP> (executor driver) (1/4)
+26/10/04 15:56:43 INFO Executor: Finished task 0.0 in stage 1.0 (TID 4). 22120 bytes result sent to driver
+26/10/04 15:56:43 INFO TaskSetManager: Finished task 3.0 in stage 1.0 (TID 7) in 16 ms on <LAN_IP> (executor driver) (2/4)
+26/10/04 15:56:43 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 4) in 18 ms on <LAN_IP> (executor driver) (3/4)
+26/10/04 15:56:43 INFO Executor: Finished task 2.0 in stage 1.0 (TID 6). 19235 bytes result sent to driver
+26/10/04 15:56:43 INFO TaskSetManager: Finished task 2.0 in stage 1.0 (TID 6) in 20 ms on <LAN_IP> (executor driver) (4/4)
+26/10/04 15:56:43 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool
+26/10/04 15:56:43 INFO DAGScheduler: ResultStage 1 (collect at MongoDB2USchema.java:80) finished in 0.023 s
+26/10/04 15:56:43 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 15:56:43 INFO TaskSchedulerImpl: Killing all running tasks in stage 1: Stage finished
+26/10/04 15:56:43 INFO DAGScheduler: Job 0 finished: collect at MongoDB2USchema.java:80, took 1.339039 s
+26/10/04 15:56:43 INFO SparkUI: Stopped Spark web UI at http://<LAN_IP>:4040
+26/10/04 15:56:43 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+26/10/04 15:56:43 INFO MemoryStore: MemoryStore cleared
+26/10/04 15:56:43 INFO BlockManager: BlockManager stopped
+26/10/04 15:56:43 INFO BlockManagerMaster: BlockManagerMaster stopped
+26/10/04 15:56:43 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+26/10/04 15:56:43 INFO SparkContext: Successfully stopped SparkContext
+java.lang.InterruptedException
+	at java.lang.Object.wait(Native Method)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:144)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:165)
+	at org.eclipse.emf.common.util.CommonUtil$1ReferenceClearingQueuePollingThread.run(CommonUtil.java:70)
+26/10/04 15:56:48 INFO MongoClientCache: Closing MongoClient: [localhost:27017]
+26/10/04 15:56:48 INFO connection: Closed connection [connectionId{localValue:3, serverValue:1958}] to localhost:27017 because the pool has been closed.
+26/10/04 15:56:48 INFO connection: Closed connection [connectionId{localValue:5, serverValue:1960}] to localhost:27017 because the pool has been closed.
+26/10/04 15:56:48 INFO connection: Closed connection [connectionId{localValue:2, serverValue:1957}] to localhost:27017 because the pool has been closed.
+26/10/04 15:56:48 INFO connection: Closed connection [connectionId{localValue:4, serverValue:1959}] to localhost:27017 because the pool has been closed.
+XMI gerado em /output/up_a_large.xmi
+  geracao=5.64s  boot=-  extracao=10.55s  inferencia=0.02s  escrita=0.00s  porte=10.57s  oraculo=19.68s  query=0.22s  norm=48.912540490513656x  equivalente=True  divergencias=7
+    Movie: real=200000  porte=200000 (100.0%)  oraculo=200000 (100.0%)
+    User: real=400000  porte=21867 (5.5%)  oraculo=21909 (5.5%)
+
+########## run_oracle_mongo A larger (tentativa 1)  12:56:59 ##########
+
+=== seed 23 | rota A | larger | python ===
+== Rota A | size larger | db up_a_larger | seed 23 | User=800000 Movie=400000 rels~20/user ==
+  movies: 400000 inseridos em 1.4s
+    users: 100000/800000 (2s)
+    users: 200000/800000 (4s)
+    users: 300000/800000 (6s)
+    users: 400000/800000 (8s)
+    users: 500000/800000 (10s)
+    users: 600000/800000 (12s)
+    users: 700000/800000 (14s)
+  users: 800000 inseridos em 16.5s
+== concluído em 17.9s ==
+Oct 04, 2026 3:57:51 PM com.google.inject.internal.InternalFlags getSystemOption
+WARNING: CHILD is not a valid flag value for guice_custom_class_loading.  Values must be one of [OFF, BRIDGE]
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+26/10/04 15:57:51 WARN Utils: Your hostname, <HOSTNAME> resolves to a loopback address: 127.0.1.1; using <LAN_IP> instead (on interface wlp5s0)
+26/10/04 15:57:51 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+26/10/04 15:57:56 INFO SparkContext: Running Spark version 3.0.1
+26/10/04 15:57:57 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+26/10/04 15:57:57 INFO ResourceUtils: ==============================================================
+26/10/04 15:57:57 INFO ResourceUtils: Resources for spark.driver:
+
+26/10/04 15:57:57 INFO ResourceUtils: ==============================================================
+26/10/04 15:57:57 INFO SparkContext: Submitted application: MongoDB
+26/10/04 15:57:57 INFO SecurityManager: Changing view acls to: root
+26/10/04 15:57:57 INFO SecurityManager: Changing modify acls to: root
+26/10/04 15:57:57 INFO SecurityManager: Changing view acls groups to:
+26/10/04 15:57:57 INFO SecurityManager: Changing modify acls groups to:
+26/10/04 15:57:57 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(root); groups with view permissions: Set(); users  with modify permissions: Set(root); groups with modify permissions: Set()
+26/10/04 15:57:57 INFO Utils: Successfully started service 'sparkDriver' on port 37915.
+26/10/04 15:57:57 INFO SparkEnv: Registering MapOutputTracker
+26/10/04 15:57:57 INFO SparkEnv: Registering BlockManagerMaster
+26/10/04 15:57:57 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/10/04 15:57:57 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/10/04 15:57:57 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/10/04 15:57:57 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-b04ee79d-d308-4fef-9186-e02bc0a2f0b4
+26/10/04 15:57:57 INFO MemoryStore: MemoryStore started with capacity 8.2 GiB
+26/10/04 15:57:57 INFO SparkEnv: Registering OutputCommitCoordinator
+26/10/04 15:57:57 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/10/04 15:57:57 INFO SparkUI: Bound SparkUI to 0.0.0.0, and started at http://<LAN_IP>:4040
+26/10/04 15:57:57 INFO Executor: Starting executor ID driver on host <LAN_IP>
+26/10/04 15:57:57 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 34035.
+26/10/04 15:57:57 INFO NettyBlockTransferService: Server created on <LAN_IP>:34035
+26/10/04 15:57:57 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/10/04 15:57:57 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, <LAN_IP>, 34035, None)
+26/10/04 15:57:57 INFO BlockManagerMasterEndpoint: Registering block manager <LAN_IP>:34035 with 8.2 GiB RAM, BlockManagerId(driver, <LAN_IP>, 34035, None)
+26/10/04 15:57:57 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, <LAN_IP>, 34035, None)
+26/10/04 15:57:57 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, <LAN_IP>, 34035, None)
+26/10/04 15:57:57 WARN SparkContext: Using an existing SparkContext; some configuration may not take effect.
+26/10/04 15:57:57 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 208.0 B, free 8.2 GiB)
+26/10/04 15:57:57 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 392.0 B, free 8.2 GiB)
+26/10/04 15:57:57 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on <LAN_IP>:34035 (size: 392.0 B, free: 8.2 GiB)
+26/10/04 15:57:57 INFO SparkContext: Created broadcast 0 from broadcast at MongoSpark.scala:530
+26/10/04 15:57:57 INFO cluster: Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms'}
+26/10/04 15:57:57 INFO MongoClientCache: Creating MongoClient: [localhost:27017]
+26/10/04 15:57:57 INFO cluster: Cluster description not yet available. Waiting for 30000 ms before timing out
+26/10/04 15:57:57 INFO connection: Opened connection [connectionId{localValue:1, serverValue:1973}] to localhost:27017
+26/10/04 15:57:57 INFO cluster: Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=25, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=1025238}
+26/10/04 15:57:57 INFO connection: Opened connection [connectionId{localValue:2, serverValue:1974}] to localhost:27017
+26/10/04 15:57:57 INFO SparkContext: Starting job: collect at MongoDB2USchema.java:80
+26/10/04 15:57:57 INFO DAGScheduler: Registering RDD 1 (mapToPair at MongoDB2USchema.java:77) as input to shuffle 0
+26/10/04 15:57:57 INFO DAGScheduler: Got job 0 (collect at MongoDB2USchema.java:80) with 1 output partitions
+26/10/04 15:57:57 INFO DAGScheduler: Final stage: ResultStage 1 (collect at MongoDB2USchema.java:80)
+26/10/04 15:57:57 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 0)
+26/10/04 15:57:57 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 0)
+26/10/04 15:57:57 INFO DAGScheduler: Submitting ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77), which has no missing parents
+26/10/04 15:57:57 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 7.5 KiB, free 8.2 GiB)
+26/10/04 15:57:57 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 4.1 KiB, free 8.2 GiB)
+26/10/04 15:57:57 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on <LAN_IP>:34035 (size: 4.1 KiB, free: 8.2 GiB)
+26/10/04 15:57:57 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:57:57 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77) (first 15 tasks are for partitions Vector(0))
+26/10/04 15:57:57 INFO TaskSchedulerImpl: Adding task set 0.0 with 1 tasks
+26/10/04 15:57:57 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, <LAN_IP>, executor driver, partition 0, ANY, 7471 bytes)
+26/10/04 15:57:57 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+26/10/04 15:57:58 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 1203 bytes result sent to driver
+26/10/04 15:57:58 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 444 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 15:57:58 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool
+26/10/04 15:57:58 INFO DAGScheduler: ShuffleMapStage 0 (mapToPair at MongoDB2USchema.java:77) finished in 0.492 s
+26/10/04 15:57:58 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 15:57:58 INFO DAGScheduler: running: Set()
+26/10/04 15:57:58 INFO DAGScheduler: waiting: Set(ResultStage 1)
+26/10/04 15:57:58 INFO DAGScheduler: failed: Set()
+26/10/04 15:57:58 INFO DAGScheduler: Submitting ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78), which has no missing parents
+26/10/04 15:57:58 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 4.3 KiB, free 8.2 GiB)
+26/10/04 15:57:58 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 2.4 KiB, free 8.2 GiB)
+26/10/04 15:57:58 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on <LAN_IP>:34035 (size: 2.4 KiB, free: 8.2 GiB)
+26/10/04 15:57:58 INFO SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:57:58 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78) (first 15 tasks are for partitions Vector(0))
+26/10/04 15:57:58 INFO TaskSchedulerImpl: Adding task set 1.0 with 1 tasks
+26/10/04 15:57:58 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 1, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7143 bytes)
+26/10/04 15:57:58 INFO Executor: Running task 0.0 in stage 1.0 (TID 1)
+26/10/04 15:57:58 INFO ShuffleBlockFetcherIterator: Getting 1 (539.0 B) non-empty blocks including 1 (539.0 B) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:57:58 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 2 ms
+26/10/04 15:57:58 INFO Executor: Finished task 0.0 in stage 1.0 (TID 1). 1894 bytes result sent to driver
+26/10/04 15:57:58 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 1) in 31 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 15:57:58 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool
+26/10/04 15:57:58 INFO DAGScheduler: ResultStage 1 (collect at MongoDB2USchema.java:80) finished in 0.035 s
+26/10/04 15:57:58 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 15:57:58 INFO TaskSchedulerImpl: Killing all running tasks in stage 1: Stage finished
+26/10/04 15:57:58 INFO DAGScheduler: Job 0 finished: collect at MongoDB2USchema.java:80, took 0.555112 s
+26/10/04 15:57:58 INFO SparkUI: Stopped Spark web UI at http://<LAN_IP>:4040
+26/10/04 15:57:58 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+26/10/04 15:57:58 INFO MemoryStore: MemoryStore cleared
+26/10/04 15:57:58 INFO BlockManager: BlockManager stopped
+26/10/04 15:57:58 INFO BlockManagerMaster: BlockManagerMaster stopped
+26/10/04 15:57:58 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+26/10/04 15:57:58 INFO SparkContext: Successfully stopped SparkContext
+26/10/04 15:57:58 INFO SparkContext: Running Spark version 3.0.1
+26/10/04 15:57:58 INFO ResourceUtils: ==============================================================
+26/10/04 15:57:58 INFO ResourceUtils: Resources for spark.driver:
+
+26/10/04 15:57:58 INFO ResourceUtils: ==============================================================
+26/10/04 15:57:58 INFO SparkContext: Submitted application: MongoDB
+26/10/04 15:57:58 INFO SecurityManager: Changing view acls to: root
+26/10/04 15:57:58 INFO SecurityManager: Changing modify acls to: root
+26/10/04 15:57:58 INFO SecurityManager: Changing view acls groups to:
+26/10/04 15:57:58 INFO SecurityManager: Changing modify acls groups to:
+26/10/04 15:57:58 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(root); groups with view permissions: Set(); users  with modify permissions: Set(root); groups with modify permissions: Set()
+26/10/04 15:57:58 INFO Utils: Successfully started service 'sparkDriver' on port 35823.
+26/10/04 15:57:58 INFO SparkEnv: Registering MapOutputTracker
+26/10/04 15:57:58 INFO SparkEnv: Registering BlockManagerMaster
+26/10/04 15:57:58 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/10/04 15:57:58 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/10/04 15:57:58 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/10/04 15:57:58 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-0b548d8e-6521-47ab-bbf4-c0192db1047f
+26/10/04 15:57:58 INFO MemoryStore: MemoryStore started with capacity 8.2 GiB
+26/10/04 15:57:58 INFO SparkEnv: Registering OutputCommitCoordinator
+26/10/04 15:57:58 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/10/04 15:57:58 INFO SparkUI: Bound SparkUI to 0.0.0.0, and started at http://<LAN_IP>:4040
+26/10/04 15:57:58 INFO Executor: Starting executor ID driver on host <LAN_IP>
+26/10/04 15:57:58 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 35179.
+26/10/04 15:57:58 INFO NettyBlockTransferService: Server created on <LAN_IP>:35179
+26/10/04 15:57:58 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/10/04 15:57:58 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, <LAN_IP>, 35179, None)
+26/10/04 15:57:58 INFO BlockManagerMasterEndpoint: Registering block manager <LAN_IP>:35179 with 8.2 GiB RAM, BlockManagerId(driver, <LAN_IP>, 35179, None)
+26/10/04 15:57:58 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, <LAN_IP>, 35179, None)
+26/10/04 15:57:58 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, <LAN_IP>, 35179, None)
+26/10/04 15:57:58 WARN SparkContext: Using an existing SparkContext; some configuration may not take effect.
+26/10/04 15:57:58 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 208.0 B, free 8.2 GiB)
+26/10/04 15:57:58 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 392.0 B, free 8.2 GiB)
+26/10/04 15:57:58 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on <LAN_IP>:35179 (size: 392.0 B, free: 8.2 GiB)
+26/10/04 15:57:58 INFO SparkContext: Created broadcast 0 from broadcast at MongoSpark.scala:530
+26/10/04 15:57:58 INFO SparkContext: Starting job: collect at MongoDB2USchema.java:80
+26/10/04 15:57:58 INFO DAGScheduler: Registering RDD 1 (mapToPair at MongoDB2USchema.java:77) as input to shuffle 0
+26/10/04 15:57:58 INFO DAGScheduler: Got job 0 (collect at MongoDB2USchema.java:80) with 10 output partitions
+26/10/04 15:57:58 INFO DAGScheduler: Final stage: ResultStage 1 (collect at MongoDB2USchema.java:80)
+26/10/04 15:57:58 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 0)
+26/10/04 15:57:58 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 0)
+26/10/04 15:57:58 INFO DAGScheduler: Submitting ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77), which has no missing parents
+26/10/04 15:57:58 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 7.5 KiB, free 8.2 GiB)
+26/10/04 15:57:58 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 4.1 KiB, free 8.2 GiB)
+26/10/04 15:57:58 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on <LAN_IP>:35179 (size: 4.1 KiB, free: 8.2 GiB)
+26/10/04 15:57:58 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:57:58 INFO DAGScheduler: Submitting 10 missing tasks from ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77) (first 15 tasks are for partitions Vector(0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
+26/10/04 15:57:58 INFO TaskSchedulerImpl: Adding task set 0.0 with 10 tasks
+26/10/04 15:57:58 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, <LAN_IP>, executor driver, partition 0, ANY, 7498 bytes)
+26/10/04 15:57:58 INFO TaskSetManager: Starting task 1.0 in stage 0.0 (TID 1, <LAN_IP>, executor driver, partition 1, ANY, 7516 bytes)
+26/10/04 15:57:58 INFO TaskSetManager: Starting task 2.0 in stage 0.0 (TID 2, <LAN_IP>, executor driver, partition 2, ANY, 7516 bytes)
+26/10/04 15:57:58 INFO TaskSetManager: Starting task 3.0 in stage 0.0 (TID 3, <LAN_IP>, executor driver, partition 3, ANY, 7516 bytes)
+26/10/04 15:57:58 INFO TaskSetManager: Starting task 4.0 in stage 0.0 (TID 4, <LAN_IP>, executor driver, partition 4, ANY, 7516 bytes)
+26/10/04 15:57:58 INFO TaskSetManager: Starting task 5.0 in stage 0.0 (TID 5, <LAN_IP>, executor driver, partition 5, ANY, 7516 bytes)
+26/10/04 15:57:58 INFO TaskSetManager: Starting task 6.0 in stage 0.0 (TID 6, <LAN_IP>, executor driver, partition 6, ANY, 7516 bytes)
+26/10/04 15:57:58 INFO TaskSetManager: Starting task 7.0 in stage 0.0 (TID 7, <LAN_IP>, executor driver, partition 7, ANY, 7516 bytes)
+26/10/04 15:57:58 INFO TaskSetManager: Starting task 8.0 in stage 0.0 (TID 8, <LAN_IP>, executor driver, partition 8, ANY, 7516 bytes)
+26/10/04 15:57:58 INFO TaskSetManager: Starting task 9.0 in stage 0.0 (TID 9, <LAN_IP>, executor driver, partition 9, ANY, 7499 bytes)
+26/10/04 15:57:58 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+26/10/04 15:57:58 INFO Executor: Running task 1.0 in stage 0.0 (TID 1)
+26/10/04 15:57:58 INFO Executor: Running task 2.0 in stage 0.0 (TID 2)
+26/10/04 15:57:58 INFO Executor: Running task 3.0 in stage 0.0 (TID 3)
+26/10/04 15:57:58 INFO Executor: Running task 4.0 in stage 0.0 (TID 4)
+26/10/04 15:57:58 INFO Executor: Running task 5.0 in stage 0.0 (TID 5)
+26/10/04 15:57:58 INFO Executor: Running task 6.0 in stage 0.0 (TID 6)
+26/10/04 15:57:58 INFO Executor: Running task 7.0 in stage 0.0 (TID 7)
+26/10/04 15:57:58 INFO Executor: Running task 8.0 in stage 0.0 (TID 8)
+26/10/04 15:57:58 INFO Executor: Running task 9.0 in stage 0.0 (TID 9)
+26/10/04 15:57:58 INFO connection: Opened connection [connectionId{localValue:3, serverValue:1975}] to localhost:27017
+26/10/04 15:57:58 INFO connection: Opened connection [connectionId{localValue:4, serverValue:1976}] to localhost:27017
+26/10/04 15:57:58 INFO connection: Opened connection [connectionId{localValue:6, serverValue:1978}] to localhost:27017
+26/10/04 15:57:58 INFO connection: Opened connection [connectionId{localValue:5, serverValue:1977}] to localhost:27017
+26/10/04 15:57:58 INFO connection: Opened connection [connectionId{localValue:7, serverValue:1979}] to localhost:27017
+26/10/04 15:57:58 INFO connection: Opened connection [connectionId{localValue:8, serverValue:1980}] to localhost:27017
+26/10/04 15:57:58 INFO connection: Opened connection [connectionId{localValue:10, serverValue:1982}] to localhost:27017
+26/10/04 15:57:58 INFO connection: Opened connection [connectionId{localValue:9, serverValue:1981}] to localhost:27017
+26/10/04 15:57:58 INFO connection: Opened connection [connectionId{localValue:11, serverValue:1983}] to localhost:27017
+26/10/04 15:57:59 INFO Executor: Finished task 4.0 in stage 0.0 (TID 4). 1212 bytes result sent to driver
+26/10/04 15:57:59 INFO TaskSetManager: Finished task 4.0 in stage 0.0 (TID 4) in 831 ms on <LAN_IP> (executor driver) (1/10)
+26/10/04 15:57:59 INFO Executor: Finished task 9.0 in stage 0.0 (TID 9). 1212 bytes result sent to driver
+26/10/04 15:57:59 INFO TaskSetManager: Finished task 9.0 in stage 0.0 (TID 9) in 852 ms on <LAN_IP> (executor driver) (2/10)
+26/10/04 15:57:59 INFO Executor: Finished task 5.0 in stage 0.0 (TID 5). 1212 bytes result sent to driver
+26/10/04 15:57:59 INFO TaskSetManager: Finished task 5.0 in stage 0.0 (TID 5) in 1147 ms on <LAN_IP> (executor driver) (3/10)
+26/10/04 15:57:59 INFO Executor: Finished task 7.0 in stage 0.0 (TID 7). 1212 bytes result sent to driver
+26/10/04 15:57:59 INFO TaskSetManager: Finished task 7.0 in stage 0.0 (TID 7) in 1180 ms on <LAN_IP> (executor driver) (4/10)
+26/10/04 15:57:59 INFO Executor: Finished task 8.0 in stage 0.0 (TID 8). 1212 bytes result sent to driver
+26/10/04 15:57:59 INFO TaskSetManager: Finished task 8.0 in stage 0.0 (TID 8) in 1263 ms on <LAN_IP> (executor driver) (5/10)
+26/10/04 15:57:59 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 1212 bytes result sent to driver
+26/10/04 15:57:59 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 1520 ms on <LAN_IP> (executor driver) (6/10)
+26/10/04 15:57:59 INFO Executor: Finished task 3.0 in stage 0.0 (TID 3). 1212 bytes result sent to driver
+26/10/04 15:57:59 INFO TaskSetManager: Finished task 3.0 in stage 0.0 (TID 3) in 1530 ms on <LAN_IP> (executor driver) (7/10)
+26/10/04 15:58:00 INFO Executor: Finished task 1.0 in stage 0.0 (TID 1). 1212 bytes result sent to driver
+26/10/04 15:58:00 INFO TaskSetManager: Finished task 1.0 in stage 0.0 (TID 1) in 1622 ms on <LAN_IP> (executor driver) (8/10)
+26/10/04 15:58:00 INFO Executor: Finished task 6.0 in stage 0.0 (TID 6). 1212 bytes result sent to driver
+26/10/04 15:58:00 INFO TaskSetManager: Finished task 6.0 in stage 0.0 (TID 6) in 2341 ms on <LAN_IP> (executor driver) (9/10)
+26/10/04 15:58:01 INFO Executor: Finished task 2.0 in stage 0.0 (TID 2). 1212 bytes result sent to driver
+26/10/04 15:58:01 INFO TaskSetManager: Finished task 2.0 in stage 0.0 (TID 2) in 3532 ms on <LAN_IP> (executor driver) (10/10)
+26/10/04 15:58:01 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool
+26/10/04 15:58:01 INFO DAGScheduler: ShuffleMapStage 0 (mapToPair at MongoDB2USchema.java:77) finished in 3.538 s
+26/10/04 15:58:01 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 15:58:01 INFO DAGScheduler: running: Set()
+26/10/04 15:58:01 INFO DAGScheduler: waiting: Set(ResultStage 1)
+26/10/04 15:58:01 INFO DAGScheduler: failed: Set()
+26/10/04 15:58:01 INFO DAGScheduler: Submitting ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78), which has no missing parents
+26/10/04 15:58:01 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 4.3 KiB, free 8.2 GiB)
+26/10/04 15:58:01 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 2.4 KiB, free 8.2 GiB)
+26/10/04 15:58:01 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on <LAN_IP>:35179 (size: 2.4 KiB, free: 8.2 GiB)
+26/10/04 15:58:01 INFO SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:58:01 INFO DAGScheduler: Submitting 10 missing tasks from ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78) (first 15 tasks are for partitions Vector(0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
+26/10/04 15:58:01 INFO TaskSchedulerImpl: Adding task set 1.0 with 10 tasks
+26/10/04 15:58:01 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 10, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7143 bytes)
+26/10/04 15:58:01 INFO TaskSetManager: Starting task 1.0 in stage 1.0 (TID 11, <LAN_IP>, executor driver, partition 1, NODE_LOCAL, 7143 bytes)
+26/10/04 15:58:01 INFO TaskSetManager: Starting task 2.0 in stage 1.0 (TID 12, <LAN_IP>, executor driver, partition 2, NODE_LOCAL, 7143 bytes)
+26/10/04 15:58:01 INFO TaskSetManager: Starting task 3.0 in stage 1.0 (TID 13, <LAN_IP>, executor driver, partition 3, NODE_LOCAL, 7143 bytes)
+26/10/04 15:58:01 INFO TaskSetManager: Starting task 4.0 in stage 1.0 (TID 14, <LAN_IP>, executor driver, partition 4, NODE_LOCAL, 7143 bytes)
+26/10/04 15:58:01 INFO TaskSetManager: Starting task 5.0 in stage 1.0 (TID 15, <LAN_IP>, executor driver, partition 5, NODE_LOCAL, 7143 bytes)
+26/10/04 15:58:01 INFO TaskSetManager: Starting task 6.0 in stage 1.0 (TID 16, <LAN_IP>, executor driver, partition 6, NODE_LOCAL, 7143 bytes)
+26/10/04 15:58:01 INFO TaskSetManager: Starting task 7.0 in stage 1.0 (TID 17, <LAN_IP>, executor driver, partition 7, NODE_LOCAL, 7143 bytes)
+26/10/04 15:58:01 INFO TaskSetManager: Starting task 8.0 in stage 1.0 (TID 18, <LAN_IP>, executor driver, partition 8, NODE_LOCAL, 7143 bytes)
+26/10/04 15:58:01 INFO TaskSetManager: Starting task 9.0 in stage 1.0 (TID 19, <LAN_IP>, executor driver, partition 9, NODE_LOCAL, 7143 bytes)
+26/10/04 15:58:01 INFO Executor: Running task 2.0 in stage 1.0 (TID 12)
+26/10/04 15:58:01 INFO Executor: Running task 3.0 in stage 1.0 (TID 13)
+26/10/04 15:58:01 INFO Executor: Running task 7.0 in stage 1.0 (TID 17)
+26/10/04 15:58:01 INFO Executor: Running task 0.0 in stage 1.0 (TID 10)
+26/10/04 15:58:01 INFO Executor: Running task 8.0 in stage 1.0 (TID 18)
+26/10/04 15:58:01 INFO Executor: Running task 9.0 in stage 1.0 (TID 19)
+26/10/04 15:58:01 INFO Executor: Running task 6.0 in stage 1.0 (TID 16)
+26/10/04 15:58:01 INFO Executor: Running task 5.0 in stage 1.0 (TID 15)
+26/10/04 15:58:01 INFO Executor: Running task 4.0 in stage 1.0 (TID 14)
+26/10/04 15:58:01 INFO Executor: Running task 1.0 in stage 1.0 (TID 11)
+26/10/04 15:58:01 INFO ShuffleBlockFetcherIterator: Getting 10 (25.4 KiB) non-empty blocks including 10 (25.4 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:58:01 INFO ShuffleBlockFetcherIterator: Getting 10 (24.2 KiB) non-empty blocks including 10 (24.2 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:58:01 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 15:58:01 INFO ShuffleBlockFetcherIterator: Getting 10 (22.0 KiB) non-empty blocks including 10 (22.0 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:58:01 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 15:58:01 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 15:58:01 INFO ShuffleBlockFetcherIterator: Getting 10 (26.6 KiB) non-empty blocks including 10 (26.6 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:58:01 INFO ShuffleBlockFetcherIterator: Getting 10 (24.2 KiB) non-empty blocks including 10 (24.2 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:58:01 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 15:58:01 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 15:58:01 INFO ShuffleBlockFetcherIterator: Getting 10 (26.1 KiB) non-empty blocks including 10 (26.1 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:58:01 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 15:58:01 INFO ShuffleBlockFetcherIterator: Getting 10 (23.3 KiB) non-empty blocks including 10 (23.3 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:58:01 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 15:58:01 INFO ShuffleBlockFetcherIterator: Getting 10 (23.5 KiB) non-empty blocks including 10 (23.5 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:58:01 INFO ShuffleBlockFetcherIterator: Getting 10 (22.9 KiB) non-empty blocks including 10 (22.9 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:58:01 INFO ShuffleBlockFetcherIterator: Getting 10 (24.0 KiB) non-empty blocks including 10 (24.0 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:58:01 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 15:58:01 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 15:58:01 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 15:58:02 INFO Executor: Finished task 7.0 in stage 1.0 (TID 17). 41444 bytes result sent to driver
+26/10/04 15:58:02 INFO Executor: Finished task 0.0 in stage 1.0 (TID 10). 39017 bytes result sent to driver
+26/10/04 15:58:02 INFO Executor: Finished task 2.0 in stage 1.0 (TID 12). 43306 bytes result sent to driver
+26/10/04 15:58:02 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 10) in 80 ms on <LAN_IP> (executor driver) (1/10)
+26/10/04 15:58:02 INFO Executor: Finished task 8.0 in stage 1.0 (TID 18). 43894 bytes result sent to driver
+26/10/04 15:58:02 INFO TaskSetManager: Finished task 7.0 in stage 1.0 (TID 17) in 80 ms on <LAN_IP> (executor driver) (2/10)
+26/10/04 15:58:02 INFO TaskSetManager: Finished task 2.0 in stage 1.0 (TID 12) in 82 ms on <LAN_IP> (executor driver) (3/10)
+26/10/04 15:58:02 INFO TaskSetManager: Finished task 8.0 in stage 1.0 (TID 18) in 84 ms on <LAN_IP> (executor driver) (4/10)
+26/10/04 15:58:02 INFO Executor: Finished task 3.0 in stage 1.0 (TID 13). 39097 bytes result sent to driver
+26/10/04 15:58:02 INFO Executor: Finished task 9.0 in stage 1.0 (TID 19). 38701 bytes result sent to driver
+26/10/04 15:58:02 INFO Executor: Finished task 1.0 in stage 1.0 (TID 11). 42136 bytes result sent to driver
+26/10/04 15:58:02 INFO TaskSetManager: Finished task 3.0 in stage 1.0 (TID 13) in 92 ms on <LAN_IP> (executor driver) (5/10)
+26/10/04 15:58:02 INFO TaskSetManager: Finished task 9.0 in stage 1.0 (TID 19) in 93 ms on <LAN_IP> (executor driver) (6/10)
+26/10/04 15:58:02 INFO TaskSetManager: Finished task 1.0 in stage 1.0 (TID 11) in 95 ms on <LAN_IP> (executor driver) (7/10)
+26/10/04 15:58:02 INFO Executor: Finished task 4.0 in stage 1.0 (TID 14). 48130 bytes result sent to driver
+26/10/04 15:58:02 INFO TaskSetManager: Finished task 4.0 in stage 1.0 (TID 14) in 103 ms on <LAN_IP> (executor driver) (8/10)
+26/10/04 15:58:02 INFO Executor: Finished task 6.0 in stage 1.0 (TID 16). 49033 bytes result sent to driver
+26/10/04 15:58:02 INFO TaskSetManager: Finished task 6.0 in stage 1.0 (TID 16) in 107 ms on <LAN_IP> (executor driver) (9/10)
+26/10/04 15:58:02 INFO Executor: Finished task 5.0 in stage 1.0 (TID 15). 49129 bytes result sent to driver
+26/10/04 15:58:02 INFO TaskSetManager: Finished task 5.0 in stage 1.0 (TID 15) in 109 ms on <LAN_IP> (executor driver) (10/10)
+26/10/04 15:58:02 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool
+26/10/04 15:58:02 INFO DAGScheduler: ResultStage 1 (collect at MongoDB2USchema.java:80) finished in 0.113 s
+26/10/04 15:58:02 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 15:58:02 INFO TaskSchedulerImpl: Killing all running tasks in stage 1: Stage finished
+26/10/04 15:58:02 INFO DAGScheduler: Job 0 finished: collect at MongoDB2USchema.java:80, took 3.656192 s
+26/10/04 15:58:02 INFO SparkUI: Stopped Spark web UI at http://<LAN_IP>:4040
+26/10/04 15:58:02 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+26/10/04 15:58:02 INFO MemoryStore: MemoryStore cleared
+26/10/04 15:58:02 INFO BlockManager: BlockManager stopped
+26/10/04 15:58:02 INFO BlockManagerMaster: BlockManagerMaster stopped
+26/10/04 15:58:02 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+26/10/04 15:58:02 INFO SparkContext: Successfully stopped SparkContext
+java.lang.InterruptedException
+	at java.lang.Object.wait(Native Method)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:144)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:165)
+	at org.eclipse.emf.common.util.CommonUtil$1ReferenceClearingQueuePollingThread.run(CommonUtil.java:70)
+26/10/04 15:58:06 INFO MongoClientCache: Closing MongoClient: [localhost:27017]
+26/10/04 15:58:06 INFO connection: Closed connection [connectionId{localValue:7, serverValue:1979}] to localhost:27017 because the pool has been closed.
+26/10/04 15:58:06 INFO connection: Closed connection [connectionId{localValue:2, serverValue:1974}] to localhost:27017 because the pool has been closed.
+26/10/04 15:58:06 INFO connection: Closed connection [connectionId{localValue:8, serverValue:1980}] to localhost:27017 because the pool has been closed.
+26/10/04 15:58:06 INFO connection: Closed connection [connectionId{localValue:11, serverValue:1983}] to localhost:27017 because the pool has been closed.
+26/10/04 15:58:06 INFO connection: Closed connection [connectionId{localValue:9, serverValue:1981}] to localhost:27017 because the pool has been closed.
+26/10/04 15:58:06 INFO connection: Closed connection [connectionId{localValue:10, serverValue:1982}] to localhost:27017 because the pool has been closed.
+26/10/04 15:58:06 INFO connection: Closed connection [connectionId{localValue:4, serverValue:1976}] to localhost:27017 because the pool has been closed.
+26/10/04 15:58:06 INFO connection: Closed connection [connectionId{localValue:3, serverValue:1975}] to localhost:27017 because the pool has been closed.
+26/10/04 15:58:06 INFO connection: Closed connection [connectionId{localValue:6, serverValue:1978}] to localhost:27017 because the pool has been closed.
+26/10/04 15:58:06 INFO connection: Closed connection [connectionId{localValue:5, serverValue:1977}] to localhost:27017 because the pool has been closed.
+XMI gerado em /output/up_a_larger.xmi
+  geracao=18.33s  boot=-  extracao=32.19s  inferencia=0.05s  escrita=0.00s  porte=32.23s  oraculo=27.04s  query=0.55s  norm=58.21893063583815x  equivalente=True  divergencias=7
+    Movie: real=400000  porte=400000 (100.0%)  oraculo=400000 (100.0%)
+    User: real=800000  porte=20988 (2.6%)  oraculo=20932 (2.6%)
+
+########## run_oracle_mongo B small (tentativa 1)  12:58:18 ##########
+
+=== seed 23 | rota B | small | python ===
+== Rota B | size small | db up_b_small | seed 23 | User=100000 Movie=50000 rels~3/user ==
+  movies: 50000 inseridos em 0.1s
+  users: 100000 inseridos em 0.5s
+== concluído em 0.7s ==
+Oct 04, 2026 3:58:21 PM com.google.inject.internal.InternalFlags getSystemOption
+WARNING: CHILD is not a valid flag value for guice_custom_class_loading.  Values must be one of [OFF, BRIDGE]
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+26/10/04 15:58:22 WARN Utils: Your hostname, <HOSTNAME> resolves to a loopback address: 127.0.1.1; using <LAN_IP> instead (on interface wlp5s0)
+26/10/04 15:58:22 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+26/10/04 15:58:22 INFO SparkContext: Running Spark version 3.0.1
+26/10/04 15:58:22 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+26/10/04 15:58:22 INFO ResourceUtils: ==============================================================
+26/10/04 15:58:22 INFO ResourceUtils: Resources for spark.driver:
+
+26/10/04 15:58:22 INFO ResourceUtils: ==============================================================
+26/10/04 15:58:22 INFO SparkContext: Submitted application: MongoDB
+26/10/04 15:58:22 INFO SecurityManager: Changing view acls to: root
+26/10/04 15:58:22 INFO SecurityManager: Changing modify acls to: root
+26/10/04 15:58:22 INFO SecurityManager: Changing view acls groups to:
+26/10/04 15:58:22 INFO SecurityManager: Changing modify acls groups to:
+26/10/04 15:58:22 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(root); groups with view permissions: Set(); users  with modify permissions: Set(root); groups with modify permissions: Set()
+26/10/04 15:58:22 INFO Utils: Successfully started service 'sparkDriver' on port 41897.
+26/10/04 15:58:22 INFO SparkEnv: Registering MapOutputTracker
+26/10/04 15:58:22 INFO SparkEnv: Registering BlockManagerMaster
+26/10/04 15:58:22 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/10/04 15:58:22 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/10/04 15:58:22 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/10/04 15:58:22 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-2b31ee79-ac38-4b5e-a457-e015c8e3d135
+26/10/04 15:58:22 INFO MemoryStore: MemoryStore started with capacity 8.2 GiB
+26/10/04 15:58:22 INFO SparkEnv: Registering OutputCommitCoordinator
+26/10/04 15:58:22 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/10/04 15:58:22 INFO SparkUI: Bound SparkUI to 0.0.0.0, and started at http://<LAN_IP>:4040
+26/10/04 15:58:23 INFO Executor: Starting executor ID driver on host <LAN_IP>
+26/10/04 15:58:23 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 43083.
+26/10/04 15:58:23 INFO NettyBlockTransferService: Server created on <LAN_IP>:43083
+26/10/04 15:58:23 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/10/04 15:58:23 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, <LAN_IP>, 43083, None)
+26/10/04 15:58:23 INFO BlockManagerMasterEndpoint: Registering block manager <LAN_IP>:43083 with 8.2 GiB RAM, BlockManagerId(driver, <LAN_IP>, 43083, None)
+26/10/04 15:58:23 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, <LAN_IP>, 43083, None)
+26/10/04 15:58:23 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, <LAN_IP>, 43083, None)
+26/10/04 15:58:23 WARN SparkContext: Using an existing SparkContext; some configuration may not take effect.
+26/10/04 15:58:23 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 208.0 B, free 8.2 GiB)
+26/10/04 15:58:23 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 392.0 B, free 8.2 GiB)
+26/10/04 15:58:23 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on <LAN_IP>:43083 (size: 392.0 B, free: 8.2 GiB)
+26/10/04 15:58:23 INFO SparkContext: Created broadcast 0 from broadcast at MongoSpark.scala:530
+26/10/04 15:58:23 INFO cluster: Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms'}
+26/10/04 15:58:23 INFO MongoClientCache: Creating MongoClient: [localhost:27017]
+26/10/04 15:58:23 INFO cluster: Cluster description not yet available. Waiting for 30000 ms before timing out
+26/10/04 15:58:23 INFO connection: Opened connection [connectionId{localValue:1, serverValue:1996}] to localhost:27017
+26/10/04 15:58:23 INFO cluster: Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=25, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=1086697}
+26/10/04 15:58:23 INFO connection: Opened connection [connectionId{localValue:2, serverValue:1997}] to localhost:27017
+26/10/04 15:58:23 INFO SparkContext: Starting job: collect at MongoDB2USchema.java:80
+26/10/04 15:58:23 INFO DAGScheduler: Registering RDD 1 (mapToPair at MongoDB2USchema.java:77) as input to shuffle 0
+26/10/04 15:58:23 INFO DAGScheduler: Got job 0 (collect at MongoDB2USchema.java:80) with 1 output partitions
+26/10/04 15:58:23 INFO DAGScheduler: Final stage: ResultStage 1 (collect at MongoDB2USchema.java:80)
+26/10/04 15:58:23 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 0)
+26/10/04 15:58:23 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 0)
+26/10/04 15:58:23 INFO DAGScheduler: Submitting ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77), which has no missing parents
+26/10/04 15:58:23 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 7.5 KiB, free 8.2 GiB)
+26/10/04 15:58:23 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 4.1 KiB, free 8.2 GiB)
+26/10/04 15:58:23 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on <LAN_IP>:43083 (size: 4.1 KiB, free: 8.2 GiB)
+26/10/04 15:58:23 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:58:23 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77) (first 15 tasks are for partitions Vector(0))
+26/10/04 15:58:23 INFO TaskSchedulerImpl: Adding task set 0.0 with 1 tasks
+26/10/04 15:58:23 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, <LAN_IP>, executor driver, partition 0, ANY, 7471 bytes)
+26/10/04 15:58:23 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+26/10/04 15:58:23 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 1160 bytes result sent to driver
+26/10/04 15:58:23 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 172 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 15:58:23 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool
+26/10/04 15:58:23 INFO DAGScheduler: ShuffleMapStage 0 (mapToPair at MongoDB2USchema.java:77) finished in 0.215 s
+26/10/04 15:58:23 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 15:58:23 INFO DAGScheduler: running: Set()
+26/10/04 15:58:23 INFO DAGScheduler: waiting: Set(ResultStage 1)
+26/10/04 15:58:23 INFO DAGScheduler: failed: Set()
+26/10/04 15:58:23 INFO DAGScheduler: Submitting ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78), which has no missing parents
+26/10/04 15:58:23 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 4.3 KiB, free 8.2 GiB)
+26/10/04 15:58:23 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 2.4 KiB, free 8.2 GiB)
+26/10/04 15:58:23 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on <LAN_IP>:43083 (size: 2.4 KiB, free: 8.2 GiB)
+26/10/04 15:58:23 INFO SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:58:23 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78) (first 15 tasks are for partitions Vector(0))
+26/10/04 15:58:23 INFO TaskSchedulerImpl: Adding task set 1.0 with 1 tasks
+26/10/04 15:58:23 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 1, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7143 bytes)
+26/10/04 15:58:23 INFO Executor: Running task 0.0 in stage 1.0 (TID 1)
+26/10/04 15:58:23 INFO ShuffleBlockFetcherIterator: Getting 1 (490.0 B) non-empty blocks including 1 (490.0 B) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:58:23 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 2 ms
+26/10/04 15:58:23 INFO Executor: Finished task 0.0 in stage 1.0 (TID 1). 1784 bytes result sent to driver
+26/10/04 15:58:23 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 1) in 36 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 15:58:23 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool
+26/10/04 15:58:23 INFO DAGScheduler: ResultStage 1 (collect at MongoDB2USchema.java:80) finished in 0.041 s
+26/10/04 15:58:23 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 15:58:23 INFO TaskSchedulerImpl: Killing all running tasks in stage 1: Stage finished
+26/10/04 15:58:23 INFO DAGScheduler: Job 0 finished: collect at MongoDB2USchema.java:80, took 0.276738 s
+26/10/04 15:58:23 INFO SparkUI: Stopped Spark web UI at http://<LAN_IP>:4040
+26/10/04 15:58:23 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+26/10/04 15:58:23 INFO MemoryStore: MemoryStore cleared
+26/10/04 15:58:23 INFO BlockManager: BlockManager stopped
+26/10/04 15:58:23 INFO BlockManagerMaster: BlockManagerMaster stopped
+26/10/04 15:58:23 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+26/10/04 15:58:23 INFO SparkContext: Successfully stopped SparkContext
+26/10/04 15:58:23 INFO SparkContext: Running Spark version 3.0.1
+26/10/04 15:58:23 INFO ResourceUtils: ==============================================================
+26/10/04 15:58:23 INFO ResourceUtils: Resources for spark.driver:
+
+26/10/04 15:58:23 INFO ResourceUtils: ==============================================================
+26/10/04 15:58:23 INFO SparkContext: Submitted application: MongoDB
+26/10/04 15:58:23 INFO SecurityManager: Changing view acls to: root
+26/10/04 15:58:23 INFO SecurityManager: Changing modify acls to: root
+26/10/04 15:58:23 INFO SecurityManager: Changing view acls groups to:
+26/10/04 15:58:23 INFO SecurityManager: Changing modify acls groups to:
+26/10/04 15:58:23 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(root); groups with view permissions: Set(); users  with modify permissions: Set(root); groups with modify permissions: Set()
+26/10/04 15:58:23 INFO Utils: Successfully started service 'sparkDriver' on port 43417.
+26/10/04 15:58:23 INFO SparkEnv: Registering MapOutputTracker
+26/10/04 15:58:23 INFO SparkEnv: Registering BlockManagerMaster
+26/10/04 15:58:23 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/10/04 15:58:23 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/10/04 15:58:23 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/10/04 15:58:23 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-eb718f27-e86f-47f8-9e0d-64be3c7fd343
+26/10/04 15:58:23 INFO MemoryStore: MemoryStore started with capacity 8.2 GiB
+26/10/04 15:58:23 INFO SparkEnv: Registering OutputCommitCoordinator
+26/10/04 15:58:23 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/10/04 15:58:23 INFO SparkUI: Bound SparkUI to 0.0.0.0, and started at http://<LAN_IP>:4040
+26/10/04 15:58:23 INFO Executor: Starting executor ID driver on host <LAN_IP>
+26/10/04 15:58:23 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 43625.
+26/10/04 15:58:23 INFO NettyBlockTransferService: Server created on <LAN_IP>:43625
+26/10/04 15:58:23 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/10/04 15:58:23 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, <LAN_IP>, 43625, None)
+26/10/04 15:58:23 INFO BlockManagerMasterEndpoint: Registering block manager <LAN_IP>:43625 with 8.2 GiB RAM, BlockManagerId(driver, <LAN_IP>, 43625, None)
+26/10/04 15:58:23 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, <LAN_IP>, 43625, None)
+26/10/04 15:58:23 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, <LAN_IP>, 43625, None)
+26/10/04 15:58:23 WARN SparkContext: Using an existing SparkContext; some configuration may not take effect.
+26/10/04 15:58:23 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 208.0 B, free 8.2 GiB)
+26/10/04 15:58:23 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 392.0 B, free 8.2 GiB)
+26/10/04 15:58:23 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on <LAN_IP>:43625 (size: 392.0 B, free: 8.2 GiB)
+26/10/04 15:58:23 INFO SparkContext: Created broadcast 0 from broadcast at MongoSpark.scala:530
+26/10/04 15:58:23 INFO SparkContext: Starting job: collect at MongoDB2USchema.java:80
+26/10/04 15:58:23 INFO DAGScheduler: Registering RDD 1 (mapToPair at MongoDB2USchema.java:77) as input to shuffle 0
+26/10/04 15:58:23 INFO DAGScheduler: Got job 0 (collect at MongoDB2USchema.java:80) with 1 output partitions
+26/10/04 15:58:23 INFO DAGScheduler: Final stage: ResultStage 1 (collect at MongoDB2USchema.java:80)
+26/10/04 15:58:23 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 0)
+26/10/04 15:58:23 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 0)
+26/10/04 15:58:23 INFO DAGScheduler: Submitting ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77), which has no missing parents
+26/10/04 15:58:23 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 7.5 KiB, free 8.2 GiB)
+26/10/04 15:58:23 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 4.1 KiB, free 8.2 GiB)
+26/10/04 15:58:23 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on <LAN_IP>:43625 (size: 4.1 KiB, free: 8.2 GiB)
+26/10/04 15:58:23 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:58:23 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77) (first 15 tasks are for partitions Vector(0))
+26/10/04 15:58:23 INFO TaskSchedulerImpl: Adding task set 0.0 with 1 tasks
+26/10/04 15:58:23 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, <LAN_IP>, executor driver, partition 0, ANY, 7471 bytes)
+26/10/04 15:58:23 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+26/10/04 15:58:24 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 1203 bytes result sent to driver
+26/10/04 15:58:24 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 276 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 15:58:24 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool
+26/10/04 15:58:24 INFO DAGScheduler: ShuffleMapStage 0 (mapToPair at MongoDB2USchema.java:77) finished in 0.278 s
+26/10/04 15:58:24 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 15:58:24 INFO DAGScheduler: running: Set()
+26/10/04 15:58:24 INFO DAGScheduler: waiting: Set(ResultStage 1)
+26/10/04 15:58:24 INFO DAGScheduler: failed: Set()
+26/10/04 15:58:24 INFO DAGScheduler: Submitting ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78), which has no missing parents
+26/10/04 15:58:24 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 4.3 KiB, free 8.2 GiB)
+26/10/04 15:58:24 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 2.4 KiB, free 8.2 GiB)
+26/10/04 15:58:24 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on <LAN_IP>:43625 (size: 2.4 KiB, free: 8.2 GiB)
+26/10/04 15:58:24 INFO SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:58:24 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78) (first 15 tasks are for partitions Vector(0))
+26/10/04 15:58:24 INFO TaskSchedulerImpl: Adding task set 1.0 with 1 tasks
+26/10/04 15:58:24 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 1, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7143 bytes)
+26/10/04 15:58:24 INFO Executor: Running task 0.0 in stage 1.0 (TID 1)
+26/10/04 15:58:24 INFO ShuffleBlockFetcherIterator: Getting 1 (1156.0 B) non-empty blocks including 1 (1156.0 B) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:58:24 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 15:58:24 INFO Executor: Finished task 0.0 in stage 1.0 (TID 1). 8990 bytes result sent to driver
+26/10/04 15:58:24 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 1) in 6 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 15:58:24 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool
+26/10/04 15:58:24 INFO DAGScheduler: ResultStage 1 (collect at MongoDB2USchema.java:80) finished in 0.010 s
+26/10/04 15:58:24 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 15:58:24 INFO TaskSchedulerImpl: Killing all running tasks in stage 1: Stage finished
+26/10/04 15:58:24 INFO DAGScheduler: Job 0 finished: collect at MongoDB2USchema.java:80, took 0.290408 s
+26/10/04 15:58:24 INFO SparkUI: Stopped Spark web UI at http://<LAN_IP>:4040
+26/10/04 15:58:24 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+26/10/04 15:58:24 INFO MemoryStore: MemoryStore cleared
+26/10/04 15:58:24 INFO BlockManager: BlockManager stopped
+26/10/04 15:58:24 INFO BlockManagerMaster: BlockManagerMaster stopped
+26/10/04 15:58:24 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+26/10/04 15:58:24 INFO SparkContext: Successfully stopped SparkContext
+java.lang.InterruptedException
+	at java.lang.Object.wait(Native Method)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:144)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:165)
+	at org.eclipse.emf.common.util.CommonUtil$1ReferenceClearingQueuePollingThread.run(CommonUtil.java:70)
+26/10/04 15:58:29 INFO MongoClientCache: Closing MongoClient: [localhost:27017]
+26/10/04 15:58:29 INFO connection: Closed connection [connectionId{localValue:2, serverValue:1997}] to localhost:27017 because the pool has been closed.
+XMI gerado em /output/up_b_small.xmi
+  geracao=1.08s  boot=-  extracao=1.04s  inferencia=0.01s  escrita=0.00s  porte=1.06s  oraculo=18.38s  query=0.05s  norm=22.698072805139187x  equivalente=True  divergencias=5
+    Movie: real=50000  porte=50000 (100.0%)  oraculo=50000 (100.0%)
+    User: real=100000  porte=31170 (31.2%)  oraculo=30926 (30.9%)
+
+########## run_oracle_mongo B medium (tentativa 1)  12:58:39 ##########
+
+=== seed 23 | rota B | medium | python ===
+== Rota B | size medium | db up_b_medium | seed 23 | User=200000 Movie=100000 rels~5/user ==
+  movies: 100000 inseridos em 0.3s
+    users: 100000/200000 (1s)
+  users: 200000 inseridos em 1.2s
+== concluído em 1.4s ==
+Oct 04, 2026 3:58:45 PM com.google.inject.internal.InternalFlags getSystemOption
+WARNING: CHILD is not a valid flag value for guice_custom_class_loading.  Values must be one of [OFF, BRIDGE]
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+26/10/04 15:58:45 WARN Utils: Your hostname, <HOSTNAME> resolves to a loopback address: 127.0.1.1; using <LAN_IP> instead (on interface wlp5s0)
+26/10/04 15:58:45 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+26/10/04 15:58:45 INFO SparkContext: Running Spark version 3.0.1
+26/10/04 15:58:45 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+26/10/04 15:58:45 INFO ResourceUtils: ==============================================================
+26/10/04 15:58:45 INFO ResourceUtils: Resources for spark.driver:
+
+26/10/04 15:58:45 INFO ResourceUtils: ==============================================================
+26/10/04 15:58:45 INFO SparkContext: Submitted application: MongoDB
+26/10/04 15:58:45 INFO SecurityManager: Changing view acls to: root
+26/10/04 15:58:45 INFO SecurityManager: Changing modify acls to: root
+26/10/04 15:58:45 INFO SecurityManager: Changing view acls groups to:
+26/10/04 15:58:45 INFO SecurityManager: Changing modify acls groups to:
+26/10/04 15:58:45 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(root); groups with view permissions: Set(); users  with modify permissions: Set(root); groups with modify permissions: Set()
+26/10/04 15:58:46 INFO Utils: Successfully started service 'sparkDriver' on port 36883.
+26/10/04 15:58:46 INFO SparkEnv: Registering MapOutputTracker
+26/10/04 15:58:46 INFO SparkEnv: Registering BlockManagerMaster
+26/10/04 15:58:46 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/10/04 15:58:46 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/10/04 15:58:46 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/10/04 15:58:46 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-2c016828-218f-4779-9141-1716c4344376
+26/10/04 15:58:46 INFO MemoryStore: MemoryStore started with capacity 8.2 GiB
+26/10/04 15:58:46 INFO SparkEnv: Registering OutputCommitCoordinator
+26/10/04 15:58:46 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/10/04 15:58:46 INFO SparkUI: Bound SparkUI to 0.0.0.0, and started at http://<LAN_IP>:4040
+26/10/04 15:58:46 INFO Executor: Starting executor ID driver on host <LAN_IP>
+26/10/04 15:58:46 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 36541.
+26/10/04 15:58:46 INFO NettyBlockTransferService: Server created on <LAN_IP>:36541
+26/10/04 15:58:46 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/10/04 15:58:46 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, <LAN_IP>, 36541, None)
+26/10/04 15:58:46 INFO BlockManagerMasterEndpoint: Registering block manager <LAN_IP>:36541 with 8.2 GiB RAM, BlockManagerId(driver, <LAN_IP>, 36541, None)
+26/10/04 15:58:46 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, <LAN_IP>, 36541, None)
+26/10/04 15:58:46 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, <LAN_IP>, 36541, None)
+26/10/04 15:58:46 WARN SparkContext: Using an existing SparkContext; some configuration may not take effect.
+26/10/04 15:58:46 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 208.0 B, free 8.2 GiB)
+26/10/04 15:58:46 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 392.0 B, free 8.2 GiB)
+26/10/04 15:58:46 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on <LAN_IP>:36541 (size: 392.0 B, free: 8.2 GiB)
+26/10/04 15:58:46 INFO SparkContext: Created broadcast 0 from broadcast at MongoSpark.scala:530
+26/10/04 15:58:46 INFO cluster: Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms'}
+26/10/04 15:58:46 INFO MongoClientCache: Creating MongoClient: [localhost:27017]
+26/10/04 15:58:46 INFO cluster: Cluster description not yet available. Waiting for 30000 ms before timing out
+26/10/04 15:58:46 INFO connection: Opened connection [connectionId{localValue:1, serverValue:2010}] to localhost:27017
+26/10/04 15:58:46 INFO cluster: Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=25, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=1319667}
+26/10/04 15:58:46 INFO connection: Opened connection [connectionId{localValue:2, serverValue:2011}] to localhost:27017
+26/10/04 15:58:46 INFO SparkContext: Starting job: collect at MongoDB2USchema.java:80
+26/10/04 15:58:46 INFO DAGScheduler: Registering RDD 1 (mapToPair at MongoDB2USchema.java:77) as input to shuffle 0
+26/10/04 15:58:46 INFO DAGScheduler: Got job 0 (collect at MongoDB2USchema.java:80) with 1 output partitions
+26/10/04 15:58:46 INFO DAGScheduler: Final stage: ResultStage 1 (collect at MongoDB2USchema.java:80)
+26/10/04 15:58:46 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 0)
+26/10/04 15:58:46 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 0)
+26/10/04 15:58:46 INFO DAGScheduler: Submitting ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77), which has no missing parents
+26/10/04 15:58:46 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 7.5 KiB, free 8.2 GiB)
+26/10/04 15:58:46 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 4.1 KiB, free 8.2 GiB)
+26/10/04 15:58:46 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on <LAN_IP>:36541 (size: 4.1 KiB, free: 8.2 GiB)
+26/10/04 15:58:46 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:58:46 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77) (first 15 tasks are for partitions Vector(0))
+26/10/04 15:58:46 INFO TaskSchedulerImpl: Adding task set 0.0 with 1 tasks
+26/10/04 15:58:46 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, <LAN_IP>, executor driver, partition 0, ANY, 7471 bytes)
+26/10/04 15:58:46 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+26/10/04 15:58:46 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 1160 bytes result sent to driver
+26/10/04 15:58:46 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 226 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 15:58:46 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool
+26/10/04 15:58:46 INFO DAGScheduler: ShuffleMapStage 0 (mapToPair at MongoDB2USchema.java:77) finished in 0.267 s
+26/10/04 15:58:46 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 15:58:46 INFO DAGScheduler: running: Set()
+26/10/04 15:58:46 INFO DAGScheduler: waiting: Set(ResultStage 1)
+26/10/04 15:58:46 INFO DAGScheduler: failed: Set()
+26/10/04 15:58:46 INFO DAGScheduler: Submitting ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78), which has no missing parents
+26/10/04 15:58:46 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 4.3 KiB, free 8.2 GiB)
+26/10/04 15:58:46 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 2.4 KiB, free 8.2 GiB)
+26/10/04 15:58:46 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on <LAN_IP>:36541 (size: 2.4 KiB, free: 8.2 GiB)
+26/10/04 15:58:46 INFO SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:58:46 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78) (first 15 tasks are for partitions Vector(0))
+26/10/04 15:58:46 INFO TaskSchedulerImpl: Adding task set 1.0 with 1 tasks
+26/10/04 15:58:46 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 1, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7143 bytes)
+26/10/04 15:58:46 INFO Executor: Running task 0.0 in stage 1.0 (TID 1)
+26/10/04 15:58:46 INFO ShuffleBlockFetcherIterator: Getting 1 (490.0 B) non-empty blocks including 1 (490.0 B) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:58:46 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 3 ms
+26/10/04 15:58:46 INFO Executor: Finished task 0.0 in stage 1.0 (TID 1). 1784 bytes result sent to driver
+26/10/04 15:58:46 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 1) in 38 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 15:58:46 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool
+26/10/04 15:58:46 INFO DAGScheduler: ResultStage 1 (collect at MongoDB2USchema.java:80) finished in 0.042 s
+26/10/04 15:58:46 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 15:58:46 INFO TaskSchedulerImpl: Killing all running tasks in stage 1: Stage finished
+26/10/04 15:58:46 INFO DAGScheduler: Job 0 finished: collect at MongoDB2USchema.java:80, took 0.331633 s
+26/10/04 15:58:46 INFO SparkUI: Stopped Spark web UI at http://<LAN_IP>:4040
+26/10/04 15:58:46 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+26/10/04 15:58:46 INFO MemoryStore: MemoryStore cleared
+26/10/04 15:58:46 INFO BlockManager: BlockManager stopped
+26/10/04 15:58:46 INFO BlockManagerMaster: BlockManagerMaster stopped
+26/10/04 15:58:46 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+26/10/04 15:58:46 INFO SparkContext: Successfully stopped SparkContext
+26/10/04 15:58:46 INFO SparkContext: Running Spark version 3.0.1
+26/10/04 15:58:46 INFO ResourceUtils: ==============================================================
+26/10/04 15:58:46 INFO ResourceUtils: Resources for spark.driver:
+
+26/10/04 15:58:46 INFO ResourceUtils: ==============================================================
+26/10/04 15:58:46 INFO SparkContext: Submitted application: MongoDB
+26/10/04 15:58:46 INFO SecurityManager: Changing view acls to: root
+26/10/04 15:58:46 INFO SecurityManager: Changing modify acls to: root
+26/10/04 15:58:46 INFO SecurityManager: Changing view acls groups to:
+26/10/04 15:58:46 INFO SecurityManager: Changing modify acls groups to:
+26/10/04 15:58:46 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(root); groups with view permissions: Set(); users  with modify permissions: Set(root); groups with modify permissions: Set()
+26/10/04 15:58:46 INFO Utils: Successfully started service 'sparkDriver' on port 45571.
+26/10/04 15:58:46 INFO SparkEnv: Registering MapOutputTracker
+26/10/04 15:58:46 INFO SparkEnv: Registering BlockManagerMaster
+26/10/04 15:58:46 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/10/04 15:58:46 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/10/04 15:58:46 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/10/04 15:58:46 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-2150a872-2734-42b3-9285-e7cef46e80b2
+26/10/04 15:58:46 INFO MemoryStore: MemoryStore started with capacity 8.2 GiB
+26/10/04 15:58:46 INFO SparkEnv: Registering OutputCommitCoordinator
+26/10/04 15:58:46 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/10/04 15:58:46 INFO SparkUI: Bound SparkUI to 0.0.0.0, and started at http://<LAN_IP>:4040
+26/10/04 15:58:46 INFO Executor: Starting executor ID driver on host <LAN_IP>
+26/10/04 15:58:46 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 45837.
+26/10/04 15:58:46 INFO NettyBlockTransferService: Server created on <LAN_IP>:45837
+26/10/04 15:58:46 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/10/04 15:58:46 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, <LAN_IP>, 45837, None)
+26/10/04 15:58:46 INFO BlockManagerMasterEndpoint: Registering block manager <LAN_IP>:45837 with 8.2 GiB RAM, BlockManagerId(driver, <LAN_IP>, 45837, None)
+26/10/04 15:58:46 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, <LAN_IP>, 45837, None)
+26/10/04 15:58:46 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, <LAN_IP>, 45837, None)
+26/10/04 15:58:46 WARN SparkContext: Using an existing SparkContext; some configuration may not take effect.
+26/10/04 15:58:46 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 208.0 B, free 8.2 GiB)
+26/10/04 15:58:47 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 392.0 B, free 8.2 GiB)
+26/10/04 15:58:47 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on <LAN_IP>:45837 (size: 392.0 B, free: 8.2 GiB)
+26/10/04 15:58:47 INFO SparkContext: Created broadcast 0 from broadcast at MongoSpark.scala:530
+26/10/04 15:58:47 INFO SparkContext: Starting job: collect at MongoDB2USchema.java:80
+26/10/04 15:58:47 INFO DAGScheduler: Registering RDD 1 (mapToPair at MongoDB2USchema.java:77) as input to shuffle 0
+26/10/04 15:58:47 INFO DAGScheduler: Got job 0 (collect at MongoDB2USchema.java:80) with 1 output partitions
+26/10/04 15:58:47 INFO DAGScheduler: Final stage: ResultStage 1 (collect at MongoDB2USchema.java:80)
+26/10/04 15:58:47 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 0)
+26/10/04 15:58:47 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 0)
+26/10/04 15:58:47 INFO DAGScheduler: Submitting ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77), which has no missing parents
+26/10/04 15:58:47 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 7.5 KiB, free 8.2 GiB)
+26/10/04 15:58:47 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 4.1 KiB, free 8.2 GiB)
+26/10/04 15:58:47 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on <LAN_IP>:45837 (size: 4.1 KiB, free: 8.2 GiB)
+26/10/04 15:58:47 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:58:47 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77) (first 15 tasks are for partitions Vector(0))
+26/10/04 15:58:47 INFO TaskSchedulerImpl: Adding task set 0.0 with 1 tasks
+26/10/04 15:58:47 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, <LAN_IP>, executor driver, partition 0, ANY, 7471 bytes)
+26/10/04 15:58:47 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+26/10/04 15:58:47 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 1203 bytes result sent to driver
+26/10/04 15:58:47 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 539 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 15:58:47 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool
+26/10/04 15:58:47 INFO DAGScheduler: ShuffleMapStage 0 (mapToPair at MongoDB2USchema.java:77) finished in 0.543 s
+26/10/04 15:58:47 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 15:58:47 INFO DAGScheduler: running: Set()
+26/10/04 15:58:47 INFO DAGScheduler: waiting: Set(ResultStage 1)
+26/10/04 15:58:47 INFO DAGScheduler: failed: Set()
+26/10/04 15:58:47 INFO DAGScheduler: Submitting ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78), which has no missing parents
+26/10/04 15:58:47 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 4.3 KiB, free 8.2 GiB)
+26/10/04 15:58:47 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 2.4 KiB, free 8.2 GiB)
+26/10/04 15:58:47 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on <LAN_IP>:45837 (size: 2.4 KiB, free: 8.2 GiB)
+26/10/04 15:58:47 INFO SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:58:47 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78) (first 15 tasks are for partitions Vector(0))
+26/10/04 15:58:47 INFO TaskSchedulerImpl: Adding task set 1.0 with 1 tasks
+26/10/04 15:58:47 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 1, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7143 bytes)
+26/10/04 15:58:47 INFO Executor: Running task 0.0 in stage 1.0 (TID 1)
+26/10/04 15:58:47 INFO ShuffleBlockFetcherIterator: Getting 1 (1538.0 B) non-empty blocks including 1 (1538.0 B) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:58:47 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 15:58:47 INFO Executor: Finished task 0.0 in stage 1.0 (TID 1). 19980 bytes result sent to driver
+26/10/04 15:58:47 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 1) in 8 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 15:58:47 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool
+26/10/04 15:58:47 INFO DAGScheduler: ResultStage 1 (collect at MongoDB2USchema.java:80) finished in 0.011 s
+26/10/04 15:58:47 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 15:58:47 INFO TaskSchedulerImpl: Killing all running tasks in stage 1: Stage finished
+26/10/04 15:58:47 INFO DAGScheduler: Job 0 finished: collect at MongoDB2USchema.java:80, took 0.558219 s
+26/10/04 15:58:47 INFO SparkUI: Stopped Spark web UI at http://<LAN_IP>:4040
+26/10/04 15:58:47 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+26/10/04 15:58:47 INFO MemoryStore: MemoryStore cleared
+26/10/04 15:58:47 INFO BlockManager: BlockManager stopped
+26/10/04 15:58:47 INFO BlockManagerMaster: BlockManagerMaster stopped
+26/10/04 15:58:47 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+26/10/04 15:58:47 INFO SparkContext: Successfully stopped SparkContext
+java.lang.InterruptedException
+	at java.lang.Object.wait(Native Method)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:144)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:165)
+	at org.eclipse.emf.common.util.CommonUtil$1ReferenceClearingQueuePollingThread.run(CommonUtil.java:70)
+26/10/04 15:58:52 INFO MongoClientCache: Closing MongoClient: [localhost:27017]
+26/10/04 15:58:52 INFO connection: Closed connection [connectionId{localValue:2, serverValue:2011}] to localhost:27017 because the pool has been closed.
+XMI gerado em /output/up_b_medium.xmi
+  geracao=1.57s  boot=-  extracao=2.28s  inferencia=0.01s  escrita=0.00s  porte=2.30s  oraculo=18.77s  query=0.09s  norm=24.364406779661017x  equivalente=True  divergencias=3
+    Movie: real=100000  porte=100000 (100.0%)  oraculo=100000 (100.0%)
+    User: real=200000  porte=42154 (21.1%)  oraculo=42335 (21.2%)
+
+########## run_oracle_mongo B large (tentativa 1)  12:59:03 ##########
+
+=== seed 23 | rota B | large | python ===
+== Rota B | size large | db up_b_large | seed 23 | User=400000 Movie=200000 rels~10/user ==
+  movies: 200000 inseridos em 0.4s
+    users: 100000/400000 (1s)
+    users: 200000/400000 (2s)
+    users: 300000/400000 (2s)
+  users: 400000 inseridos em 3.1s
+== concluído em 3.5s ==
+Oct 04, 2026 3:59:14 PM com.google.inject.internal.InternalFlags getSystemOption
+WARNING: CHILD is not a valid flag value for guice_custom_class_loading.  Values must be one of [OFF, BRIDGE]
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+26/10/04 15:59:14 WARN Utils: Your hostname, <HOSTNAME> resolves to a loopback address: 127.0.1.1; using <LAN_IP> instead (on interface wlp5s0)
+26/10/04 15:59:14 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+26/10/04 15:59:14 INFO SparkContext: Running Spark version 3.0.1
+26/10/04 15:59:14 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+26/10/04 15:59:14 INFO ResourceUtils: ==============================================================
+26/10/04 15:59:14 INFO ResourceUtils: Resources for spark.driver:
+
+26/10/04 15:59:14 INFO ResourceUtils: ==============================================================
+26/10/04 15:59:14 INFO SparkContext: Submitted application: MongoDB
+26/10/04 15:59:14 INFO SecurityManager: Changing view acls to: root
+26/10/04 15:59:14 INFO SecurityManager: Changing modify acls to: root
+26/10/04 15:59:14 INFO SecurityManager: Changing view acls groups to:
+26/10/04 15:59:14 INFO SecurityManager: Changing modify acls groups to:
+26/10/04 15:59:14 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(root); groups with view permissions: Set(); users  with modify permissions: Set(root); groups with modify permissions: Set()
+26/10/04 15:59:14 INFO Utils: Successfully started service 'sparkDriver' on port 39541.
+26/10/04 15:59:14 INFO SparkEnv: Registering MapOutputTracker
+26/10/04 15:59:14 INFO SparkEnv: Registering BlockManagerMaster
+26/10/04 15:59:14 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/10/04 15:59:14 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/10/04 15:59:14 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/10/04 15:59:14 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-726bc3bc-56b1-4965-8f10-80141f28912a
+26/10/04 15:59:14 INFO MemoryStore: MemoryStore started with capacity 8.2 GiB
+26/10/04 15:59:14 INFO SparkEnv: Registering OutputCommitCoordinator
+26/10/04 15:59:14 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/10/04 15:59:14 INFO SparkUI: Bound SparkUI to 0.0.0.0, and started at http://<LAN_IP>:4040
+26/10/04 15:59:14 INFO Executor: Starting executor ID driver on host <LAN_IP>
+26/10/04 15:59:14 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 41035.
+26/10/04 15:59:14 INFO NettyBlockTransferService: Server created on <LAN_IP>:41035
+26/10/04 15:59:14 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/10/04 15:59:14 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, <LAN_IP>, 41035, None)
+26/10/04 15:59:14 INFO BlockManagerMasterEndpoint: Registering block manager <LAN_IP>:41035 with 8.2 GiB RAM, BlockManagerId(driver, <LAN_IP>, 41035, None)
+26/10/04 15:59:14 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, <LAN_IP>, 41035, None)
+26/10/04 15:59:14 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, <LAN_IP>, 41035, None)
+26/10/04 15:59:15 WARN SparkContext: Using an existing SparkContext; some configuration may not take effect.
+26/10/04 15:59:15 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 208.0 B, free 8.2 GiB)
+26/10/04 15:59:15 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 392.0 B, free 8.2 GiB)
+26/10/04 15:59:15 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on <LAN_IP>:41035 (size: 392.0 B, free: 8.2 GiB)
+26/10/04 15:59:15 INFO SparkContext: Created broadcast 0 from broadcast at MongoSpark.scala:530
+26/10/04 15:59:15 INFO cluster: Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms'}
+26/10/04 15:59:15 INFO MongoClientCache: Creating MongoClient: [localhost:27017]
+26/10/04 15:59:15 INFO cluster: Cluster description not yet available. Waiting for 30000 ms before timing out
+26/10/04 15:59:15 INFO connection: Opened connection [connectionId{localValue:1, serverValue:2024}] to localhost:27017
+26/10/04 15:59:15 INFO cluster: Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=25, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=1094435}
+26/10/04 15:59:15 INFO connection: Opened connection [connectionId{localValue:2, serverValue:2025}] to localhost:27017
+26/10/04 15:59:15 INFO SparkContext: Starting job: collect at MongoDB2USchema.java:80
+26/10/04 15:59:15 INFO DAGScheduler: Registering RDD 1 (mapToPair at MongoDB2USchema.java:77) as input to shuffle 0
+26/10/04 15:59:15 INFO DAGScheduler: Got job 0 (collect at MongoDB2USchema.java:80) with 1 output partitions
+26/10/04 15:59:15 INFO DAGScheduler: Final stage: ResultStage 1 (collect at MongoDB2USchema.java:80)
+26/10/04 15:59:15 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 0)
+26/10/04 15:59:15 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 0)
+26/10/04 15:59:15 INFO DAGScheduler: Submitting ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77), which has no missing parents
+26/10/04 15:59:15 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 7.5 KiB, free 8.2 GiB)
+26/10/04 15:59:15 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 4.1 KiB, free 8.2 GiB)
+26/10/04 15:59:15 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on <LAN_IP>:41035 (size: 4.1 KiB, free: 8.2 GiB)
+26/10/04 15:59:15 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:59:15 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77) (first 15 tasks are for partitions Vector(0))
+26/10/04 15:59:15 INFO TaskSchedulerImpl: Adding task set 0.0 with 1 tasks
+26/10/04 15:59:15 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, <LAN_IP>, executor driver, partition 0, ANY, 7471 bytes)
+26/10/04 15:59:15 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+26/10/04 15:59:15 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 1160 bytes result sent to driver
+26/10/04 15:59:15 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 314 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 15:59:15 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool
+26/10/04 15:59:15 INFO DAGScheduler: ShuffleMapStage 0 (mapToPair at MongoDB2USchema.java:77) finished in 0.359 s
+26/10/04 15:59:15 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 15:59:15 INFO DAGScheduler: running: Set()
+26/10/04 15:59:15 INFO DAGScheduler: waiting: Set(ResultStage 1)
+26/10/04 15:59:15 INFO DAGScheduler: failed: Set()
+26/10/04 15:59:15 INFO DAGScheduler: Submitting ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78), which has no missing parents
+26/10/04 15:59:15 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 4.3 KiB, free 8.2 GiB)
+26/10/04 15:59:15 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 2.4 KiB, free 8.2 GiB)
+26/10/04 15:59:15 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on <LAN_IP>:41035 (size: 2.4 KiB, free: 8.2 GiB)
+26/10/04 15:59:15 INFO SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:59:15 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78) (first 15 tasks are for partitions Vector(0))
+26/10/04 15:59:15 INFO TaskSchedulerImpl: Adding task set 1.0 with 1 tasks
+26/10/04 15:59:15 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 1, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7143 bytes)
+26/10/04 15:59:15 INFO Executor: Running task 0.0 in stage 1.0 (TID 1)
+26/10/04 15:59:15 INFO ShuffleBlockFetcherIterator: Getting 1 (490.0 B) non-empty blocks including 1 (490.0 B) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:59:15 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 2 ms
+26/10/04 15:59:15 INFO Executor: Finished task 0.0 in stage 1.0 (TID 1). 1784 bytes result sent to driver
+26/10/04 15:59:15 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 1) in 37 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 15:59:15 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool
+26/10/04 15:59:15 INFO DAGScheduler: ResultStage 1 (collect at MongoDB2USchema.java:80) finished in 0.042 s
+26/10/04 15:59:15 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 15:59:15 INFO TaskSchedulerImpl: Killing all running tasks in stage 1: Stage finished
+26/10/04 15:59:15 INFO DAGScheduler: Job 0 finished: collect at MongoDB2USchema.java:80, took 0.427574 s
+26/10/04 15:59:15 INFO SparkUI: Stopped Spark web UI at http://<LAN_IP>:4040
+26/10/04 15:59:15 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+26/10/04 15:59:15 INFO MemoryStore: MemoryStore cleared
+26/10/04 15:59:15 INFO BlockManager: BlockManager stopped
+26/10/04 15:59:15 INFO BlockManagerMaster: BlockManagerMaster stopped
+26/10/04 15:59:15 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+26/10/04 15:59:15 INFO SparkContext: Successfully stopped SparkContext
+26/10/04 15:59:15 INFO SparkContext: Running Spark version 3.0.1
+26/10/04 15:59:15 INFO ResourceUtils: ==============================================================
+26/10/04 15:59:15 INFO ResourceUtils: Resources for spark.driver:
+
+26/10/04 15:59:15 INFO ResourceUtils: ==============================================================
+26/10/04 15:59:15 INFO SparkContext: Submitted application: MongoDB
+26/10/04 15:59:15 INFO SecurityManager: Changing view acls to: root
+26/10/04 15:59:15 INFO SecurityManager: Changing modify acls to: root
+26/10/04 15:59:15 INFO SecurityManager: Changing view acls groups to:
+26/10/04 15:59:15 INFO SecurityManager: Changing modify acls groups to:
+26/10/04 15:59:15 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(root); groups with view permissions: Set(); users  with modify permissions: Set(root); groups with modify permissions: Set()
+26/10/04 15:59:15 INFO Utils: Successfully started service 'sparkDriver' on port 37273.
+26/10/04 15:59:15 INFO SparkEnv: Registering MapOutputTracker
+26/10/04 15:59:15 INFO SparkEnv: Registering BlockManagerMaster
+26/10/04 15:59:15 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/10/04 15:59:15 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/10/04 15:59:15 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/10/04 15:59:15 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-bb82d760-3ee9-4c09-80ca-41506bf54ada
+26/10/04 15:59:15 INFO MemoryStore: MemoryStore started with capacity 8.2 GiB
+26/10/04 15:59:15 INFO SparkEnv: Registering OutputCommitCoordinator
+26/10/04 15:59:15 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/10/04 15:59:15 INFO SparkUI: Bound SparkUI to 0.0.0.0, and started at http://<LAN_IP>:4040
+26/10/04 15:59:15 INFO Executor: Starting executor ID driver on host <LAN_IP>
+26/10/04 15:59:15 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 43057.
+26/10/04 15:59:15 INFO NettyBlockTransferService: Server created on <LAN_IP>:43057
+26/10/04 15:59:15 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/10/04 15:59:15 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, <LAN_IP>, 43057, None)
+26/10/04 15:59:15 INFO BlockManagerMasterEndpoint: Registering block manager <LAN_IP>:43057 with 8.2 GiB RAM, BlockManagerId(driver, <LAN_IP>, 43057, None)
+26/10/04 15:59:15 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, <LAN_IP>, 43057, None)
+26/10/04 15:59:15 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, <LAN_IP>, 43057, None)
+26/10/04 15:59:15 WARN SparkContext: Using an existing SparkContext; some configuration may not take effect.
+26/10/04 15:59:15 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 208.0 B, free 8.2 GiB)
+26/10/04 15:59:15 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 392.0 B, free 8.2 GiB)
+26/10/04 15:59:15 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on <LAN_IP>:43057 (size: 392.0 B, free: 8.2 GiB)
+26/10/04 15:59:15 INFO SparkContext: Created broadcast 0 from broadcast at MongoSpark.scala:530
+26/10/04 15:59:15 INFO SparkContext: Starting job: collect at MongoDB2USchema.java:80
+26/10/04 15:59:15 INFO DAGScheduler: Registering RDD 1 (mapToPair at MongoDB2USchema.java:77) as input to shuffle 0
+26/10/04 15:59:15 INFO DAGScheduler: Got job 0 (collect at MongoDB2USchema.java:80) with 4 output partitions
+26/10/04 15:59:15 INFO DAGScheduler: Final stage: ResultStage 1 (collect at MongoDB2USchema.java:80)
+26/10/04 15:59:15 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 0)
+26/10/04 15:59:15 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 0)
+26/10/04 15:59:15 INFO DAGScheduler: Submitting ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77), which has no missing parents
+26/10/04 15:59:15 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 7.5 KiB, free 8.2 GiB)
+26/10/04 15:59:15 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 4.1 KiB, free 8.2 GiB)
+26/10/04 15:59:15 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on <LAN_IP>:43057 (size: 4.1 KiB, free: 8.2 GiB)
+26/10/04 15:59:15 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:59:15 INFO DAGScheduler: Submitting 4 missing tasks from ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77) (first 15 tasks are for partitions Vector(0, 1, 2, 3))
+26/10/04 15:59:15 INFO TaskSchedulerImpl: Adding task set 0.0 with 4 tasks
+26/10/04 15:59:15 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, <LAN_IP>, executor driver, partition 0, ANY, 7490 bytes)
+26/10/04 15:59:15 INFO TaskSetManager: Starting task 1.0 in stage 0.0 (TID 1, <LAN_IP>, executor driver, partition 1, ANY, 7500 bytes)
+26/10/04 15:59:15 INFO TaskSetManager: Starting task 2.0 in stage 0.0 (TID 2, <LAN_IP>, executor driver, partition 2, ANY, 7500 bytes)
+26/10/04 15:59:15 INFO TaskSetManager: Starting task 3.0 in stage 0.0 (TID 3, <LAN_IP>, executor driver, partition 3, ANY, 7491 bytes)
+26/10/04 15:59:15 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+26/10/04 15:59:15 INFO Executor: Running task 1.0 in stage 0.0 (TID 1)
+26/10/04 15:59:15 INFO Executor: Running task 2.0 in stage 0.0 (TID 2)
+26/10/04 15:59:15 INFO Executor: Running task 3.0 in stage 0.0 (TID 3)
+26/10/04 15:59:15 INFO connection: Opened connection [connectionId{localValue:4, serverValue:2027}] to localhost:27017
+26/10/04 15:59:15 INFO connection: Opened connection [connectionId{localValue:3, serverValue:2026}] to localhost:27017
+26/10/04 15:59:15 INFO connection: Opened connection [connectionId{localValue:5, serverValue:2028}] to localhost:27017
+26/10/04 15:59:16 INFO Executor: Finished task 3.0 in stage 0.0 (TID 3). 1163 bytes result sent to driver
+26/10/04 15:59:16 INFO TaskSetManager: Finished task 3.0 in stage 0.0 (TID 3) in 120 ms on <LAN_IP> (executor driver) (1/4)
+26/10/04 15:59:16 INFO Executor: Finished task 1.0 in stage 0.0 (TID 1). 1163 bytes result sent to driver
+26/10/04 15:59:16 INFO TaskSetManager: Finished task 1.0 in stage 0.0 (TID 1) in 158 ms on <LAN_IP> (executor driver) (2/4)
+26/10/04 15:59:16 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 1206 bytes result sent to driver
+26/10/04 15:59:16 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 565 ms on <LAN_IP> (executor driver) (3/4)
+26/10/04 15:59:17 INFO Executor: Finished task 2.0 in stage 0.0 (TID 2). 1206 bytes result sent to driver
+26/10/04 15:59:17 INFO TaskSetManager: Finished task 2.0 in stage 0.0 (TID 2) in 1198 ms on <LAN_IP> (executor driver) (4/4)
+26/10/04 15:59:17 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool
+26/10/04 15:59:17 INFO DAGScheduler: ShuffleMapStage 0 (mapToPair at MongoDB2USchema.java:77) finished in 1.203 s
+26/10/04 15:59:17 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 15:59:17 INFO DAGScheduler: running: Set()
+26/10/04 15:59:17 INFO DAGScheduler: waiting: Set(ResultStage 1)
+26/10/04 15:59:17 INFO DAGScheduler: failed: Set()
+26/10/04 15:59:17 INFO DAGScheduler: Submitting ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78), which has no missing parents
+26/10/04 15:59:17 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 4.3 KiB, free 8.2 GiB)
+26/10/04 15:59:17 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 2.4 KiB, free 8.2 GiB)
+26/10/04 15:59:17 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on <LAN_IP>:43057 (size: 2.4 KiB, free: 8.2 GiB)
+26/10/04 15:59:17 INFO SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1223
+26/10/04 15:59:17 INFO DAGScheduler: Submitting 4 missing tasks from ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78) (first 15 tasks are for partitions Vector(0, 1, 2, 3))
+26/10/04 15:59:17 INFO TaskSchedulerImpl: Adding task set 1.0 with 4 tasks
+26/10/04 15:59:17 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 4, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7143 bytes)
+26/10/04 15:59:17 INFO TaskSetManager: Starting task 1.0 in stage 1.0 (TID 5, <LAN_IP>, executor driver, partition 1, NODE_LOCAL, 7143 bytes)
+26/10/04 15:59:17 INFO TaskSetManager: Starting task 2.0 in stage 1.0 (TID 6, <LAN_IP>, executor driver, partition 2, NODE_LOCAL, 7143 bytes)
+26/10/04 15:59:17 INFO TaskSetManager: Starting task 3.0 in stage 1.0 (TID 7, <LAN_IP>, executor driver, partition 3, NODE_LOCAL, 7143 bytes)
+26/10/04 15:59:17 INFO Executor: Running task 0.0 in stage 1.0 (TID 4)
+26/10/04 15:59:17 INFO Executor: Running task 3.0 in stage 1.0 (TID 7)
+26/10/04 15:59:17 INFO Executor: Running task 2.0 in stage 1.0 (TID 6)
+26/10/04 15:59:17 INFO Executor: Running task 1.0 in stage 1.0 (TID 5)
+26/10/04 15:59:17 INFO ShuffleBlockFetcherIterator: Getting 4 (5.7 KiB) non-empty blocks including 4 (5.7 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:59:17 INFO ShuffleBlockFetcherIterator: Getting 4 (6.2 KiB) non-empty blocks including 4 (6.2 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:59:17 INFO ShuffleBlockFetcherIterator: Getting 4 (5.0 KiB) non-empty blocks including 4 (5.0 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:59:17 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 15:59:17 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 15:59:17 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 15:59:17 INFO ShuffleBlockFetcherIterator: Getting 4 (6.2 KiB) non-empty blocks including 4 (6.2 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 15:59:17 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 15:59:17 INFO Executor: Finished task 1.0 in stage 1.0 (TID 5). 20098 bytes result sent to driver
+26/10/04 15:59:17 INFO TaskSetManager: Finished task 1.0 in stage 1.0 (TID 5) in 18 ms on <LAN_IP> (executor driver) (1/4)
+26/10/04 15:59:17 INFO Executor: Finished task 3.0 in stage 1.0 (TID 7). 19643 bytes result sent to driver
+26/10/04 15:59:17 INFO Executor: Finished task 2.0 in stage 1.0 (TID 6). 23730 bytes result sent to driver
+26/10/04 15:59:17 INFO Executor: Finished task 0.0 in stage 1.0 (TID 4). 23233 bytes result sent to driver
+26/10/04 15:59:17 INFO TaskSetManager: Finished task 3.0 in stage 1.0 (TID 7) in 21 ms on <LAN_IP> (executor driver) (2/4)
+26/10/04 15:59:17 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 4) in 21 ms on <LAN_IP> (executor driver) (3/4)
+26/10/04 15:59:17 INFO TaskSetManager: Finished task 2.0 in stage 1.0 (TID 6) in 21 ms on <LAN_IP> (executor driver) (4/4)
+26/10/04 15:59:17 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool
+26/10/04 15:59:17 INFO DAGScheduler: ResultStage 1 (collect at MongoDB2USchema.java:80) finished in 0.024 s
+26/10/04 15:59:17 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 15:59:17 INFO TaskSchedulerImpl: Killing all running tasks in stage 1: Stage finished
+26/10/04 15:59:17 INFO DAGScheduler: Job 0 finished: collect at MongoDB2USchema.java:80, took 1.231374 s
+26/10/04 15:59:17 INFO SparkUI: Stopped Spark web UI at http://<LAN_IP>:4040
+26/10/04 15:59:17 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+26/10/04 15:59:17 INFO MemoryStore: MemoryStore cleared
+26/10/04 15:59:17 INFO BlockManager: BlockManager stopped
+26/10/04 15:59:17 INFO BlockManagerMaster: BlockManagerMaster stopped
+26/10/04 15:59:17 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+26/10/04 15:59:17 INFO SparkContext: Successfully stopped SparkContext
+java.lang.InterruptedException
+	at java.lang.Object.wait(Native Method)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:144)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:165)
+	at org.eclipse.emf.common.util.CommonUtil$1ReferenceClearingQueuePollingThread.run(CommonUtil.java:70)
+26/10/04 15:59:22 INFO MongoClientCache: Closing MongoClient: [localhost:27017]
+26/10/04 15:59:22 INFO connection: Closed connection [connectionId{localValue:3, serverValue:2026}] to localhost:27017 because the pool has been closed.
+26/10/04 15:59:22 INFO connection: Closed connection [connectionId{localValue:5, serverValue:2028}] to localhost:27017 because the pool has been closed.
+26/10/04 15:59:22 INFO connection: Closed connection [connectionId{localValue:4, serverValue:2027}] to localhost:27017 because the pool has been closed.
+26/10/04 15:59:22 INFO connection: Closed connection [connectionId{localValue:2, serverValue:2025}] to localhost:27017 because the pool has been closed.
+XMI gerado em /output/up_b_large.xmi
+  geracao=3.63s  boot=-  extracao=5.59s  inferencia=0.02s  escrita=0.00s  porte=5.61s  oraculo=19.42s  query=0.21s  norm=27.062228654124457x  equivalente=True  divergencias=5
+    Movie: real=200000  porte=200000 (100.0%)  oraculo=200000 (100.0%)
+    User: real=400000  porte=57810 (14.5%)  oraculo=57958 (14.5%)
+
+########## run_oracle_mongo B larger (tentativa 1)  12:59:32 ##########
+
+=== seed 23 | rota B | larger | python ===
+== Rota B | size larger | db up_b_larger | seed 23 | User=800000 Movie=400000 rels~20/user ==
+  movies: 400000 inseridos em 0.9s
+    users: 100000/800000 (1s)
+    users: 200000/800000 (3s)
+    users: 300000/800000 (4s)
+    users: 400000/800000 (5s)
+    users: 500000/800000 (6s)
+    users: 600000/800000 (7s)
+    users: 700000/800000 (9s)
+  users: 800000 inseridos em 9.9s
+== concluído em 10.7s ==
+Oct 04, 2026 4:00:01 PM com.google.inject.internal.InternalFlags getSystemOption
+WARNING: CHILD is not a valid flag value for guice_custom_class_loading.  Values must be one of [OFF, BRIDGE]
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+26/10/04 16:00:01 WARN Utils: Your hostname, <HOSTNAME> resolves to a loopback address: 127.0.1.1; using <LAN_IP> instead (on interface wlp5s0)
+26/10/04 16:00:01 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+26/10/04 16:00:01 INFO SparkContext: Running Spark version 3.0.1
+26/10/04 16:00:01 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+26/10/04 16:00:01 INFO ResourceUtils: ==============================================================
+26/10/04 16:00:01 INFO ResourceUtils: Resources for spark.driver:
+
+26/10/04 16:00:01 INFO ResourceUtils: ==============================================================
+26/10/04 16:00:01 INFO SparkContext: Submitted application: MongoDB
+26/10/04 16:00:02 INFO SecurityManager: Changing view acls to: root
+26/10/04 16:00:02 INFO SecurityManager: Changing modify acls to: root
+26/10/04 16:00:02 INFO SecurityManager: Changing view acls groups to:
+26/10/04 16:00:02 INFO SecurityManager: Changing modify acls groups to:
+26/10/04 16:00:02 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(root); groups with view permissions: Set(); users  with modify permissions: Set(root); groups with modify permissions: Set()
+26/10/04 16:00:02 INFO Utils: Successfully started service 'sparkDriver' on port 40975.
+26/10/04 16:00:02 INFO SparkEnv: Registering MapOutputTracker
+26/10/04 16:00:02 INFO SparkEnv: Registering BlockManagerMaster
+26/10/04 16:00:02 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/10/04 16:00:02 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/10/04 16:00:02 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/10/04 16:00:02 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-fa6f28ac-f8b6-4cc7-ac3c-ab1add383744
+26/10/04 16:00:02 INFO MemoryStore: MemoryStore started with capacity 8.2 GiB
+26/10/04 16:00:02 INFO SparkEnv: Registering OutputCommitCoordinator
+26/10/04 16:00:02 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/10/04 16:00:02 INFO SparkUI: Bound SparkUI to 0.0.0.0, and started at http://<LAN_IP>:4040
+26/10/04 16:00:02 INFO Executor: Starting executor ID driver on host <LAN_IP>
+26/10/04 16:00:02 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 43403.
+26/10/04 16:00:02 INFO NettyBlockTransferService: Server created on <LAN_IP>:43403
+26/10/04 16:00:02 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/10/04 16:00:02 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, <LAN_IP>, 43403, None)
+26/10/04 16:00:02 INFO BlockManagerMasterEndpoint: Registering block manager <LAN_IP>:43403 with 8.2 GiB RAM, BlockManagerId(driver, <LAN_IP>, 43403, None)
+26/10/04 16:00:02 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, <LAN_IP>, 43403, None)
+26/10/04 16:00:02 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, <LAN_IP>, 43403, None)
+26/10/04 16:00:02 WARN SparkContext: Using an existing SparkContext; some configuration may not take effect.
+26/10/04 16:00:02 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 208.0 B, free 8.2 GiB)
+26/10/04 16:00:02 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 392.0 B, free 8.2 GiB)
+26/10/04 16:00:02 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on <LAN_IP>:43403 (size: 392.0 B, free: 8.2 GiB)
+26/10/04 16:00:02 INFO SparkContext: Created broadcast 0 from broadcast at MongoSpark.scala:530
+26/10/04 16:00:02 INFO cluster: Cluster created with settings {hosts=[localhost:27017], mode=SINGLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms'}
+26/10/04 16:00:02 INFO MongoClientCache: Creating MongoClient: [localhost:27017]
+26/10/04 16:00:02 INFO cluster: Cluster description not yet available. Waiting for 30000 ms before timing out
+26/10/04 16:00:02 INFO connection: Opened connection [connectionId{localValue:1, serverValue:2041}] to localhost:27017
+26/10/04 16:00:02 INFO cluster: Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=25, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=1379531}
+26/10/04 16:00:02 INFO connection: Opened connection [connectionId{localValue:2, serverValue:2042}] to localhost:27017
+26/10/04 16:00:02 INFO SparkContext: Starting job: collect at MongoDB2USchema.java:80
+26/10/04 16:00:02 INFO DAGScheduler: Registering RDD 1 (mapToPair at MongoDB2USchema.java:77) as input to shuffle 0
+26/10/04 16:00:02 INFO DAGScheduler: Got job 0 (collect at MongoDB2USchema.java:80) with 1 output partitions
+26/10/04 16:00:02 INFO DAGScheduler: Final stage: ResultStage 1 (collect at MongoDB2USchema.java:80)
+26/10/04 16:00:02 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 0)
+26/10/04 16:00:02 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 0)
+26/10/04 16:00:02 INFO DAGScheduler: Submitting ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77), which has no missing parents
+26/10/04 16:00:02 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 7.5 KiB, free 8.2 GiB)
+26/10/04 16:00:02 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 4.1 KiB, free 8.2 GiB)
+26/10/04 16:00:02 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on <LAN_IP>:43403 (size: 4.1 KiB, free: 8.2 GiB)
+26/10/04 16:00:02 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:00:02 INFO DAGScheduler: Submitting 1 missing tasks from ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:00:02 INFO TaskSchedulerImpl: Adding task set 0.0 with 1 tasks
+26/10/04 16:00:02 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, <LAN_IP>, executor driver, partition 0, ANY, 7471 bytes)
+26/10/04 16:00:02 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+26/10/04 16:00:03 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 1203 bytes result sent to driver
+26/10/04 16:00:03 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 412 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:00:03 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool
+26/10/04 16:00:03 INFO DAGScheduler: ShuffleMapStage 0 (mapToPair at MongoDB2USchema.java:77) finished in 0.455 s
+26/10/04 16:00:03 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 16:00:03 INFO DAGScheduler: running: Set()
+26/10/04 16:00:03 INFO DAGScheduler: waiting: Set(ResultStage 1)
+26/10/04 16:00:03 INFO DAGScheduler: failed: Set()
+26/10/04 16:00:03 INFO DAGScheduler: Submitting ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78), which has no missing parents
+26/10/04 16:00:03 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 4.3 KiB, free 8.2 GiB)
+26/10/04 16:00:03 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 2.4 KiB, free 8.2 GiB)
+26/10/04 16:00:03 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on <LAN_IP>:43403 (size: 2.4 KiB, free: 8.2 GiB)
+26/10/04 16:00:03 INFO SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:00:03 INFO DAGScheduler: Submitting 1 missing tasks from ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78) (first 15 tasks are for partitions Vector(0))
+26/10/04 16:00:03 INFO TaskSchedulerImpl: Adding task set 1.0 with 1 tasks
+26/10/04 16:00:03 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 1, <LAN_IP>, executor driver, partition 0, NODE_LOCAL, 7143 bytes)
+26/10/04 16:00:03 INFO Executor: Running task 0.0 in stage 1.0 (TID 1)
+26/10/04 16:00:03 INFO ShuffleBlockFetcherIterator: Getting 1 (490.0 B) non-empty blocks including 1 (490.0 B) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:00:03 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 2 ms
+26/10/04 16:00:03 INFO Executor: Finished task 0.0 in stage 1.0 (TID 1). 1784 bytes result sent to driver
+26/10/04 16:00:03 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 1) in 32 ms on <LAN_IP> (executor driver) (1/1)
+26/10/04 16:00:03 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool
+26/10/04 16:00:03 INFO DAGScheduler: ResultStage 1 (collect at MongoDB2USchema.java:80) finished in 0.035 s
+26/10/04 16:00:03 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 16:00:03 INFO TaskSchedulerImpl: Killing all running tasks in stage 1: Stage finished
+26/10/04 16:00:03 INFO DAGScheduler: Job 0 finished: collect at MongoDB2USchema.java:80, took 0.509432 s
+26/10/04 16:00:03 INFO SparkUI: Stopped Spark web UI at http://<LAN_IP>:4040
+26/10/04 16:00:03 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+26/10/04 16:00:03 INFO MemoryStore: MemoryStore cleared
+26/10/04 16:00:03 INFO BlockManager: BlockManager stopped
+26/10/04 16:00:03 INFO BlockManagerMaster: BlockManagerMaster stopped
+26/10/04 16:00:03 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+26/10/04 16:00:03 INFO SparkContext: Successfully stopped SparkContext
+26/10/04 16:00:03 INFO SparkContext: Running Spark version 3.0.1
+26/10/04 16:00:03 INFO ResourceUtils: ==============================================================
+26/10/04 16:00:03 INFO ResourceUtils: Resources for spark.driver:
+
+26/10/04 16:00:03 INFO ResourceUtils: ==============================================================
+26/10/04 16:00:03 INFO SparkContext: Submitted application: MongoDB
+26/10/04 16:00:03 INFO SecurityManager: Changing view acls to: root
+26/10/04 16:00:03 INFO SecurityManager: Changing modify acls to: root
+26/10/04 16:00:03 INFO SecurityManager: Changing view acls groups to:
+26/10/04 16:00:03 INFO SecurityManager: Changing modify acls groups to:
+26/10/04 16:00:03 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(root); groups with view permissions: Set(); users  with modify permissions: Set(root); groups with modify permissions: Set()
+26/10/04 16:00:03 INFO Utils: Successfully started service 'sparkDriver' on port 41915.
+26/10/04 16:00:03 INFO SparkEnv: Registering MapOutputTracker
+26/10/04 16:00:03 INFO SparkEnv: Registering BlockManagerMaster
+26/10/04 16:00:03 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/10/04 16:00:03 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/10/04 16:00:03 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/10/04 16:00:03 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-b921713d-7803-4a6a-be62-e0985c910a77
+26/10/04 16:00:03 INFO MemoryStore: MemoryStore started with capacity 8.2 GiB
+26/10/04 16:00:03 INFO SparkEnv: Registering OutputCommitCoordinator
+26/10/04 16:00:03 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/10/04 16:00:03 INFO SparkUI: Bound SparkUI to 0.0.0.0, and started at http://<LAN_IP>:4040
+26/10/04 16:00:03 INFO Executor: Starting executor ID driver on host <LAN_IP>
+26/10/04 16:00:03 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 36767.
+26/10/04 16:00:03 INFO NettyBlockTransferService: Server created on <LAN_IP>:36767
+26/10/04 16:00:03 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/10/04 16:00:03 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, <LAN_IP>, 36767, None)
+26/10/04 16:00:03 INFO BlockManagerMasterEndpoint: Registering block manager <LAN_IP>:36767 with 8.2 GiB RAM, BlockManagerId(driver, <LAN_IP>, 36767, None)
+26/10/04 16:00:03 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, <LAN_IP>, 36767, None)
+26/10/04 16:00:03 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, <LAN_IP>, 36767, None)
+26/10/04 16:00:03 WARN SparkContext: Using an existing SparkContext; some configuration may not take effect.
+26/10/04 16:00:03 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 208.0 B, free 8.2 GiB)
+26/10/04 16:00:03 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 392.0 B, free 8.2 GiB)
+26/10/04 16:00:03 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on <LAN_IP>:36767 (size: 392.0 B, free: 8.2 GiB)
+26/10/04 16:00:03 INFO SparkContext: Created broadcast 0 from broadcast at MongoSpark.scala:530
+26/10/04 16:00:03 INFO SparkContext: Starting job: collect at MongoDB2USchema.java:80
+26/10/04 16:00:03 INFO DAGScheduler: Registering RDD 1 (mapToPair at MongoDB2USchema.java:77) as input to shuffle 0
+26/10/04 16:00:03 INFO DAGScheduler: Got job 0 (collect at MongoDB2USchema.java:80) with 8 output partitions
+26/10/04 16:00:03 INFO DAGScheduler: Final stage: ResultStage 1 (collect at MongoDB2USchema.java:80)
+26/10/04 16:00:03 INFO DAGScheduler: Parents of final stage: List(ShuffleMapStage 0)
+26/10/04 16:00:03 INFO DAGScheduler: Missing parents: List(ShuffleMapStage 0)
+26/10/04 16:00:03 INFO DAGScheduler: Submitting ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77), which has no missing parents
+26/10/04 16:00:03 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 7.5 KiB, free 8.2 GiB)
+26/10/04 16:00:03 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 4.1 KiB, free 8.2 GiB)
+26/10/04 16:00:03 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on <LAN_IP>:36767 (size: 4.1 KiB, free: 8.2 GiB)
+26/10/04 16:00:03 INFO SparkContext: Created broadcast 1 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:00:03 INFO DAGScheduler: Submitting 8 missing tasks from ShuffleMapStage 0 (MapPartitionsRDD[1] at mapToPair at MongoDB2USchema.java:77) (first 15 tasks are for partitions Vector(0, 1, 2, 3, 4, 5, 6, 7))
+26/10/04 16:00:03 INFO TaskSchedulerImpl: Adding task set 0.0 with 8 tasks
+26/10/04 16:00:03 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, <LAN_IP>, executor driver, partition 0, ANY, 7490 bytes)
+26/10/04 16:00:03 INFO TaskSetManager: Starting task 1.0 in stage 0.0 (TID 1, <LAN_IP>, executor driver, partition 1, ANY, 7500 bytes)
+26/10/04 16:00:03 INFO TaskSetManager: Starting task 2.0 in stage 0.0 (TID 2, <LAN_IP>, executor driver, partition 2, ANY, 7500 bytes)
+26/10/04 16:00:03 INFO TaskSetManager: Starting task 3.0 in stage 0.0 (TID 3, <LAN_IP>, executor driver, partition 3, ANY, 7500 bytes)
+26/10/04 16:00:03 INFO TaskSetManager: Starting task 4.0 in stage 0.0 (TID 4, <LAN_IP>, executor driver, partition 4, ANY, 7500 bytes)
+26/10/04 16:00:03 INFO TaskSetManager: Starting task 5.0 in stage 0.0 (TID 5, <LAN_IP>, executor driver, partition 5, ANY, 7500 bytes)
+26/10/04 16:00:03 INFO TaskSetManager: Starting task 6.0 in stage 0.0 (TID 6, <LAN_IP>, executor driver, partition 6, ANY, 7500 bytes)
+26/10/04 16:00:03 INFO TaskSetManager: Starting task 7.0 in stage 0.0 (TID 7, <LAN_IP>, executor driver, partition 7, ANY, 7491 bytes)
+26/10/04 16:00:03 INFO Executor: Running task 0.0 in stage 0.0 (TID 0)
+26/10/04 16:00:03 INFO Executor: Running task 1.0 in stage 0.0 (TID 1)
+26/10/04 16:00:03 INFO Executor: Running task 2.0 in stage 0.0 (TID 2)
+26/10/04 16:00:03 INFO Executor: Running task 3.0 in stage 0.0 (TID 3)
+26/10/04 16:00:03 INFO Executor: Running task 4.0 in stage 0.0 (TID 4)
+26/10/04 16:00:03 INFO Executor: Running task 5.0 in stage 0.0 (TID 5)
+26/10/04 16:00:03 INFO Executor: Running task 6.0 in stage 0.0 (TID 6)
+26/10/04 16:00:03 INFO Executor: Running task 7.0 in stage 0.0 (TID 7)
+26/10/04 16:00:03 INFO connection: Opened connection [connectionId{localValue:3, serverValue:2044}] to localhost:27017
+26/10/04 16:00:03 INFO connection: Opened connection [connectionId{localValue:5, serverValue:2045}] to localhost:27017
+26/10/04 16:00:03 INFO connection: Opened connection [connectionId{localValue:4, serverValue:2043}] to localhost:27017
+26/10/04 16:00:03 INFO connection: Opened connection [connectionId{localValue:9, serverValue:2049}] to localhost:27017
+26/10/04 16:00:03 INFO connection: Opened connection [connectionId{localValue:6, serverValue:2046}] to localhost:27017
+26/10/04 16:00:03 INFO connection: Opened connection [connectionId{localValue:8, serverValue:2048}] to localhost:27017
+26/10/04 16:00:03 INFO connection: Opened connection [connectionId{localValue:7, serverValue:2047}] to localhost:27017
+26/10/04 16:00:04 INFO Executor: Finished task 1.0 in stage 0.0 (TID 1). 1210 bytes result sent to driver
+26/10/04 16:00:04 INFO TaskSetManager: Finished task 1.0 in stage 0.0 (TID 1) in 737 ms on <LAN_IP> (executor driver) (1/8)
+26/10/04 16:00:04 INFO Executor: Finished task 5.0 in stage 0.0 (TID 5). 1210 bytes result sent to driver
+26/10/04 16:00:04 INFO TaskSetManager: Finished task 5.0 in stage 0.0 (TID 5) in 863 ms on <LAN_IP> (executor driver) (2/8)
+26/10/04 16:00:04 INFO Executor: Finished task 7.0 in stage 0.0 (TID 7). 1210 bytes result sent to driver
+26/10/04 16:00:04 INFO TaskSetManager: Finished task 7.0 in stage 0.0 (TID 7) in 1050 ms on <LAN_IP> (executor driver) (3/8)
+26/10/04 16:00:04 INFO Executor: Finished task 0.0 in stage 0.0 (TID 0). 1210 bytes result sent to driver
+26/10/04 16:00:04 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 1404 ms on <LAN_IP> (executor driver) (4/8)
+26/10/04 16:00:05 INFO Executor: Finished task 4.0 in stage 0.0 (TID 4). 1210 bytes result sent to driver
+26/10/04 16:00:05 INFO TaskSetManager: Finished task 4.0 in stage 0.0 (TID 4) in 1987 ms on <LAN_IP> (executor driver) (5/8)
+26/10/04 16:00:05 INFO Executor: Finished task 3.0 in stage 0.0 (TID 3). 1210 bytes result sent to driver
+26/10/04 16:00:05 INFO TaskSetManager: Finished task 3.0 in stage 0.0 (TID 3) in 2013 ms on <LAN_IP> (executor driver) (6/8)
+26/10/04 16:00:05 INFO Executor: Finished task 2.0 in stage 0.0 (TID 2). 1210 bytes result sent to driver
+26/10/04 16:00:05 INFO TaskSetManager: Finished task 2.0 in stage 0.0 (TID 2) in 2282 ms on <LAN_IP> (executor driver) (7/8)
+26/10/04 16:00:06 INFO Executor: Finished task 6.0 in stage 0.0 (TID 6). 1210 bytes result sent to driver
+26/10/04 16:00:06 INFO TaskSetManager: Finished task 6.0 in stage 0.0 (TID 6) in 2794 ms on <LAN_IP> (executor driver) (8/8)
+26/10/04 16:00:06 INFO TaskSchedulerImpl: Removed TaskSet 0.0, whose tasks have all completed, from pool
+26/10/04 16:00:06 INFO DAGScheduler: ShuffleMapStage 0 (mapToPair at MongoDB2USchema.java:77) finished in 2.800 s
+26/10/04 16:00:06 INFO DAGScheduler: looking for newly runnable stages
+26/10/04 16:00:06 INFO DAGScheduler: running: Set()
+26/10/04 16:00:06 INFO DAGScheduler: waiting: Set(ResultStage 1)
+26/10/04 16:00:06 INFO DAGScheduler: failed: Set()
+26/10/04 16:00:06 INFO DAGScheduler: Submitting ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78), which has no missing parents
+26/10/04 16:00:06 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 4.3 KiB, free 8.2 GiB)
+26/10/04 16:00:06 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 2.4 KiB, free 8.2 GiB)
+26/10/04 16:00:06 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on <LAN_IP>:36767 (size: 2.4 KiB, free: 8.2 GiB)
+26/10/04 16:00:06 INFO SparkContext: Created broadcast 2 from broadcast at DAGScheduler.scala:1223
+26/10/04 16:00:06 INFO DAGScheduler: Submitting 8 missing tasks from ResultStage 1 (ShuffledRDD[2] at reduceByKey at MongoDB2USchema.java:78) (first 15 tasks are for partitions Vector(0, 1, 2, 3, 4, 5, 6, 7))
+26/10/04 16:00:06 INFO TaskSchedulerImpl: Adding task set 1.0 with 8 tasks
+26/10/04 16:00:06 INFO TaskSetManager: Starting task 2.0 in stage 1.0 (TID 8, <LAN_IP>, executor driver, partition 2, NODE_LOCAL, 7143 bytes)
+26/10/04 16:00:06 INFO TaskSetManager: Starting task 4.0 in stage 1.0 (TID 9, <LAN_IP>, executor driver, partition 4, NODE_LOCAL, 7143 bytes)
+26/10/04 16:00:06 INFO TaskSetManager: Starting task 5.0 in stage 1.0 (TID 10, <LAN_IP>, executor driver, partition 5, NODE_LOCAL, 7143 bytes)
+26/10/04 16:00:06 INFO TaskSetManager: Starting task 7.0 in stage 1.0 (TID 11, <LAN_IP>, executor driver, partition 7, NODE_LOCAL, 7143 bytes)
+26/10/04 16:00:06 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 12, <LAN_IP>, executor driver, partition 0, PROCESS_LOCAL, 7143 bytes)
+26/10/04 16:00:06 INFO TaskSetManager: Starting task 1.0 in stage 1.0 (TID 13, <LAN_IP>, executor driver, partition 1, PROCESS_LOCAL, 7143 bytes)
+26/10/04 16:00:06 INFO TaskSetManager: Starting task 3.0 in stage 1.0 (TID 14, <LAN_IP>, executor driver, partition 3, PROCESS_LOCAL, 7143 bytes)
+26/10/04 16:00:06 INFO TaskSetManager: Starting task 6.0 in stage 1.0 (TID 15, <LAN_IP>, executor driver, partition 6, PROCESS_LOCAL, 7143 bytes)
+26/10/04 16:00:06 INFO Executor: Running task 4.0 in stage 1.0 (TID 9)
+26/10/04 16:00:06 INFO Executor: Running task 3.0 in stage 1.0 (TID 14)
+26/10/04 16:00:06 INFO Executor: Running task 6.0 in stage 1.0 (TID 15)
+26/10/04 16:00:06 INFO Executor: Running task 2.0 in stage 1.0 (TID 8)
+26/10/04 16:00:06 INFO Executor: Running task 1.0 in stage 1.0 (TID 13)
+26/10/04 16:00:06 INFO Executor: Running task 5.0 in stage 1.0 (TID 10)
+26/10/04 16:00:06 INFO Executor: Running task 7.0 in stage 1.0 (TID 11)
+26/10/04 16:00:06 INFO Executor: Running task 0.0 in stage 1.0 (TID 12)
+26/10/04 16:00:06 INFO ShuffleBlockFetcherIterator: Getting 8 (43.6 KiB) non-empty blocks including 8 (43.6 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:00:06 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 16:00:06 INFO ShuffleBlockFetcherIterator: Getting 8 (45.7 KiB) non-empty blocks including 8 (45.7 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:00:06 INFO ShuffleBlockFetcherIterator: Getting 8 (49.1 KiB) non-empty blocks including 8 (49.1 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:00:06 INFO ShuffleBlockFetcherIterator: Getting 0 (0.0 B) non-empty blocks including 0 (0.0 B) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:00:06 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 16:00:06 INFO ShuffleBlockFetcherIterator: Getting 8 (41.5 KiB) non-empty blocks including 8 (41.5 KiB) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:00:06 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 16:00:06 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 16:00:06 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 16:00:06 INFO ShuffleBlockFetcherIterator: Getting 0 (0.0 B) non-empty blocks including 0 (0.0 B) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:00:06 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 16:00:06 INFO ShuffleBlockFetcherIterator: Getting 0 (0.0 B) non-empty blocks including 0 (0.0 B) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:00:06 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 16:00:06 INFO ShuffleBlockFetcherIterator: Getting 0 (0.0 B) non-empty blocks including 0 (0.0 B) local and 0 (0.0 B) host-local and 0 (0.0 B) remote blocks
+26/10/04 16:00:06 INFO ShuffleBlockFetcherIterator: Started 0 remote fetches in 0 ms
+26/10/04 16:00:06 INFO Executor: Finished task 3.0 in stage 1.0 (TID 14). 1263 bytes result sent to driver
+26/10/04 16:00:06 INFO Executor: Finished task 6.0 in stage 1.0 (TID 15). 1263 bytes result sent to driver
+26/10/04 16:00:06 INFO Executor: Finished task 1.0 in stage 1.0 (TID 13). 1263 bytes result sent to driver
+26/10/04 16:00:06 INFO Executor: Finished task 0.0 in stage 1.0 (TID 12). 1263 bytes result sent to driver
+26/10/04 16:00:06 INFO TaskSetManager: Finished task 3.0 in stage 1.0 (TID 14) in 7 ms on <LAN_IP> (executor driver) (1/8)
+26/10/04 16:00:06 INFO TaskSetManager: Finished task 6.0 in stage 1.0 (TID 15) in 7 ms on <LAN_IP> (executor driver) (2/8)
+26/10/04 16:00:06 INFO TaskSetManager: Finished task 1.0 in stage 1.0 (TID 13) in 7 ms on <LAN_IP> (executor driver) (3/8)
+26/10/04 16:00:06 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 12) in 7 ms on <LAN_IP> (executor driver) (4/8)
+26/10/04 16:00:06 INFO Executor: Finished task 4.0 in stage 1.0 (TID 9). 114739 bytes result sent to driver
+26/10/04 16:00:06 INFO Executor: Finished task 2.0 in stage 1.0 (TID 8). 116009 bytes result sent to driver
+26/10/04 16:00:06 INFO Executor: Finished task 7.0 in stage 1.0 (TID 11). 104507 bytes result sent to driver
+26/10/04 16:00:06 INFO TaskSetManager: Finished task 4.0 in stage 1.0 (TID 9) in 108 ms on <LAN_IP> (executor driver) (5/8)
+26/10/04 16:00:06 INFO TaskSetManager: Finished task 7.0 in stage 1.0 (TID 11) in 108 ms on <LAN_IP> (executor driver) (6/8)
+26/10/04 16:00:06 INFO TaskSetManager: Finished task 2.0 in stage 1.0 (TID 8) in 109 ms on <LAN_IP> (executor driver) (7/8)
+26/10/04 16:00:06 INFO Executor: Finished task 5.0 in stage 1.0 (TID 10). 105619 bytes result sent to driver
+26/10/04 16:00:06 INFO TaskSetManager: Finished task 5.0 in stage 1.0 (TID 10) in 117 ms on <LAN_IP> (executor driver) (8/8)
+26/10/04 16:00:06 INFO TaskSchedulerImpl: Removed TaskSet 1.0, whose tasks have all completed, from pool
+26/10/04 16:00:06 INFO DAGScheduler: ResultStage 1 (collect at MongoDB2USchema.java:80) finished in 0.121 s
+26/10/04 16:00:06 INFO DAGScheduler: Job 0 is finished. Cancelling potential speculative or zombie tasks for this job
+26/10/04 16:00:06 INFO TaskSchedulerImpl: Killing all running tasks in stage 1: Stage finished
+26/10/04 16:00:06 INFO DAGScheduler: Job 0 finished: collect at MongoDB2USchema.java:80, took 2.926820 s
+26/10/04 16:00:06 INFO SparkUI: Stopped Spark web UI at http://<LAN_IP>:4040
+26/10/04 16:00:06 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+26/10/04 16:00:06 INFO MemoryStore: MemoryStore cleared
+26/10/04 16:00:06 INFO BlockManager: BlockManager stopped
+26/10/04 16:00:06 INFO BlockManagerMaster: BlockManagerMaster stopped
+26/10/04 16:00:06 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+26/10/04 16:00:06 INFO SparkContext: Successfully stopped SparkContext
+java.lang.InterruptedException
+	at java.lang.Object.wait(Native Method)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:144)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:165)
+	at org.eclipse.emf.common.util.CommonUtil$1ReferenceClearingQueuePollingThread.run(CommonUtil.java:70)
+26/10/04 16:00:11 INFO MongoClientCache: Closing MongoClient: [localhost:27017]
+26/10/04 16:00:11 INFO connection: Closed connection [connectionId{localValue:8, serverValue:2048}] to localhost:27017 because the pool has been closed.
+26/10/04 16:00:11 INFO connection: Closed connection [connectionId{localValue:4, serverValue:2043}] to localhost:27017 because the pool has been closed.
+26/10/04 16:00:11 INFO connection: Closed connection [connectionId{localValue:5, serverValue:2045}] to localhost:27017 because the pool has been closed.
+26/10/04 16:00:11 INFO connection: Closed connection [connectionId{localValue:7, serverValue:2047}] to localhost:27017 because the pool has been closed.
+26/10/04 16:00:11 INFO connection: Closed connection [connectionId{localValue:6, serverValue:2046}] to localhost:27017 because the pool has been closed.
+26/10/04 16:00:11 INFO connection: Closed connection [connectionId{localValue:3, serverValue:2044}] to localhost:27017 because the pool has been closed.
+26/10/04 16:00:11 INFO connection: Closed connection [connectionId{localValue:9, serverValue:2049}] to localhost:27017 because the pool has been closed.
+26/10/04 16:00:11 INFO connection: Closed connection [connectionId{localValue:2, serverValue:2042}] to localhost:27017 because the pool has been closed.
+XMI gerado em /output/up_b_larger.xmi
+  geracao=11.21s  boot=-  extracao=15.40s  inferencia=0.04s  escrita=0.00s  porte=15.44s  oraculo=21.55s  query=0.52s  norm=29.801196680177572x  equivalente=True  divergencias=5
+    Movie: real=400000  porte=400000 (100.0%)  oraculo=400000 (100.0%)
+    User: real=800000  porte=91981 (11.5%)  oraculo=91764 (11.5%)
+
+########## run_size_mongo A small (tentativa 1)  13:00:22 ##########
+
+=== seed 23 | rota A | small | python ===
+== Rota A | size small | db up_a_small | seed 23 | User=100000 Movie=50000 rels~3/user ==
+  movies: 50000 inseridos em 0.2s
+  users: 100000 inseridos em 0.7s
+== concluído em 0.8s ==
+  geracao=1.09s  boot=-  extracao=1.71s  inferencia=0.01s  escrita=0.00s  total=1.73s  query=0.04s  norm=43.03482587064676x
+    Movie: real=50000 modelo=50000 (100.0%)
+    User: real=100000 modelo=22377 (22.4%)
+
+########## run_size_mongo A medium (tentativa 1)  13:00:26 ##########
+
+=== seed 23 | rota A | medium | python ===
+== Rota A | size medium | db up_a_medium | seed 23 | User=200000 Movie=100000 rels~5/user ==
+  movies: 100000 inseridos em 0.3s
+    users: 100000/200000 (1s)
+  users: 200000 inseridos em 1.7s
+== concluído em 2.0s ==
+  geracao=2.59s  boot=-  extracao=3.94s  inferencia=0.01s  escrita=0.00s  total=3.95s  query=0.09s  norm=45.45454545454545x
+    Movie: real=100000 modelo=100000 (100.0%)
+    User: real=200000 modelo=24252 (12.1%)
+
+########## run_size_mongo A large (tentativa 1)  13:00:33 ##########
+
+=== seed 23 | rota A | large | python ===
+== Rota A | size large | db up_a_large | seed 23 | User=400000 Movie=200000 rels~10/user ==
+  movies: 200000 inseridos em 0.7s
+    users: 100000/400000 (1s)
+    users: 200000/400000 (2s)
+    users: 300000/400000 (4s)
+  users: 400000 inseridos em 4.7s
+== concluído em 5.4s ==
+  geracao=5.63s  boot=-  extracao=10.56s  inferencia=0.02s  escrita=0.00s  total=10.58s  query=0.21s  norm=50.96339113680154x
+    Movie: real=200000 modelo=200000 (100.0%)
+    User: real=400000 modelo=21867 (5.5%)
+
+########## run_size_mongo A larger (tentativa 1)  13:00:50 ##########
+
+=== seed 23 | rota A | larger | python ===
+== Rota A | size larger | db up_a_larger | seed 23 | User=800000 Movie=400000 rels~20/user ==
+  movies: 400000 inseridos em 1.4s
+    users: 100000/800000 (2s)
+    users: 200000/800000 (4s)
+    users: 300000/800000 (6s)
+    users: 400000/800000 (8s)
+    users: 500000/800000 (10s)
+    users: 600000/800000 (13s)
+    users: 700000/800000 (15s)
+  users: 800000 inseridos em 16.7s
+== concluído em 18.1s ==
+  geracao=18.33s  boot=-  extracao=32.10s  inferencia=0.05s  escrita=0.00s  total=32.15s  query=0.57s  norm=56.75198587819947x
+    Movie: real=400000 modelo=400000 (100.0%)
+    User: real=800000 modelo=20988 (2.6%)
+
+########## run_size_mongo B small (tentativa 1)  13:01:42 ##########
+
+=== seed 23 | rota B | small | python ===
+== Rota B | size small | db up_b_small | seed 23 | User=100000 Movie=50000 rels~3/user ==
+  movies: 50000 inseridos em 0.2s
+  users: 100000 inseridos em 0.5s
+== concluído em 0.7s ==
+  geracao=1.09s  boot=-  extracao=1.04s  inferencia=0.01s  escrita=0.00s  total=1.05s  query=0.05s  norm=22.483940042826553x
+    Movie: real=50000 modelo=50000 (100.0%)
+    User: real=100000 modelo=31170 (31.2%)
+
+########## run_size_mongo B medium (tentativa 1)  13:01:45 ##########
+
+=== seed 23 | rota B | medium | python ===
+== Rota B | size medium | db up_b_medium | seed 23 | User=200000 Movie=100000 rels~5/user ==
+  movies: 100000 inseridos em 0.2s
+    users: 100000/200000 (1s)
+  users: 200000 inseridos em 1.2s
+== concluído em 1.4s ==
+  geracao=1.59s  boot=-  extracao=2.28s  inferencia=0.01s  escrita=0.00s  total=2.29s  query=0.08s  norm=28.732747804266x
+    Movie: real=100000 modelo=100000 (100.0%)
+    User: real=200000 modelo=42154 (21.1%)
+
+########## run_size_mongo B large (tentativa 1)  13:01:50 ##########
+
+=== seed 23 | rota B | large | python ===
+== Rota B | size large | db up_b_large | seed 23 | User=400000 Movie=200000 rels~10/user ==
+  movies: 200000 inseridos em 0.5s
+    users: 100000/400000 (1s)
+    users: 200000/400000 (2s)
+    users: 300000/400000 (2s)
+  users: 400000 inseridos em 3.1s
+== concluído em 3.6s ==
+  geracao=4.12s  boot=-  extracao=5.61s  inferencia=0.02s  escrita=0.00s  total=5.63s  query=0.19s  norm=29.741151611199154x
+    Movie: real=200000 modelo=200000 (100.0%)
+    User: real=400000 modelo=57810 (14.5%)
+
+########## run_size_mongo B larger (tentativa 1)  13:02:01 ##########
+
+=== seed 23 | rota B | larger | python ===
+== Rota B | size larger | db up_b_larger | seed 23 | User=800000 Movie=400000 rels~20/user ==
+  movies: 400000 inseridos em 0.9s
+    users: 100000/800000 (1s)
+    users: 200000/800000 (3s)
+    users: 300000/800000 (4s)
+    users: 400000/800000 (5s)
+    users: 500000/800000 (6s)
+    users: 600000/800000 (8s)
+    users: 700000/800000 (9s)
+  users: 800000 inseridos em 10.1s
+== concluído em 11.0s ==
+  geracao=11.61s  boot=-  extracao=15.36s  inferencia=0.04s  escrita=0.00s  total=15.40s  query=0.52s  norm=29.615384615384617x
+    Movie: real=400000 modelo=400000 (100.0%)
+    User: real=800000 modelo=91981 (11.5%)
+
+fim      : 2026-10-04T13:02:29-03:00
+tabelas  : results/fase4/{runs,oracle,comparisons,divergences}.csv

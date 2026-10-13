@@ -22,6 +22,10 @@ Uma assimetria é deliberada e não deve ser "unificada" sem medir de novo:
 - **`counts` tem dois formatos.** Nas baterias por tamanho é ``(real, porte)``;
   nas do oráculo é ``(real, porte, oráculo)``. O terceiro elemento é o que
   sustenta o "#8 replicado", e só existe onde o Java rodou.
+
+Desde a Fase 4.4, as quatro corridas sobre dado gerado levam ``engine`` e
+``t_boot`` (``None`` na engine Python). O `NorthwindRun` não: o Northwind roda
+só na engine Python, e o caminho de arquivo nem tem banco a fatiar.
 """
 
 from dataclasses import dataclass
@@ -69,6 +73,11 @@ class MongoSizeRun:
     t_extraction: float
     t_inference: float
     t_write: float
+    #: ``python`` ou ``spark``; ver `engines.py`.
+    engine: str
+    #: Segundos para subir a ``SparkSession``, fora do :attr:`total`; ``None``
+    #: na engine Python.
+    t_boot: float | None
     t_query: float
     counts: dict[str, tuple[int, int]]
 
@@ -87,6 +96,11 @@ class Neo4jSizeRun:
     t_extraction: float
     t_inference: float
     t_write: float
+    #: ``python`` ou ``spark``; ver `engines.py`.
+    engine: str
+    #: Segundos para subir a ``SparkSession``, fora do :attr:`total`; ``None``
+    #: na engine Python.
+    t_boot: float | None
     t_query: float
     counts: dict[str, tuple[int, int]]
     result: ComparisonResult
@@ -107,6 +121,11 @@ class MongoOracleRun:
     t_extraction: float
     t_inference: float
     t_write: float
+    #: ``python`` ou ``spark``; ver `engines.py`.
+    engine: str
+    #: Segundos para subir a ``SparkSession``, fora do :attr:`total`; ``None``
+    #: na engine Python.
+    t_boot: float | None
     t_oracle: float
     t_query: float
     #: Por entidade: quantos existem no banco, quantos o porte contabiliza e
@@ -130,6 +149,11 @@ class Neo4jOracleRun:
     t_extraction: float
     t_inference: float
     t_write: float
+    #: ``python`` ou ``spark``; ver `engines.py`.
+    engine: str
+    #: Segundos para subir a ``SparkSession``, fora do :attr:`total`; ``None``
+    #: na engine Python.
+    t_boot: float | None
     t_oracle: float
     t_query: float
     #: Por label: quantos nós existem, quantos o porte contabiliza e quantos o

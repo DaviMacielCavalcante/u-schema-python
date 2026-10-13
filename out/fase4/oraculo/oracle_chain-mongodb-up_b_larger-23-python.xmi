@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<USchema:USchema xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:USchema="http://www.modelum.es/USchema" name="up_b_larger">
+  <entities name="Movie" root="true">
+    <variations variationId="1" count="400000" logicalFeatures="//@entities.0/@variations.0/@features.1" structuralFeatures="//@entities.0/@variations.0/@features.0 //@entities.0/@variations.0/@features.2 //@entities.0/@variations.0/@features.3 //@entities.0/@variations.0/@features.4">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.0/@variations.0/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.0/@variations.0/@features.0"/>
+      <features xsi:type="USchema:Attribute" name="genre">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="title">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="year">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+  </entities>
+  <entities name="User" root="true">
+    <variations variationId="1" count="14799" logicalFeatures="//@entities.1/@variations.0/@features.1 //@entities.1/@variations.0/@features.5" structuralFeatures="//@entities.1/@variations.0/@features.0 //@entities.1/@variations.0/@features.2 //@entities.1/@variations.0/@features.3 //@entities.1/@variations.0/@features.4 //@entities.1/@variations.0/@features.6 //@entities.1/@variations.0/@features.7 //@entities.1/@variations.0/@features.8">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.1/@variations.0/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.1/@variations.0/@features.0"/>
+      <features xsi:type="USchema:Aggregate" name="address" aggregates="//@entities.2/@variations.0" upperBound="1" lowerBound="1"/>
+      <features xsi:type="USchema:Attribute" name="email">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="favoriteMovies" optional="true" references="//@entities.1/@variations.0/@features.5">
+        <type xsi:type="USchema:PList">
+          <elementType xsi:type="USchema:PrimitiveType" name="Number"/>
+        </type>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.0" attributes="//@entities.1/@variations.0/@features.4" upperBound="-1"/>
+      <features xsi:type="USchema:Attribute" name="name">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="surname" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Aggregate" name="watchedMovies" aggregates="//@entities.3/@variations.0" upperBound="-1"/>
+    </variations>
+    <variations variationId="2" count="76965" logicalFeatures="//@entities.1/@variations.1/@features.1" structuralFeatures="//@entities.1/@variations.1/@features.0 //@entities.1/@variations.1/@features.2 //@entities.1/@variations.1/@features.3 //@entities.1/@variations.1/@features.4 //@entities.1/@variations.1/@features.5">
+      <features xsi:type="USchema:Attribute" name="_id" key="//@entities.1/@variations.1/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Key" attributes="//@entities.1/@variations.1/@features.0"/>
+      <features xsi:type="USchema:Aggregate" name="address" aggregates="//@entities.2/@variations.1" upperBound="1" lowerBound="1"/>
+      <features xsi:type="USchema:Attribute" name="email">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="name">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Aggregate" name="watchedMovies" aggregates="//@entities.3/@variations.0" upperBound="-1"/>
+    </variations>
+  </entities>
+  <entities name="Address">
+    <variations variationId="1" count="14799" structuralFeatures="//@entities.2/@variations.0/@features.0 //@entities.2/@variations.0/@features.1 //@entities.2/@variations.0/@features.2 //@entities.2/@variations.0/@features.3">
+      <features xsi:type="USchema:Attribute" name="city">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="number">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="postcode" optional="true">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="street">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+    </variations>
+    <variations variationId="2" count="76965" structuralFeatures="//@entities.2/@variations.1/@features.0 //@entities.2/@variations.1/@features.1 //@entities.2/@variations.1/@features.2">
+      <features xsi:type="USchema:Attribute" name="city">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="number">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Attribute" name="street">
+        <type xsi:type="USchema:PrimitiveType" name="String"/>
+      </features>
+    </variations>
+  </entities>
+  <entities name="Watchedmovie">
+    <variations variationId="1" count="20333" logicalFeatures="//@entities.3/@variations.0/@features.1" structuralFeatures="//@entities.3/@variations.0/@features.0 //@entities.3/@variations.0/@features.2">
+      <features xsi:type="USchema:Attribute" name="movie_id" references="//@entities.3/@variations.0/@features.1">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+      <features xsi:type="USchema:Reference" refsTo="//@entities.0" attributes="//@entities.3/@variations.0/@features.0" upperBound="1" lowerBound="1"/>
+      <features xsi:type="USchema:Attribute" name="stars">
+        <type xsi:type="USchema:PrimitiveType" name="Number"/>
+      </features>
+    </variations>
+  </entities>
+</USchema:USchema>
